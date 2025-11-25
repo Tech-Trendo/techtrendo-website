@@ -1,65 +1,519 @@
-import Image from "next/image";
+import Link from "next/link";
+import {
+  ArrowRight,
+  Users,
+  Zap,
+  Target,
+  Shield,
+  Lightbulb,
+  DollarSign,
+  Building2,
+  Globe,
+  Palette,
+  Smartphone,
+  Code,
+  Monitor,
+  TrendingUp,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import AnimatedTechBackground from "@/components/AnimatedTechBackground";
+import ChatFAB from "@/components/ChatFAB";
+import Portfolio from "@/components/portfolio";
+import CallToAction from "@/components/CallToAction";
+import BlogSection from "@/components/BlogSection";
+import WorkMech from "@/components/client/WorkMech";
+import { Metadata } from "next";
 
-export default function Home() {
+interface Review {
+  id: number;
+  reviewerName: string;
+  reviewerRole: string;
+  review: string;
+  reviewerImage: string | null;
+}
+
+interface PartnerLogo {
+  id: number;
+  name: string;
+  image: string;
+}
+
+interface Gallery {
+  id: number;
+  title: string;
+  image: string;
+}
+async function fetchReviews(): Promise<Review[]> {
+  try {
+    const res = await fetch("https://app.techtrendo.com/api/app/reviews/", {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    return (await res.json()) ?? [];
+  } catch {
+    return [];
+  }
+}
+
+async function fetchPartnerLogos(): Promise<PartnerLogo[]> {
+  try {
+    const res = await fetch(
+      "https://app.techtrendo.com/api/app/company-logos/",
+      {
+        next: { revalidate: 86400 },
+      }
+    );
+    if (!res.ok) return [];
+    return (await res.json()) ?? [];
+  } catch {
+    return [];
+  }
+}
+async function fetchGallery(): Promise<Gallery[]> {
+  try {
+    const res = await fetch(
+      "https://app.techtrendo.com/api/app/gallery-items/",
+      {
+        next: { revalidate: 3600 },
+      }
+    );
+    if (!res.ok) {
+      console.error("Gallery fetch failed:", res.status, res.statusText);
+      return [];
+    }
+    const data = await res.json();
+    return data ?? [];
+  } catch (error) {
+    console.error("Failed to fetch gallery:", error);
+    return [];
+  }
+}
+export const metadata: Metadata = {
+  title: "Tech Trendo | Best IT Company in Eastern Nepal",
+};
+export default async function Home() {
+  const [reviews, partnerLogos, gallery] = await Promise.all([
+    fetchReviews(),
+    fetchPartnerLogos(),
+    fetchGallery(),
+  ]).catch(() => {
+    return [[], [], []] as const;
+  });
+  const getInitials = (name: string) => {
+    const words = name.split(" ");
+    return words
+      .map((w) => w[0].toUpperCase())
+      .slice(0, 2)
+      .join("");
+  };
+
+  const features = [
+    {
+      icon: Shield,
+      title: "Comprehensive IT Services Suite",
+      description:
+        "Complete range of IT solutions from web development to digital marketing under one roof.",
+    },
+    {
+      icon: Zap,
+      title: "Real-Time and Effective IT Solutions",
+      description:
+        "Quick response times and efficient solutions that deliver immediate business value.",
+    },
+    {
+      icon: Users,
+      title: "Collaborative Partnerships",
+      description:
+        "We work closely with our clients to understand their needs and deliver customized solutions.",
+    },
+    {
+      icon: Target,
+      title: "Holistic IT Approach",
+      description:
+        "End-to-end solutions that cover all aspects of your digital transformation journey.",
+    },
+    {
+      icon: Lightbulb,
+      title: "Youthful Innovation",
+      description:
+        "Fresh perspectives and innovative approaches brought by our young, dynamic team.",
+    },
+    {
+      icon: DollarSign,
+      title: "Cost-Effective Solutions",
+      description:
+        "High-quality services at competitive prices to maximize your return on investment.",
+    },
+  ];
+
+  const services = [
+    {
+      icon: Palette,
+      title: "Graphic Design",
+      description:
+        "Creative visual solutions that capture your brand essence and communicate effectively.",
+    },
+    {
+      icon: Globe,
+      title: "Web Design & Development",
+      description:
+        "Modern, responsive websites that drive engagement and convert visitors to customers.",
+    },
+    {
+      icon: Smartphone,
+      title: "App Design & Development",
+      description:
+        "Native and cross-platform mobile applications with exceptional user experiences.",
+    },
+    {
+      icon: Monitor,
+      title: "ICT/Media Services",
+      description:
+        "Comprehensive ICT solutions and media services for educational institutions.",
+    },
+    {
+      icon: TrendingUp,
+      title: "Digital Marketing",
+      description:
+        "Data-driven marketing strategies to grow your online presence and reach.",
+    },
+    {
+      icon: Code,
+      title: "Software Development",
+      description:
+        "Custom software solutions tailored to your specific business requirements.",
+    },
+  ];
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="flex flex-col">
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center bg-white text-gray-900 overflow-hidden">
+        <AnimatedTechBackground />
+        <div className="container-custom text-center space-y-8 animate-fade-in-up z-10">
+          <h1 className="hero-title text-black">
+            Tech Trendo: Best IT Company
+            <br />
+            <span className="gradient-text">In Eastern Nepal</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="hero-subtitle max-w-3xl mx-auto text-black">
+            Your Trusted Technology Partner For Business Growth
           </p>
+          <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+            Our aim is to provide real-time and effective IT solutions to
+            enhance digital presence and operational efficiency.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href={"/contact"} prefetch={true}>
+              <Button
+                size="lg"
+                className="btn-gradient text-lg px-8 py-6 text-white"
+              >
+                Contact Now
+                <ArrowRight className="ml-2" size={20} />
+              </Button>
+            </Link>
+            <Link href={"/services"} prefetch={true}>
+              <Button
+                size="lg"
+                variant="outline"
+                className="btn-outline-gradient text-lg text-primary px-8 py-6"
+              >
+                {/* text-[#4c9aff] */}
+                Our Services
+              </Button>
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* Chat FAB */}
+      <ChatFAB />
+
+      {/* About Us Section */}
+      <section className="section-padding bg-background section-3d">
+        <div className="container-custom">
+          <div className="text-center space-y-4 mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground">
+              About <span className="gradient-text">Tech Trendo</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              We are Eastern Nepal's leading IT company, dedicated to providing
+              innovative digital solutions that transform businesses and drive
+              growth. Our young, dynamic team combines creativity with technical
+              expertise to deliver exceptional results.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="card-3d border-0 bg-linear-to-br from-[#4c9aff]/5 to-[#7c3aed]/5">
+              <CardContent className="p-8 text-center space-y-4">
+                <div className="w-16 h-16 rounded-full btn-gradient flex items-center justify-center mx-auto">
+                  <Building2 className="text-white" size={32} />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground">
+                  Our Mission
+                </h3>
+                <p className="text-muted-foreground">
+                  To provide real-time and effective IT solutions that enhance
+                  digital presence and operational efficiency.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="card-3d border-0 bg-linear-to-br from-[#7c3aed]/5 to-[#0d9488]/5">
+              <CardContent className="p-8 text-center space-y-4">
+                <div className="w-16 h-16 rounded-full bg-linear-to-br from-[#7c3aed] to-[#0d9488] flex items-center justify-center mx-auto">
+                  <Globe className="text-white" size={32} />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground">
+                  Our Vision
+                </h3>
+                <p className="text-muted-foreground">
+                  To be the most trusted IT partner in Nepal, driving digital
+                  transformation across all industries.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="card-3d border-0 bg-linear-to-br from-[#0d9488]/5 to-[#4c9aff]/5">
+              <CardContent className="p-8 text-center space-y-4">
+                <div className="w-16 h-16 rounded-full bg-linear-to-br from-[#0d9488] to-[#4c9aff] flex items-center justify-center mx-auto">
+                  <Users className="text-white" size={32} />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground">
+                  Our Team
+                </h3>
+                <p className="text-muted-foreground">
+                  Young, passionate professionals committed to delivering
+                  excellence in every project we undertake.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* Amazing Features Section */}
+      <section className="section-padding bg-muted section-3d">
+        <div className="container-custom">
+          <div className="text-center space-y-4 mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground">
+              Amazing <span className="gradient-text">Features</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Discover what makes Tech Trendo the preferred choice for
+              businesses across Eastern Nepal
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <Card key={index} className="card-3d border-0 bg-white">
+                <CardContent className="p-8 text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full btn-gradient flex items-center justify-center mx-auto shadow-lg">
+                    <feature.icon className="" size={32} />
+                  </div>
+                  <h3 className="text-xl font-semibold text-foreground">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How Tech Trendo Works */}
+      <section className="section-padding bg-background section-3d relative">
+        <WorkMech />
+      </section>
+
+      {/* Our Services Overview */}
+      <section className="section-padding bg-muted section-3d">
+        <div className="container-custom">
+          <div className="text-center space-y-4 mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground">
+              Our <span className="gradient-text">Services</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Comprehensive IT solutions to drive your business forward
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {services.map((service, index) => (
+              <Card
+                key={index}
+                className="relative overflow-hidden card-3d bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 group"
+              >
+                <div className="absolute -top-2 -right-2 w-8 h-8 btn-gradient rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg">
+                  {index + 1}
+                </div>
+                <CardContent className="p-8 space-y-4 relative z-10">
+                  <div className="w-16 h-16 rounded-xl btn-gradient flex items-center justify-center mb-4 transition-transform duration-500 group-hover:scale-110">
+                    <service.icon className="text-white" size={32} />
+                  </div>
+                  <h3 className="text-xl font-semibold text-foreground">
+                    {service.title}
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {service.description}
+                  </p>
+                  <Link
+                    href="/services" // Replace with the route you want
+                    className="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-all duration-300 hover:translate-x-1 p-0"
+                  >
+                    <span>Learn More</span>
+                    <ArrowRight className="ml-2" size={16} />
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link href="/services" prefetch={true}>
+              <Button
+                size="lg"
+                className="btn-gradient shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                View All Services
+                <ArrowRight className="ml-2" size={20} />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Portfolio Section */}
+      <Portfolio />
+
+      {/* Partners Section */}
+      <section className="section-padding bg-background section-3d">
+        <div className="container-custom">
+          <div className="text-center space-y-4 mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground">
+              Our <span className="gradient-text">Partners</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Trusted collaborations that drive innovation and success
+            </p>
+          </div>
+
+          {/* Partner Logos Section */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            {partnerLogos.length > 0 ? (
+              partnerLogos.map((logo) => (
+                <Card
+                  key={logo.id}
+                  className="card-3d border-0 bg-linear-to-br from-primary/5 to-secondary/5"
+                >
+                  <CardContent className="p-6 text-center space-y-4">
+                    <div className="w-20 h-20 rounded-full overflow-hidden mx-auto shadow-lg">
+                      <img
+                        src={logo.image}
+                        alt={logo.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <p className="text-sm font-bold text-foreground">
+                      {logo.name}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <p className="text-center text-muted-foreground col-span-full">
+                Loading partner logos...
+              </p>
+            )}
+          </div>
+
+          {/* Gallery Section */}
+          <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {gallery.map((item) => (
+              <Card key={item.id} className="card-3d overflow-hidden border-0">
+                <CardContent className="p-8 text-center">
+                  <div className="inline-block rounded-lg overflow-hidden shadow-lg bg-white">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-40 h-40 object-contain"
+                    />
+                  </div>
+                  <p className="mt-4 font-semibold text-foreground text-center whitespace-normal wrap-break-word">
+                    {item.title}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials (Dynamic from API) */}
+
+      <section className="section-padding bg-muted section-3d">
+        <div className="container-custom">
+          <div className="text-center space-y-4 mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground">
+              What Our <span className="gradient-text">Clients Say</span>
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Real feedback from satisfied clients
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {reviews.length > 0 ? (
+              reviews.map((testimonial) => (
+                <Card
+                  key={testimonial.id}
+                  className="card-3d bg-white border-0"
+                >
+                  <CardContent className="p-8 space-y-4">
+                    <p className="text-foreground leading-relaxed italic">
+                      "{testimonial.review}"
+                    </p>
+                    <div className="flex items-center gap-4">
+                      {testimonial.reviewerImage ? (
+                        <div className="w-12 h-12 rounded-full overflow-hidden shadow-lg">
+                          <img
+                            src={testimonial.reviewerImage}
+                            alt={testimonial.reviewerName}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-linear-to-br from-primary to-secondary flex items-center justify-center text-white font-bold shadow-lg">
+                          {getInitials(testimonial.reviewerName)}
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-semibold text-foreground">
+                          {testimonial.reviewerName}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {testimonial.reviewerRole}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <p className="text-center text-muted-foreground col-span-3">
+                Loading testimonials...
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
+      <BlogSection />
+      <CallToAction />
     </div>
   );
 }
