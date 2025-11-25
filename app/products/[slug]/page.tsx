@@ -188,7 +188,7 @@ const ProductDetail: React.FC = () => {
         </Helmet>
 
         {/* Hero */}
-        <section className="py-20 md:py-32 bg-gradient-to-br from-primary via-secondary to-accent text-white">
+        <section className="py-20 md:py-32 bg-linear-to-br from-primary via-secondary to-accent text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <Link href="/products">
               <Button
@@ -201,7 +201,7 @@ const ProductDetail: React.FC = () => {
             </Link>
 
             <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="w-24 h-24 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+              <div className="w-24 h-24 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center shrink-0">
                 <div className="w-24 h-24 rounded-2xl shadow-lg overflow-hidden bg-white/10 group">
                   <img
                     src={product.icon}
@@ -269,10 +269,10 @@ const ProductDetail: React.FC = () => {
                   ).map((benefit, index) => (
                     <Card
                       key={index}
-                      className="card-hover bg-gradient-to-br from-primary/5 to-secondary/5 border-0"
+                      className="card-hover bg-linear-to-br from-primary/5 to-secondary/5 border-0"
                     >
                       <CardContent className="p-6 flex items-center space-x-4">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-linear-to-br from-primary to-secondary flex items-center justify-center shrink-0">
                           <CheckCircle2 className="text-white" size={16} />
                         </div>
                         <p className="text-foreground font-medium">{benefit}</p>
@@ -292,10 +292,10 @@ const ProductDetail: React.FC = () => {
                   ).map((useCase, index) => (
                     <Card
                       key={index}
-                      className="card-hover bg-gradient-to-br from-primary/5 to-secondary/5 border-0"
+                      className="card-hover bg-linear-to-br from-primary/5 to-secondary/5 border-0"
                     >
                       <CardContent className="p-6 flex items-center space-x-4">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-linear-to-br from-primary to-secondary flex items-center justify-center shrink-0">
                           <CheckCircle2 className="text-white" size={16} />
                         </div>
                         <p className="text-foreground font-medium">{useCase}</p>
@@ -325,7 +325,7 @@ const ProductDetail: React.FC = () => {
                 {data.features.map((feature, index) => (
                   <Card key={index} className="card-hover bg-white">
                     <CardContent className="p-8 space-y-4">
-                      <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-lg bg-linear-to-br from-primary to-secondary flex items-center justify-center">
                         <span className="text-white text-xl font-bold">
                           {index + 1}
                         </span>
@@ -359,7 +359,7 @@ const ProductDetail: React.FC = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <Card className="card-3d border-0 max-w-4xl mx-auto bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white">
+              <Card className="card-3d border-0 max-w-4xl mx-auto bg-linear-to-r from-blue-500 via-indigo-500 to-purple-600 text-white">
                 <CardContent className="p-12 space-y-6">
                   <motion.h2
                     initial={{ y: 30, opacity: 0 }}
