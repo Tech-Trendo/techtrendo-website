@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { useState } from "react";
 // import { Link, useLocation } from "react-router-dom";
 import Link from "next/link";
@@ -29,14 +29,16 @@ const Navigation = () => {
     <nav className="bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
       <div className="container-custom">
         <div className="flex justify-between items-center h-16">
-         <Link href={'/'} className="flex items-center space-x-3">
-  <img
-    src='/tech-trendo.png'
-    alt="Tech Trendo Logo"
-    className="w-14 h-14 object-contain"
-  />
-  <span className="text-2xl font-bold text-foreground">Tech Trendo</span>
-</Link>
+          <Link href={"/"} className="flex items-center space-x-3">
+            <img
+              src="/tech-trendo.png"
+              alt="Tech Trendo Logo"
+              className="w-14 h-14 object-contain"
+            />
+            <span className="text-2xl font-bold text-foreground">
+              Tech Trendo
+            </span>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
@@ -53,10 +55,8 @@ const Navigation = () => {
                 {item.name}
               </Link>
             ))}
-            <Link href={'contact'}>
-              <Button  className="btn-gradient">
-                Contact Us
-              </Button>
+            <Link href={"/contact"}>
+              <Button className="btn-gradient">Contact Us</Button>
             </Link>
           </div>
 
@@ -93,10 +93,8 @@ const Navigation = () => {
                 </Link>
               ))}
               <div className="px-4 pt-2">
-                <Link href={'/contact'} onClick={() => setIsOpen(false)}>
-                  <Button className="btn-gradient w-full">
-                    Contact Us
-                  </Button>
+                <Link href={"/contact"} onClick={() => setIsOpen(false)}>
+                  <Button className="btn-gradient w-full">Contact Us</Button>
                 </Link>
               </div>
             </div>

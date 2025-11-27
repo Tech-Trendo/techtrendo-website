@@ -1,15 +1,15 @@
-'use client';
+"use client";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { FileText } from "lucide-react"; // Icon similar to your image
 export default function NotFound() {
-    const pathName = usePathname();
+  const pathName = usePathname();
   const router = useRouter();
-       const navigate = (path: string) => {
-       router.push(path);
-     };
+  const navigate = (path: string) => {
+    router.push(path);
+  };
 
   useEffect(() => {
     console.error(
@@ -17,12 +17,12 @@ export default function NotFound() {
       pathName
     );
   }, [pathName]);
-   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-50 to-white">
+  return (
+    <div className="flex flex-col min-h-screen bg-linear-to-b from-blue-50 to-white">
       {/* Header */}
 
       {/* Main Content */}
-      <main className="flex-grow flex items-center justify-center px-4 mt-12 mb-12">
+      <main className="grow flex items-center justify-center px-4 mt-12 mb-12">
         <motion.div
           className="bg-white rounded-xl shadow-xl p-10 flex flex-col items-center text-center max-w-sm w-full"
           initial={{ opacity: 0, y: 50 }}
@@ -61,8 +61,7 @@ export default function NotFound() {
       </main>
 
       {/* Footer */}
-      <div className="mt-12">
-      </div>
+      <div className="mt-12"></div>
     </div>
   );
 }

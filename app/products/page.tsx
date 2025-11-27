@@ -1,14 +1,10 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
-// import { Link, useNavigate } from "react-router-dom";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ExternalLink, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import ServiceQuote from "@/components/ServiceQuote";
-
+import ProductsCTA from "@/components/client/ProductsCTA";
+import { Metadata } from "next";
+import { seoData } from "@/types";
 interface ProductFeature {
   title: string;
   description: string;
@@ -26,40 +22,44 @@ interface Product {
   link: string | null;
   features: ProductFeature[];
 }
-
-const Products: React.FC = () => {
-   const router = useRouter();
-  const navigate = (path: string) => {
-    router.push(path);
-  };
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [quoteOpen, setQuoteOpen] = useState(false);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("https://app.techtrendo.com/api/app/products/");
-        const data: Product[] = await res.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center py-20">
-        <p className="text-lg font-medium text-slate-600">Loading products...</p>
-      </div>
-    );
+export async function generateMetadata(): Promise<Metadata> {
+  const res = await fetch(`https://app.techtrendo.com/api/app/pages/products`);
+  const data: seoData = await res.json();
+  if (!data) {
+    return {};
   }
-
+  return {
+    title: data.meta_title,
+    description: data.meta_description,
+    keywords: data.meta_keywords,
+    alternates: {
+      canonical: data.canonical_url,
+    },
+    openGraph: {
+      title: data.og_title || "",
+      description: data.og_description || "",
+      url: data.canonical_url || "",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: data.twitter_title || data.title,
+      description: data.twitter_description || "",
+    },
+  };
+}
+async function fetchProducts(): Promise<Product[]> {
+  try {
+    const res = await fetch("https://app.techtrendo.com/api/app/products/", {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    return (await res.json()) ?? [];
+  } catch {
+    return [];
+  }
+}
+export default async function Products() {
+  const products = await fetchProducts().catch(() => []);
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -67,7 +67,8 @@ const Products: React.FC = () => {
         <div className="container-custom text-center space-y-6">
           <h1 className="text-5xl md:text-6xl font-bold">Our Products</h1>
           <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto">
-            Discover innovative SaaS solutions designed to streamline your business operations and fuel growth.
+            Discover innovative SaaS solutions designed to streamline your
+            business operations and fuel growth.
           </p>
         </div>
       </section>
@@ -103,15 +104,21 @@ const Products: React.FC = () => {
                 <CardTitle className="text-2xl font-bold text-slate-900">
                   {product.title}
                 </CardTitle>
-                <p className="text-sm font-medium text-primary">{product.category}</p>
+                <p className="text-sm font-medium text-primary">
+                  {product.category}
+                </p>
               </CardHeader>
 
               <CardContent className="space-y-6">
-                <p className="text-slate-600 text-base leading-relaxed">{product.short_description}</p>
+                <p className="text-slate-600 text-base leading-relaxed">
+                  {product.short_description}
+                </p>
 
                 {product.features && product.features.length > 0 && (
                   <div>
-                    <h4 className="font-semibold text-slate-900 mb-3">Key Features</h4>
+                    <h4 className="font-semibold text-slate-900 mb-3">
+                      Key Features
+                    </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {product.features.map((feature, i) => (
                         <div
@@ -134,64 +141,37 @@ const Products: React.FC = () => {
                 )}
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button
-                    size="lg"
-                    className="flex-1 bg-linear-to-r from-primary to-secondary text-white"
-                    onClick={() => window.open(product.link || "#", "_blank")}
+                  <Link
+                    href={product.link ? product.link : "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                    <ExternalLink className="mr-2" size={18} />
-                    View Demo
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="flex-1"
-                    onClick={() => navigate(`/products/${product.slug}`)}
-                  >
-                    Learn More
-                  </Button>
+                    <Button
+                      size="lg"
+                      className="flex-1 bg-linear-to-r from-primary to-secondary text-white"
+                      // onClick={() => window.open(product.link || "#", "_blank")}
+                    >
+                      <ExternalLink className="mr-2" size={18} />
+                      View Demo
+                    </Button>
+                  </Link>
+                  <Link href={`/products/${product.slug}`}>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="flex-1"
+                      // onClick={() => navigate(`/products/${product.slug}`)}
+                    >
+                      Learn More
+                    </Button>
+                  </Link>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
       </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-linear-to-br from-primary/5 to-secondary/5">
-        <div className="container-custom text-center space-y-6">
-          <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900">
-            Ready to Transform Your Business?
-          </h2>
-          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
-            Let’s discuss how our products can help you streamline operations and accelerate growth.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/contact">
-              <Button size="lg" className="bg-linear-to-r from-primary to-secondary text-white">
-                Contact Sales Team
-              </Button>
-            </Link>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => setQuoteOpen(true)}
-            >
-              Get Quote
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Service Quote Modal */}
-      {quoteOpen && (
-        <ServiceQuote
-          preselectedService={undefined} // Optional: pass default service if needed
-          onClose={() => setQuoteOpen(false)}
-        />
-      )}
+      <ProductsCTA />
     </div>
   );
-};
-
-export default Products;
+}

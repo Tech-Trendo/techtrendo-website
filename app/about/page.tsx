@@ -2,6 +2,7 @@ import { Users, Target, Award, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { Metadata } from "next";
+import { seoData } from "@/types";
 interface Member {
   id: number;
   slug: string;
@@ -10,9 +11,31 @@ interface Member {
   email: string;
   image: string | null;
 }
-export const metadata: Metadata = {
-  title: "About Us | Tech Trendo",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const res = await fetch(`https://app.techtrendo.com/api/app/pages/about`);
+  const data: seoData = await res.json();
+  if (!data) {
+    return {};
+  }
+  return {
+    title: data.meta_title,
+    description: data.meta_description,
+    keywords: data.meta_keywords,
+    alternates: {
+      canonical: data.canonical_url,
+    },
+    openGraph: {
+      title: data.og_title || "",
+      description: data.og_description || "",
+      url: data.canonical_url || "",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: data.twitter_title || data.title,
+      description: data.twitter_description || "",
+    },
+  };
+}
 async function fetchTeamMembers(): Promise<Member[]> {
   try {
     const res = await fetch("https://app.techtrendo.com/api/app/members/", {
@@ -26,15 +49,6 @@ async function fetchTeamMembers(): Promise<Member[]> {
 }
 export default async function About() {
   const teamMembers = await fetchTeamMembers().catch(() => []);
-  // const [teamMembers, setTeamMembers] = useState<Member[]>([]);
-
-  // useEffect(() => {
-  //   fetch("https://app.techtrendo.com/api/app/members/")
-  //     .then((res) => res.json())
-  //     .then((data) => setTeamMembers(data))
-  //     .catch((error) => console.error("Error fetching members:", error));
-  // }, []);
-
   const values = [
     {
       icon: Target,
@@ -148,7 +162,7 @@ export default async function About() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {teamMembers.length > 0 &&
+            {teamMembers.length > 0 ? (
               teamMembers.map((member) => (
                 <Link key={member.slug} href={`/${member.slug}`}>
                   <Card className="card-hover bg-white">
@@ -183,7 +197,12 @@ export default async function About() {
                     </CardContent>
                   </Card>
                 </Link>
-              ))}
+              ))
+            ) : (
+              <p className="text-center text-muted-foreground col-span-3">
+                No team members found.
+              </p>
+            )}
           </div>
         </div>
       </section>

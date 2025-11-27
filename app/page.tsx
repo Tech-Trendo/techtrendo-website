@@ -79,18 +79,30 @@ async function fetchGallery(): Promise<Gallery[]> {
       }
     );
     if (!res.ok) {
-      console.error("Gallery fetch failed:", res.status, res.statusText);
       return [];
     }
     const data = await res.json();
     return data ?? [];
   } catch (error) {
-    console.error("Failed to fetch gallery:", error);
     return [];
   }
 }
+
 export const metadata: Metadata = {
   title: "Tech Trendo | Best IT Company in Eastern Nepal",
+  description:
+    "Tech Trendo – Eastern Nepal’s Best & Leading IT company for Web, App, Software Development & Digital Marketing that drives real business growth.",
+  keywords:
+    "Tech Trendo,Best IT Company Nepal, IT Company Nepal,IT Company Eastern Nepal, Web Development, Mobile App Development, Software Development, Digital Marketing, SEO Services, Tech Company Itahari, tech trend, tech in trend, web, app, software, App Development in Itahari, Software Company in Itahari,Software Company in Dharan,Software Company in Biratnagar,Software Company in Jhapa,Software Company in Morang,Software Company in Sunsari",
+  alternates: {
+    canonical: "https://techtrendo.com",
+  },
+  openGraph: {
+    images: ["https://techtrendo.com/preview.png"],
+  },
+  twitter: {
+    images: ["https://techtrendo.com/preview.png"],
+  },
 };
 export default async function Home() {
   const [reviews, partnerLogos, gallery] = await Promise.all([

@@ -1,12 +1,11 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import * as LucideIcons from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import ServiceQuote from '@/components/ServiceQuote';
-import { ArrowRight } from 'lucide-react';
+import * as LucideIcons from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import ServicesClient from "@/components/client/ServicesClient";
+import Link from "next/link";
+import { seoData } from "@/types";
+import { Metadata } from "next";
 
 // Define type for service object
 interface ServiceFeature {
@@ -22,57 +21,50 @@ interface Service {
   long_description?: string;
   features: string[] | ServiceFeature[];
 }
-
-const Services: React.FC = () => {
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [email, setEmail] = useState('');
-  const [subscriptionStatus, setSubscriptionStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [subscriptionMessage, setSubscriptionMessage] = useState('');
-  const [quoteOpen, setQuoteOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState<number | null>(0);
-
-  // Scroll to top on mount
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  // Fetch services
-  useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const res = await fetch('https://app.techtrendo.com/api/app/services/');
-        if (!res.ok) throw new Error('Failed to fetch services');
-        const data = await res.json();
-        setServices(data);
-      } catch (error) {
-        console.error('Error fetching services:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchServices();
-  }, []);
-
-  // Newsletter subscription
-  const handleSubscribe = async () => {
-    try {
-      const res = await axios.post('https://app.techtrendo.com/api/app/mail-subscribers/', { email });
-      if (res.status === 201) {
-        setSubscriptionStatus('success');
-        setSubscriptionMessage('Thank you! You have successfully subscribed to our newsletter.');
-        setEmail('');
-      }
-    } catch (err: any) {
-      if (err.response?.data?.email && err.response.data.email.length > 0) {
-        setSubscriptionMessage(err.response.data.email[0]);
-      } else {
-        setSubscriptionMessage('Subscription failed. Please try again later.');
-      }
-      setSubscriptionStatus('error');
-    }
+export async function generateMetadata(): Promise<Metadata> {
+  const res = await fetch(`https://app.techtrendo.com/api/app/pages/service`);
+  const data: seoData = await res.json();
+  if (!data) {
+    return {};
+  }
+  return {
+    title: data.meta_title,
+    description: data.meta_description,
+    keywords: data.meta_keywords,
+    alternates: {
+      canonical: data.canonical_url,
+    },
+    openGraph: {
+      title: data.og_title || "",
+      description: data.og_description || "",
+      url: data.canonical_url || "",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: data.twitter_title || data.title,
+      description: data.twitter_description || "",
+    },
   };
+}
+async function fetchServices(): Promise<Service[]> {
+  try {
+    const res = await fetch("https://app.techtrendo.com/api/app/services/", {
+      next: { revalidate: 3600 }, // Revalidate every hour (ISR)
+    });
+    if (!res.ok) return [];
 
+    return (await res.json()) ?? [];
+  } catch {
+    return [];
+  }
+}
+export default async function Services() {
+  let services: Service[] = [];
+  services = await fetchServices();
+  // Scroll to top on mount
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, []);
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -88,73 +80,83 @@ const Services: React.FC = () => {
       {/* Services Grid */}
       <section className="section-padding bg-background">
         <div className="container-custom">
-          {loading ? (
-            <p className="text-center text-muted-foreground">Loading services...</p>
-          ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              {services.map((service) => {
-                // Dynamically pick icon from LucideIcons
-                const IconComponent = (LucideIcons as any)[service.icon] || LucideIcons.Code;
-
-                return (
-                  <Card key={service.id} className="card-hover border-0 shadow-large">
-                    <CardContent className="p-8 space-y-6">
-                      {/* Service Header */}
-                      <div className="flex items-start space-x-4">
-                        <div className="w-16 h-16 rounded-xl bg-linear-to-br from-primary to-secondary flex items-center justify-center shrink-0">
-                          <IconComponent className="text-white" size={32} />
-                        </div>
-                        <div className="space-y-2">
-                          <h3 className="text-2xl font-bold text-foreground">{service.title}</h3>
-                          <p className="text-muted-foreground leading-relaxed">{service.short_description}</p>
-                        </div>
+          {/* <p className="text-center text-muted-foreground">
+            Loading services...
+          </p> */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {services.map((service) => {
+              // Dynamically pick icon from LucideIcons
+              const IconComponent =
+                (LucideIcons as any)[service.icon] || LucideIcons.Code;
+              return (
+                <Card
+                  key={service.id}
+                  className="card-hover border-0 shadow-large"
+                >
+                  <CardContent className="p-8 space-y-6">
+                    {/* Service Header */}
+                    <div className="flex items-start space-x-4">
+                      <div className="w-16 h-16 rounded-xl bg-linear-to-br from-primary to-secondary flex items-center justify-center shrink-0">
+                        <IconComponent className="text-white" size={32} />
                       </div>
-
-                      {/* Features List */}
-                      <div className="space-y-3">
-                        <h4 className="font-semibold text-foreground">What's Included:</h4>
-                        <ul className="space-y-2">
-                          {service.features?.map((feature, idx) => (
-                            <li key={idx} className="flex items-center space-x-2 text-muted-foreground">
-                              <ArrowRight className="text-primary shrink-0" size={16} />
-                              <span>{typeof feature === 'string' ? feature : feature.title || feature.description}</span>
-                            </li>
-                          ))}
-                        </ul>
+                      <div className="space-y-2">
+                        <h3 className="text-2xl font-bold text-foreground">
+                          {service.title}
+                        </h3>
+                        <p className="text-muted-foreground leading-relaxed">
+                          {service.short_description}
+                        </p>
                       </div>
+                    </div>
 
-                      {/* Buttons */}
-                      <div className="flex flex-col sm:flex-row gap-3">
-                        <Button
-                          className="btn-gradient flex-1"
-                          onClick={() => {
-                            setSelectedService(null);
-                            setQuoteOpen(true);
-                          }}
-                        >
+                    {/* Features List */}
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-foreground">
+                        What's Included:
+                      </h4>
+                      <ul className="space-y-2">
+                        {service.features?.map((feature, idx) => (
+                          <li
+                            key={idx}
+                            className="flex items-center space-x-2 text-muted-foreground"
+                          >
+                            <ArrowRight
+                              className="text-primary shrink-0"
+                              size={16}
+                            />
+                            <span>
+                              {typeof feature === "string"
+                                ? feature
+                                : feature.title || feature.description}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Link href={`/quote?serviceId=${service.id}`}>
+                        <Button className="btn-gradient flex-1">
                           Get Quote <ArrowRight className="ml-2" size={16} />
                         </Button>
+                      </Link>
+                      <Link href={`/services/${service.slug}`}>
                         <Button
                           variant="outline"
                           className="btn-outline-gradient flex-1"
-                          onClick={() => (window.location.href = `/services/${service.slug}`)}
                         >
                           Learn More
                         </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          )}
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </div>
       </section>
-
-      {/* Service Quote Modal */}
-      {quoteOpen && selectedService !== null && (
-        <ServiceQuote preselectedService={selectedService} onClose={() => setQuoteOpen(false)} />
-      )}
 
       {/* Process Section */}
       <section className="section-padding bg-muted">
@@ -164,22 +166,47 @@ const Services: React.FC = () => {
               Our <span className="gradient-text">Process</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              We follow a proven methodology to ensure successful project delivery
+              We follow a proven methodology to ensure successful project
+              delivery
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {[
-              { step: '01', title: 'Discovery', description: 'Understanding your needs, goals, and requirements through detailed consultation.' },
-              { step: '02', title: 'Planning', description: 'Creating a comprehensive project plan with timelines, milestones, and deliverables.' },
-              { step: '03', title: 'Development', description: 'Building your solution using best practices and cutting-edge technologies.' },
-              { step: '04', title: 'Delivery', description: 'Testing, refining, and delivering your project with ongoing support.' },
+              {
+                step: "01",
+                title: "Discovery",
+                description:
+                  "Understanding your needs, goals, and requirements through detailed consultation.",
+              },
+              {
+                step: "02",
+                title: "Planning",
+                description:
+                  "Creating a comprehensive project plan with timelines, milestones, and deliverables.",
+              },
+              {
+                step: "03",
+                title: "Development",
+                description:
+                  "Building your solution using best practices and cutting-edge technologies.",
+              },
+              {
+                step: "04",
+                title: "Delivery",
+                description:
+                  "Testing, refining, and delivering your project with ongoing support.",
+              },
             ].map((phase, idx) => (
               <Card key={idx} className="card-hover bg-white text-center">
                 <CardContent className="p-8 space-y-4">
                   <div className="w-16 h-16 rounded-full bg-linear-to-br from-primary to-secondary flex items-center justify-center mx-auto">
-                    <span className="text-white text-xl font-bold">{phase.step}</span>
+                    <span className="text-white text-xl font-bold">
+                      {phase.step}
+                    </span>
                   </div>
-                  <h3 className="text-xl font-bold text-foreground">{phase.title}</h3>
+                  <h3 className="text-xl font-bold text-foreground">
+                    {phase.title}
+                  </h3>
                   <p className="text-muted-foreground">{phase.description}</p>
                 </CardContent>
               </Card>
@@ -187,58 +214,8 @@ const Services: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Newsletter Section */}
-      <section className="section-padding bg-background">
-        <div className="container-custom">
-          <Card className="card-hover bg-linear-to-r from-primary to-secondary text-white">
-            <CardContent className="p-12 text-center space-y-6">
-              <h2 className="text-3xl md:text-4xl font-bold">Stay Updated</h2>
-              <p className="text-xl text-white/90 max-w-2xl mx-auto">
-                Subscribe to our newsletter for the latest insights, tips, and updates from the world of technology.
-              </p>
-              <div className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/70"
-                />
-                <Button
-                  variant="outline"
-                  className="bg-white text-primary hover:bg-white/90"
-                  onClick={handleSubscribe}
-                >
-                  Subscribe
-                </Button>
-              </div>
-              {subscriptionStatus !== 'idle' && (
-                <p className={`mt-4 font-medium ${subscriptionStatus === 'success' ? 'text-green-500' : 'text-red-500'}`}>
-                  {subscriptionMessage}
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="section-padding bg-muted">
-        <div className="container-custom text-center space-y-8">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground">Ready to Get Started?</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Let's discuss your project and see how we can help bring your vision to life.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="btn-gradient" onClick={() => setQuoteOpen(true)}>
-              Start Your Project <ArrowRight className="ml-2" size={20} />
-            </Button>
-          </div>
-        </div>
-      </section>
+      {/* client component separated */}
+      <ServicesClient />
     </div>
   );
-};
-
-export default Services;
+}

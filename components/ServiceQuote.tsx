@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Send, X, CheckCircle2 } from "lucide-react";
@@ -109,11 +108,14 @@ const ServiceQuote: React.FC<ServiceQuoteProps> = ({
     setErrorMsg("");
 
     try {
-      const response = await fetch("https://app.techtrendo.com/api/app/quotes/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, recaptcha_token: captchaValue }),
-      });
+      const response = await fetch(
+        "https://app.techtrendo.com/api/app/quotes/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...formData, recaptcha_token: captchaValue }),
+        }
+      );
 
       const data = await response.json();
 
@@ -130,7 +132,7 @@ const ServiceQuote: React.FC<ServiceQuoteProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className={`fixed inset-0 z-50 flex items-center justify-center`}>
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}

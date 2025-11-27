@@ -22,15 +22,9 @@ export const metadata: Metadata = {
     "Tech Trendo,Best IT Company Nepal, IT Company Nepal,IT Company Eastern Nepal, Web Development, Mobile App Development, Software Development, Digital Marketing, SEO Services, Tech Company Itahari, tech trend, tech in trend, web, app, software, App Development in Itahari, Software Company in Itahari,Software Company in Dharan,Software Company in Biratnagar,Software Company in Jhapa,Software Company in Morang,Software Company in Sunsari",
   ],
   twitter: {
-    title: "Tech Trendo | Best IT Company in Eastern Nepal",
-    description:
-      "Tech Trendo is Eastern Nepal’s leading IT company providing software, app, web development and digital marketing solutions that drive real business growth.",
     images: ["https://techtrendo.com/preview.png"],
   },
   openGraph: {
-    title: "Tech Trendo | Best IT Company in Eastern Nepal",
-    description:
-      "Tech Trendo is Eastern Nepal’s leading IT company providing software, app, web development and digital marketing solutions that drive real business growth.",
     url: "https://techtrendo.com",
     siteName: "Tech Trendo",
     images: ["https://techtrendo.com/preview.png"],

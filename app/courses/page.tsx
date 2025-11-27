@@ -1,44 +1,55 @@
-'use client';
-
 import React from "react";
-// import { useNavigate } from "react-router-dom";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ArrowRight, Clock, Users, Award, BookOpen } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
+import { Metadata } from "next";
+export const metadata: Metadata = {
+  title:
+    "Tech Trendo Courses | Advanced Course Management System & eLearning Solutions",
+  description:
+    "Explore Tech Trendo’s Courses — featuring a powerful Course Management System (CMS) to manage, track, and deliver online courses efficiently. Designed for educational institutions, trainers, and learners in Nepal, Itahari, and globally.",
+  keywords:
+    "course management system Nepal, online courses Itahari, eLearning solutions Nepal, CMS software for schools, Tech Trendo courses, digital education platform, learning management system Nepal, online training software, educational software Nepal, remote learning solutions",
+  alternates: {
+    canonical: "https://techtrendo.com",
+  },
+  openGraph: {
+    images: ["https://techtrendo.com/preview.png"],
+  },
+  twitter: {
+    images: ["https://techtrendo.com/preview.png"],
+  },
+};
 const Courses: React.FC = () => {
-   const router = useRouter();
-  const navigate = (path: string) => {
-    router.push(path);
-  };
-
   const features = [
     {
       icon: Users,
       title: "Expert Instructors",
-      description: "Learn from industry professionals with years of real-world experience."
+      description:
+        "Learn from industry professionals with years of real-world experience.",
     },
     {
       icon: Clock,
       title: "Flexible Schedule",
-      description: "Weekend and evening classes to fit your busy lifestyle."
+      description: "Weekend and evening classes to fit your busy lifestyle.",
     },
     {
       icon: Award,
       title: "Certification",
-      description: "Receive industry-recognized certificates upon course completion."
+      description:
+        "Receive industry-recognized certificates upon course completion.",
     },
     {
       icon: BookOpen,
       title: "Practical Projects",
-      description: "Work on real projects to build your portfolio and gain experience."
-    }
+      description:
+        "Work on real projects to build your portfolio and gain experience.",
+    },
   ];
 
   return (
     <div className="flex flex-col">
-
       {/* Hero Section */}
       <section className="section-padding bg-linear-to-br from-primary via-secondary to-accent text-white">
         <div className="container-custom text-center space-y-6">
@@ -65,7 +76,9 @@ const Courses: React.FC = () => {
                   <div className="w-16 h-16 rounded-full bg-linear-to-br from-primary to-secondary flex items-center justify-center mx-auto">
                     <feature.icon className="text-white" size={32} />
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground">{feature.title}</h3>
+                  <h3 className="text-xl font-semibold text-foreground">
+                    {feature.title}
+                  </h3>
                   <p className="text-muted-foreground">{feature.description}</p>
                 </CardContent>
               </Card>
@@ -82,7 +95,8 @@ const Courses: React.FC = () => {
               Available <span className="gradient-text">Courses</span>
             </h2>
             <p className="text-xl text-muted-foreground">
-              Choose from our comprehensive range of IT courses designed for all skill levels
+              Choose from our comprehensive range of IT courses designed for all
+              skill levels
             </p>
           </div>
 
@@ -96,15 +110,17 @@ const Courses: React.FC = () => {
                   Courses Coming Soon
                 </h3>
                 <p className="text-muted-foreground text-lg text-center">
-                  We are preparing amazing courses for you! Stay tuned and check back soon.
+                  We are preparing amazing courses for you! Stay tuned and check
+                  back soon.
                 </p>
-                <Button
-                  variant="outline"
-                  className="mt-4 border-primary text-primary hover:bg-primary/10"
-                  onClick={() => navigate("/contact")}
-                >
-                  Contact Us
-                </Button>
+                <Link href={"/contact"}>
+                  <Button
+                    variant="outline"
+                    className="mt-4 border-primary text-primary hover:bg-primary/10"
+                  >
+                    Contact Us
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </div>
@@ -117,11 +133,14 @@ const Courses: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-6">
               <h2 className="text-4xl font-bold text-foreground">
-                Our Course <span className="gradient-text">Management Product</span>
+                Our Course{" "}
+                <span className="gradient-text">Management Product</span>
               </h2>
               <p className="text-muted-foreground leading-relaxed text-lg">
-                We've developed a comprehensive course management system that helps educational institutions 
-                organize courses, manage subjects, create timetables, plan curriculum, and conduct examinations efficiently.
+                We've developed a comprehensive course management system that
+                helps educational institutions organize courses, manage
+                subjects, create timetables, plan curriculum, and conduct
+                examinations efficiently.
               </p>
               <div className="space-y-4">
                 {[
@@ -130,7 +149,7 @@ const Courses: React.FC = () => {
                   "Automated Timetable Generation",
                   "Curriculum Planning Tools",
                   "Exam Management System",
-                  "Student Progress Monitoring"
+                  "Student Progress Monitoring",
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center space-x-3">
                     <div className="w-6 h-6 rounded-full bg-linear-to-br from-primary to-secondary flex items-center justify-center">
@@ -140,22 +159,25 @@ const Courses: React.FC = () => {
                   </div>
                 ))}
               </div>
-              <Button  onClick={() => navigate("/contact")} size="lg" className="btn-gradient">
-                
-                Request Demo
-                <ArrowRight className="ml-2" size={20} />
-              </Button>
+              <Link href={"/contact"}>
+                <Button size="lg" className="btn-gradient">
+                  Request Demo
+                  <ArrowRight className="ml-2" size={20} />
+                </Button>
+              </Link>
             </div>
             <div className="grid grid-cols-2 gap-6">
               {[
                 { title: "Institutions", value: "50+" },
                 { title: "Students", value: "5000+" },
                 { title: "Courses", value: "200+" },
-                { title: "Success Rate", value: "95%" }
+                { title: "Success Rate", value: "95%" },
               ].map((stat, index) => (
                 <Card key={index} className="card-hover text-center">
                   <CardContent className="p-6 space-y-2">
-                    <div className="text-3xl font-bold gradient-text">{stat.value}</div>
+                    <div className="text-3xl font-bold gradient-text">
+                      {stat.value}
+                    </div>
                     <div className="text-muted-foreground">{stat.title}</div>
                   </CardContent>
                 </Card>
@@ -172,27 +194,27 @@ const Courses: React.FC = () => {
             Ready to Start Learning?
           </h2>
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Join thousands of students who have advanced their careers through our courses.
+            Join thousands of students who have advanced their careers through
+            our courses.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-           <Button
-  size="lg"
-  className="group bg-white text-blue-600 shadow-lg flex items-center justify-center transition-all duration-300 hover:bg-blue-600 hover:text-white hover:shadow-xl"
-  onClick={() => navigate("/contact")}
->
-  <span className="font-semibold transition-colors duration-300 group-hover:text-white">
-    Contact Administration
-  </span>
-  <ArrowRight
-    className="ml-2 transition-colors duration-300 group-hover:text-white"
-    size={20}
-  />
-</Button>
-            
+            <Link href={"/contact"}>
+              <Button
+                size="lg"
+                className="group bg-white text-blue-600 shadow-lg flex items-center justify-center transition-all duration-300 hover:bg-blue-600 hover:text-white hover:shadow-xl"
+              >
+                <span className="font-semibold transition-colors duration-300 group-hover:text-white">
+                  Contact Administration
+                </span>
+                <ArrowRight
+                  className="ml-2 transition-colors duration-300 group-hover:text-white"
+                  size={20}
+                />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
-
     </div>
   );
 };
