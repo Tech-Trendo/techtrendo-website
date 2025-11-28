@@ -219,7 +219,7 @@ export default async function Home() {
             <Link href={"/contact"} prefetch={true}>
               <Button
                 size="lg"
-                className="btn-gradient text-lg px-8 py-6 text-white"
+                className="btn-gradient text-lg px-8! py-6 text-white"
               >
                 Contact Now
                 <ArrowRight className="ml-2" size={20} />
