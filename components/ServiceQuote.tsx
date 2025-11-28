@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 interface Option {
   id: number;
@@ -36,6 +38,11 @@ const ServiceQuote: React.FC<ServiceQuoteProps> = ({
   preselectedProduct,
   onClose,
 }) => {
+  const searchParams = useSearchParams();
+  const serviceId = searchParams.get("serviceId"); // const [serviceId, setServiceId] = useState<string | null>(null);
+  if (serviceId !== null) {
+    preselectedService = parseInt(serviceId);
+  }
   const [services, setServices] = useState<Option[]>([]);
   const [products, setProducts] = useState<Option[]>([]);
   const [formData, setFormData] = useState<QuoteFormData>({
@@ -132,7 +139,7 @@ const ServiceQuote: React.FC<ServiceQuoteProps> = ({
   };
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center`}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
@@ -142,9 +149,17 @@ const ServiceQuote: React.FC<ServiceQuoteProps> = ({
         <CardContent className="p-6 space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-2xl font-bold">Request a Quote</h3>
-            <Button onClick={onClose}>
-              <X size={24} />
-            </Button>
+            {serviceId ? (
+              <Link href="/services">
+                <Button>
+                  <X size={24} />
+                </Button>
+              </Link>
+            ) : (
+              <Button onClick={onClose}>
+                <X size={24} />
+              </Button>
+            )}
           </div>
 
           {successMsg ? (
@@ -153,12 +168,20 @@ const ServiceQuote: React.FC<ServiceQuoteProps> = ({
               <p className="text-green-600 font-semibold text-lg">
                 {successMsg}
               </p>
-              <Button
-                onClick={onClose}
-                className="bg-white text-primary border border-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200"
-              >
-                Close
-              </Button>
+              {serviceId ? (
+                <Link href="/services">
+                  <Button className="bg-white text-primary border border-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200">
+                    Close
+                  </Button>
+                </Link>
+              ) : (
+                <Button
+                  onClick={onClose}
+                  className="bg-white text-primary border border-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200"
+                >
+                  Close
+                </Button>
+              )}
             </div>
           ) : (
             <>

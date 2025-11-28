@@ -23,27 +23,35 @@ interface Product {
   features: ProductFeature[];
 }
 export async function generateMetadata(): Promise<Metadata> {
-  const res = await fetch(`https://app.techtrendo.com/api/app/pages/products`);
-  const data: seoData = await res.json();
-  if (!data) {
-    return {};
-  }
+  let data: seoData | null = null;
+  try {
+    const res = await fetch(
+      "https://app.techtrendo.com/api/app/pages/products",
+      {
+        next: { revalidate: 3600 },
+      }
+    );
+    if (res.ok) {
+      data = await res.json();
+    }
+  } catch {}
   return {
-    title: data.meta_title,
-    description: data.meta_description,
-    keywords: data.meta_keywords,
+    title: data?.meta_title || "Products - TechTrendo",
+    description: data?.meta_description,
+    keywords: data?.meta_keywords,
     alternates: {
-      canonical: data.canonical_url,
+      canonical: data?.canonical_url,
     },
     openGraph: {
-      title: data.og_title || "",
-      description: data.og_description || "",
-      url: data.canonical_url || "",
+      title: data?.og_title || "",
+      description: data?.og_description || "",
+      url: data?.canonical_url || "",
     },
+
     twitter: {
       card: "summary_large_image",
-      title: data.twitter_title || data.title,
-      description: data.twitter_description || "",
+      title: data?.twitter_title || data?.title,
+      description: data?.twitter_description || "",
     },
   };
 }

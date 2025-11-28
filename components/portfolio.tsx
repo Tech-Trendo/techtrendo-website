@@ -1,7 +1,5 @@
 "use client";
-
 import { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
@@ -19,10 +17,10 @@ interface Project {
 }
 
 const Portfolio = () => {
-   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"Mobile App" | "Software" | "Website">(
-    "Mobile App"
-  );
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<
+    "Mobile App" | "Software" | "Website"
+  >("Mobile App");
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,7 +28,12 @@ const Portfolio = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await fetch("https://app.techtrendo.com/api/app/portfolio/");
+        const res = await fetch(
+          "https://app.techtrendo.com/api/app/portfolio/"
+        );
+        if (!res.ok) {
+          setProjects([]);
+        }
         const data: Project[] = await res.json();
         setProjects(data);
       } catch (err) {
@@ -45,7 +48,8 @@ const Portfolio = () => {
 
   const renderProjects = (projects: Project[]) => {
     if (loading) return <p className="text-center">Loading...</p>;
-    if (projects.length === 0) return <p className="text-center">No projects found.</p>;
+    if (projects.length === 0)
+      return <p className="text-center">No projects found.</p>;
 
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -68,7 +72,9 @@ const Portfolio = () => {
               </div>
 
               <CardContent className="p-6 text-center space-y-3">
-                <h3 className="text-xl font-semibold text-foreground">{project.title}</h3>
+                <h3 className="text-xl font-semibold text-foreground">
+                  {project.title}
+                </h3>
                 <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">
                   {project.description}
                 </p>
@@ -111,7 +117,8 @@ const Portfolio = () => {
             Our <span className="gradient-text">Portfolio</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Explore our diverse projects across mobile apps, software, and web development.
+            Explore our diverse projects across mobile apps, software, and web
+            development.
           </p>
         </div>
 
@@ -171,8 +178,8 @@ const Portfolio = () => {
                   transition={{ delay: 0.4, duration: 0.6 }}
                   className="text-xl max-w-2xl mx-auto opacity-90"
                 >
-                  Let's bring your ideas to life. Connect with us and let's build
-                  something amazing together.
+                  Let's bring your ideas to life. Connect with us and let's
+                  build something amazing together.
                 </motion.p>
                 <motion.div
                   initial={{ y: 40, opacity: 0 }}
@@ -180,19 +187,19 @@ const Portfolio = () => {
                   transition={{ delay: 0.6, duration: 0.6 }}
                   className="flex flex-col sm:flex-row gap-4 justify-center pt-4"
                 >
-                <Button
-  // size="lg"
-  className="group bg-white text-blue-600 shadow-lg flex items-center justify-center transition-all duration-300 hover:bg-blue-600 hover:shadow-xl"
-  onClick={() => router.push("/contact")}
->
-  <span className="font-semibold transition-colors duration-300 group-hover:text-white">
-    Contact Us
-  </span>
-  <ArrowRight
-    size={20}
-    className="ml-2 transition-colors duration-300 group-hover:text-white"
-  />
-</Button>
+                  <Button
+                    // size="lg"
+                    className="group bg-white text-blue-600 shadow-lg flex items-center justify-center transition-all duration-300 hover:bg-blue-600 hover:shadow-xl"
+                    onClick={() => router.push("/contact")}
+                  >
+                    <span className="font-semibold transition-colors duration-300 group-hover:text-white">
+                      Contact Us
+                    </span>
+                    <ArrowRight
+                      size={20}
+                      className="ml-2 transition-colors duration-300 group-hover:text-white"
+                    />
+                  </Button>
                 </motion.div>
               </CardContent>
             </Card>

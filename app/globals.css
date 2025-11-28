@@ -55,7 +55,7 @@
     --primary-foreground: 0 0% 100%;
     --primary-light: 217 91% 70%;
     --primary-dark: 217 91% 50%;
-    
+
     /* Secondary - Modern Purple */
     --secondary: 259 94% 51%;
     --secondary-foreground: 0 0% 100%;
@@ -88,22 +88,49 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
 
     /* Design System Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(259 94% 51%));
-    --gradient-secondary: linear-gradient(135deg, hsl(259 94% 51%), hsl(178 84% 35%));
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(220 13% 96%));
-    --gradient-hero: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(259 94% 51%) 50%, hsl(178 84% 35%) 100%);
-    --gradient-bg: linear-gradient(135deg, hsl(217 91% 60% / 0.05), hsl(259 94% 51% / 0.05));
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(217 91% 60%),
+      hsl(259 94% 51%)
+    );
+    --gradient-secondary: linear-gradient(
+      135deg,
+      hsl(259 94% 51%),
+      hsl(178 84% 35%)
+    );
+    --gradient-subtle: linear-gradient(
+      180deg,
+      hsl(0 0% 100%),
+      hsl(220 13% 96%)
+    );
+    --gradient-hero: linear-gradient(
+      135deg,
+      hsl(217 91% 60%) 0%,
+      hsl(259 94% 51%) 50%,
+      hsl(178 84% 35%) 100%
+    );
+    --gradient-bg: linear-gradient(
+      135deg,
+      hsl(217 91% 60% / 0.05),
+      hsl(259 94% 51% / 0.05)
+    );
 
     /* Shadows */
-    --shadow-subtle: 0 1px 3px 0 hsl(217 91% 60% / 0.1), 0 1px 2px 0 hsl(217 91% 60% / 0.06);
-    --shadow-medium: 0 4px 6px -1px hsl(217 91% 60% / 0.1), 0 2px 4px -1px hsl(217 91% 60% / 0.06);
-    --shadow-large: 0 10px 15px -3px hsl(217 91% 60% / 0.1), 0 4px 6px -2px hsl(217 91% 60% / 0.05);
+    --shadow-subtle: 0 1px 3px 0 hsl(217 91% 60% / 0.1),
+      0 1px 2px 0 hsl(217 91% 60% / 0.06);
+    --shadow-medium: 0 4px 6px -1px hsl(217 91% 60% / 0.1),
+      0 2px 4px -1px hsl(217 91% 60% / 0.06);
+    --shadow-large: 0 10px 15px -3px hsl(217 91% 60% / 0.1),
+      0 4px 6px -2px hsl(217 91% 60% / 0.05);
     --shadow-glow: 0 0 20px hsl(217 91% 60% / 0.3);
 
     /* 3D Shadow Effects */
-    --shadow-3d: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 20px 40px -10px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-3d-hover: 0 20px 50px -5px rgba(0, 0, 0, 0.15), 0 30px 60px -15px rgba(0, 0, 0, 0.15), 0 8px 12px -4px rgba(0, 0, 0, 0.08);
-    --shadow-section: 0 8px 25px -8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    --shadow-3d: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+      0 20px 40px -10px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-3d-hover: 0 20px 50px -5px rgba(0, 0, 0, 0.15),
+      0 30px 60px -15px rgba(0, 0, 0, 0.15), 0 8px 12px -4px rgba(0, 0, 0, 0.08);
+    --shadow-section: 0 8px 25px -8px rgba(0, 0, 0, 0.08),
+      0 0 0 1px rgba(255, 255, 255, 0.05);
 
     /* Spacing & Sizing */
     --radius: 0.75rem;
@@ -160,9 +187,12 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
 
     /* 3D Shadow Effects - Dark Mode */
-    --shadow-3d: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 20px 40px -10px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
-    --shadow-3d-hover: 0 20px 50px -5px rgba(0, 0, 0, 0.4), 0 30px 60px -15px rgba(0, 0, 0, 0.3), 0 8px 12px -4px rgba(0, 0, 0, 0.15);
-    --shadow-section: 0 8px 25px -8px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    --shadow-3d: 0 10px 25px -5px rgba(0, 0, 0, 0.3),
+      0 20px 40px -10px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+    --shadow-3d-hover: 0 20px 50px -5px rgba(0, 0, 0, 0.4),
+      0 30px 60px -15px rgba(0, 0, 0, 0.3), 0 8px 12px -4px rgba(0, 0, 0, 0.15);
+    --shadow-section: 0 8px 25px -8px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
   }
 
   body {
@@ -235,8 +265,6 @@
   .container-custom {
     @apply container max-w-[95%] mx-auto px-4 md:px-6 lg:px-8;
   }
-/* mx-auto px-4 */
-/* max-w-[95%] */
   /* Text Styles */
   .gradient-text {
     background: var(--gradient-primary);
@@ -294,7 +322,8 @@
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -303,9 +332,15 @@
 }
 
 @keyframes floating {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 /* React Vite Default Styles */

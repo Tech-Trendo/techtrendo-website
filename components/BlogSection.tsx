@@ -52,6 +52,9 @@ const BlogSection: React.FC = () => {
     const fetchBlogs = async () => {
       try {
         const res = await fetch("https://app.techtrendo.com/api/app/blogs/");
+        if (!res.ok) {
+          setBlogs([]);
+        }
         const data: BlogPost[] = await res.json();
         // Filter only featured posts
         const featured = data.filter((post) => post.is_featured);
