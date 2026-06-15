@@ -142,7 +142,7 @@ const BlogSection: React.FC = () => {
                       By Tech Trendo
                     </span>
                     <Link
-                      href={`/blog/${post.id}`}
+                      href={`/blog/${post.slug}`}
                       className="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-all duration-300 hover:translate-x-1"
                     >
                       Read More

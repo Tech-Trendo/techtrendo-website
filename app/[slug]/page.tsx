@@ -2,8 +2,6 @@
 import axios from "axios";
 import NotFound from "../not-found";
 import { useEffect, useState } from "react";
-// import { Helmet, HelmetProvider } from "react-helmet-async";
-// // import TeamMemberClient from "./TeamMemberClient";
 interface Member {
   id: number;
   name: string;
@@ -24,65 +22,6 @@ interface Member {
   twitter_image: string | null;
   canonical_url: string | null;
 }
-// const fetchMember = cache(async (slug: string) => {
-//   try {
-//     const res = await axios.get(
-//       `https://app.techtrendo.com/api/app/members/${slug}/`
-//     );
-//     return res.data as Member;
-//   } catch {
-//     return null;
-//   }
-// });
-// export async function generateMetadata({
-//   params,
-// }: {
-//   params: { slug: string };
-// }): Promise<Metadata> {
-//   try {
-//     const member = await fetchMember(params.slug);
-//     if (!member) {
-//       return {
-//         title: "Member Not Found",
-//       };
-//     }
-//     return {
-//       title: member.meta_title || member.name,
-//       description: member.meta_description || undefined,
-//       keywords: member.meta_keywords || undefined,
-//       alternates: {
-//         canonical: member.canonical_url || undefined,
-//       },
-//       openGraph: {
-//         title: member.og_title || member.name,
-//         description: member.og_description || undefined,
-//         images: member.og_image ? [member.og_image] : undefined,
-//       },
-//       twitter: {
-//         card: "summary_large_image",
-//         title: member.twitter_title || member.name,
-//         description: member.twitter_description || undefined,
-//         images: member.twitter_image ? [member.twitter_image] : undefined,
-//       },
-//     };
-//   } catch (error) {
-//     return {
-//       title: "Member Not Found",
-//     };
-//   }
-// }
-
-// export default async function TeamPage({
-//   params,
-// }: {
-//   params: { slug: string };
-// }) {
-//   const member = await fetchMember(params.slug);
-
-//   if (!member) return <NotFound />;
-
-//   return <Team member={member} />;
-// }
 
 // import { cache } from "react";
 import Link from "next/link";
@@ -90,10 +29,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Mail, Github, Linkedin, Twitter } from "lucide-react";
 import { useParams } from "next/navigation";
-// import NotFound from "../app/not-found";
-// interface TeamMemberClientProps {
-//   member: Member;
-// }
+
 const Team = () => {
   const params = useParams();
   const slug = params.slug;

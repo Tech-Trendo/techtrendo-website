@@ -62,7 +62,7 @@ async function fetchPartnerLogos(): Promise<PartnerLogo[]> {
       "https://app.techtrendo.com/api/app/company-logos/",
       {
         next: { revalidate: 86400 },
-      }
+      },
     );
     if (!res.ok) return [];
     return (await res.json()) ?? [];
@@ -76,7 +76,7 @@ async function fetchGallery(): Promise<Gallery[]> {
       "https://app.techtrendo.com/api/app/gallery-items/",
       {
         next: { revalidate: 3600 },
-      }
+      },
     );
     if (!res.ok) {
       return [];
@@ -486,7 +486,7 @@ export default async function Home() {
                   key={testimonial.id}
                   className="card-3d bg-white border-0"
                 >
-                  <CardContent className="p-8 space-y-4">
+                  <CardContent className="p-8 flex flex-col justify-between h-full space-y-6">
                     <p className="text-foreground leading-relaxed italic">
                       "{testimonial.review}"
                     </p>
