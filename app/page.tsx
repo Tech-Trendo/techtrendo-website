@@ -60,9 +60,6 @@ async function fetchPartnerLogos(): Promise<PartnerLogo[]> {
   try {
     const res = await fetch(
       "https://app.techtrendo.com/api/app/company-logos/",
-      {
-        next: { revalidate: 86400 },
-      },
     );
     if (!res.ok) return [];
     return (await res.json()) ?? [];

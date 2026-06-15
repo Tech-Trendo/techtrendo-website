@@ -46,11 +46,13 @@ const Verify = () => {
 
     try {
       const res = await fetch(
-        `https://app.techtrendo.com/api/verify/certificates/verify/code/${certificateCode}`
+        `https://app.techtrendo.com/api/verify/certificates/verify/code/${certificateCode}`,
       );
 
       if (!res.ok) {
-        throw new Error("Certificate not found. Please check the code and try again.");
+        throw new Error(
+          "Certificate not found. Please check the code and try again.",
+        );
       }
 
       const data: Certificate = await res.json();
@@ -70,15 +72,18 @@ const Verify = () => {
     }
   };
 
-
   const getCertificateTypeText = (cert: Certificate) => {
     switch (cert.type) {
       case "course":
         return cert.designation ? `${cert.designation} course` : "course";
       case "internship":
-        return cert.designation ? `internship as ${cert.designation}` : "internship";
+        return cert.designation
+          ? `internship as ${cert.designation}`
+          : "internship";
       case "employment":
-        return cert.designation ? `employment as ${cert.designation}` : "employment";
+        return cert.designation
+          ? `employment as ${cert.designation}`
+          : "employment";
       default:
         return cert.type;
     }
@@ -94,14 +99,15 @@ const Verify = () => {
               Certificate Verification
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Verify the authenticity of Tech Trendo certificates by entering the certificate code below.
+              Verify the authenticity of Tech Trendo certificates by entering
+              the certificate code below.
             </p>
           </div>
 
           {/* Search Section */}
-          <Card className="mb-8">
+          <Card className="mb-8 p-6">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-3 ">
                 <Search className="w-5 h-5" />
                 Search Certificate
               </CardTitle>
@@ -112,7 +118,9 @@ const Verify = () => {
                   <Input
                     placeholder="Enter certificate code (e.g., TTMC001)"
                     value={certificateCode}
-                    onChange={(e) => setCertificateCode(e.target.value.toUpperCase())}
+                    onChange={(e) =>
+                      setCertificateCode(e.target.value.toUpperCase())
+                    }
                     onKeyPress={handleKeyPress}
                     className="text-lg"
                   />
@@ -120,11 +128,7 @@ const Verify = () => {
                     <p className="text-destructive text-sm mt-2">{error}</p>
                   )}
                 </div>
-                <Button
-                  onClick={handleSearch}
-                  disabled={isLoading}
-                  size="lg"
-                >
+                <Button onClick={handleSearch} disabled={isLoading} size="lg">
                   {isLoading ? "Searching..." : "Verify"}
                 </Button>
               </div>
@@ -160,7 +164,7 @@ const Verify = () => {
                     <h3 className="text-3xl font-bold text-foreground my-4">
                       {certificate.holder_name}
                     </h3>
-                 
+
                     <p className="text-lg text-muted-foreground">
                       for successfully completing the
                     </p>
@@ -171,38 +175,51 @@ const Verify = () => {
 
                   <div className="grid md:grid-cols-2 gap-6 mb-8 text-center md:text-left">
                     <div className="space-y-3">
-                      <p className="font-semibold text-muted-foreground">Certificate No:</p>
+                      <p className="font-semibold text-muted-foreground">
+                        Certificate No:
+                      </p>
                       <p className="text-lg">{certificate.certificate_no}</p>
 
-                      <p className="font-semibold text-muted-foreground">Start Date:</p>
+                      <p className="font-semibold text-muted-foreground">
+                        Start Date:
+                      </p>
                       <p className="text-lg">{certificate.start_date}</p>
 
-                      <p className="font-semibold text-muted-foreground">End Date:</p>
+                      <p className="font-semibold text-muted-foreground">
+                        End Date:
+                      </p>
                       <p className="text-lg">{certificate.end_date}</p>
                     </div>
                     <div className="space-y-3">
-                      <p className="font-semibold text-muted-foreground">Issued Date:</p>
+                      <p className="font-semibold text-muted-foreground">
+                        Issued Date:
+                      </p>
                       <p className="text-lg">{certificate.issued_date}</p>
 
-                      <p className="font-semibold text-muted-foreground">Status:</p>
-                      <p className="text-lg">{certificate.status.toUpperCase()}</p>
+                      <p className="font-semibold text-muted-foreground">
+                        Status:
+                      </p>
+                      <p className="text-lg">
+                        {certificate.status.toUpperCase()}
+                      </p>
 
-                      <p className="font-semibold text-muted-foreground">Issuer:</p>
+                      <p className="font-semibold text-muted-foreground">
+                        Issuer:
+                      </p>
                       <p className="text-lg">{certificate.issuer_company}</p>
                     </div>
                   </div>
                 </div>
               </Card>
-
-             
-          
             </div>
           )}
 
           {/* Instructions */}
-          <Card className="mt-8 bg-muted/30">
+          <Card className="mt-8 bg-muted/30 p-6">
             <CardContent className="pt-6">
-              <h3 className="font-semibold text-foreground mb-4">How to Verify:</h3>
+              <h3 className="font-semibold text-foreground mb-4">
+                How to Verify:
+              </h3>
               <ul className="space-y-2 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <span className="text-primary">•</span>
@@ -210,11 +227,13 @@ const Verify = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary">•</span>
-                  The code is case-insensitive and will be automatically formatted
+                  The code is case-insensitive and will be automatically
+                  formatted
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary">•</span>
-                  If the certificate is valid, all details will be displayed above
+                  If the certificate is valid, all details will be displayed
+                  above
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary">•</span>
