@@ -162,47 +162,52 @@ const Portfolio = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <Card className="card-3d border-0 max-w-4xl mx-auto bg-linear-to-r from-blue-500 via-indigo-500 to-purple-600 text-white">
-              <CardContent className="p-12 space-y-6">
-                <motion.h2
-                  initial={{ y: 30, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2, duration: 0.6 }}
-                  className="text-3xl md:text-4xl font-bold"
-                >
-                  Want to Start Your Project?
-                </motion.h2>
-                <motion.p
-                  initial={{ y: 30, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.4, duration: 0.6 }}
-                  className="text-xl max-w-2xl mx-auto opacity-90"
-                >
-                  Let's bring your ideas to life. Connect with us and let's
-                  build something amazing together.
-                </motion.p>
-                <motion.div
-                  initial={{ y: 40, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.6, duration: 0.6 }}
-                  className="flex flex-col sm:flex-row gap-4 justify-center pt-4"
-                >
-                  <Button
-                    // size="lg"
-                    className="group bg-white text-blue-600 shadow-lg flex items-center justify-center transition-all duration-300 hover:bg-blue-600 hover:shadow-xl"
-                    onClick={() => router.push("/contact")}
+            <motion.div
+              whileHover={{ scale: 1.02, y: -5 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <Card className="card-3d border-0 max-w-4xl mx-auto bg-linear-to-r from-blue-500 via-indigo-500 to-purple-600 text-white transition-all duration-300 hover:shadow-[0_20px_50px_rgba(99,102,241,0.4)]">
+                <CardContent className="p-12 space-y-6">
+                  <motion.h2
+                    initial={{ y: 30, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2, duration: 0.6 }}
+                    className="text-3xl md:text-4xl font-bold"
                   >
-                    <span className="font-semibold transition-colors duration-300 group-hover:text-white">
-                      Contact Us
-                    </span>
-                    <ArrowRight
-                      size={20}
-                      className="ml-2 transition-colors duration-300 group-hover:text-white"
-                    />
-                  </Button>
-                </motion.div>
-              </CardContent>
-            </Card>
+                    Want to Start Your Project?
+                  </motion.h2>
+                  <motion.p
+                    initial={{ y: 30, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.4, duration: 0.6 }}
+                    className="text-xl max-w-2xl mx-auto opacity-90"
+                  >
+                    Let's bring your ideas to life. Connect with us and let's
+                    build something amazing together.
+                  </motion.p>
+                  <motion.div
+                    initial={{ y: 40, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.6, duration: 0.6 }}
+                    className="flex flex-col sm:flex-row gap-4 justify-center pt-4"
+                  >
+                    <Button
+                      // size="lg"
+                      className="group bg-white text-blue-600 shadow-lg flex items-center justify-center transition-all duration-300 hover:bg-blue-600 hover:shadow-xl"
+                      onClick={() => router.push("/contact")}
+                    >
+                      <span className="font-semibold transition-colors duration-300 group-hover:text-white">
+                        Contact Us
+                      </span>
+                      <ArrowRight
+                        size={20}
+                        className="ml-2 transition-colors duration-300 group-hover:text-white"
+                      />
+                    </Button>
+                  </motion.div>
+                </CardContent>
+              </Card>
+            </motion.div>
           </motion.div>
         </div>
       </section>

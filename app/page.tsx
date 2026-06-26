@@ -1,20 +1,21 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  Users,
-  Zap,
-  Target,
-  Shield,
-  Lightbulb,
-  DollarSign,
+  ShieldCheck,
+  Cpu,
+  BriefcaseBusiness,
+  Workflow,
+  Sparkles,
+  BadgeDollarSign,
   Building2,
   Globe,
   Palette,
   Smartphone,
-  Code,
-  Monitor,
-  TrendingUp,
+  MonitorCog,
+  Megaphone,
+  FileCode2,
 } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import AnimatedTechBackground from "@/components/AnimatedTechBackground";
@@ -24,6 +25,34 @@ import CallToAction from "@/components/CallToAction";
 import BlogSection from "@/components/BlogSection";
 import WorkMech from "@/components/client/WorkMech";
 import { Metadata } from "next";
+
+interface ServiceFeature {
+  title?: string;
+  description?: string;
+}
+
+interface Service {
+  id: number;
+  slug: string;
+  icon: string;
+  title: string;
+  short_description: string;
+  long_description?: string;
+  features: string[] | ServiceFeature[];
+}
+
+async function fetchServices(): Promise<Service[]> {
+  try {
+    const res = await fetch("https://app.techtrendo.com/api/app/services/", {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    return (await res.json()) ?? [];
+  } catch {
+    return [];
+  }
+}
+
 
 interface Review {
   id: number;
@@ -60,6 +89,7 @@ async function fetchPartnerLogos(): Promise<PartnerLogo[]> {
   try {
     const res = await fetch(
       "https://app.techtrendo.com/api/app/company-logos/",
+      { cache: "no-store" }
     );
     if (!res.ok) return [];
     return (await res.json()) ?? [];
@@ -102,12 +132,13 @@ export const metadata: Metadata = {
   },
 };
 export default async function Home() {
-  const [reviews, partnerLogos, gallery] = await Promise.all([
+  const [reviews, partnerLogos, gallery, services] = await Promise.all([
     fetchReviews(),
     fetchPartnerLogos(),
     fetchGallery(),
+    fetchServices(),
   ]).catch(() => {
-    return [[], [], []] as const;
+    return [[], [], [], []] as const;
   });
   const getInitials = (name: string) => {
     const words = name.split(" ");
@@ -119,116 +150,126 @@ export default async function Home() {
 
   const features = [
     {
-      icon: Shield,
+      icon: ShieldCheck,
       title: "Comprehensive IT Services Suite",
       description:
         "Complete range of IT solutions from web development to digital marketing under one roof.",
     },
     {
-      icon: Zap,
+      icon: Cpu,
       title: "Real-Time and Effective IT Solutions",
       description:
         "Quick response times and efficient solutions that deliver immediate business value.",
     },
     {
-      icon: Users,
+      icon: BriefcaseBusiness,
       title: "Collaborative Partnerships",
       description:
         "We work closely with our clients to understand their needs and deliver customized solutions.",
     },
     {
-      icon: Target,
+      icon: Workflow,
       title: "Holistic IT Approach",
       description:
         "End-to-end solutions that cover all aspects of your digital transformation journey.",
     },
     {
-      icon: Lightbulb,
+      icon: Sparkles,
       title: "Youthful Innovation",
       description:
         "Fresh perspectives and innovative approaches brought by our young, dynamic team.",
     },
     {
-      icon: DollarSign,
+      icon: BadgeDollarSign,
       title: "Cost-Effective Solutions",
       description:
         "High-quality services at competitive prices to maximize your return on investment.",
     },
   ];
 
-  const services = [
+  const fallbackServices = [
     {
-      icon: Palette,
+      id: 1,
+      slug: "graphic-design",
+      icon: "Palette",
       title: "Graphic Design",
-      description:
-        "Creative visual solutions that capture your brand essence and communicate effectively.",
+      short_description: "Creative visual solutions that capture your brand essence and communicate effectively.",
     },
     {
-      icon: Globe,
+      id: 2,
+      slug: "web-design-development",
+      icon: "Globe",
       title: "Web Design & Development",
-      description:
-        "Modern, responsive websites that drive engagement and convert visitors to customers.",
+      short_description: "Modern, responsive websites that drive engagement and convert visitors to customers.",
     },
     {
-      icon: Smartphone,
+      id: 3,
+      slug: "app-design-development",
+      icon: "Smartphone",
       title: "App Design & Development",
-      description:
-        "Native and cross-platform mobile applications with exceptional user experiences.",
+      short_description: "Native and cross-platform mobile applications with exceptional user experiences.",
     },
     {
-      icon: Monitor,
+      id: 4,
+      slug: "ict-media-services",
+      icon: "MonitorCog",
       title: "ICT/Media Services",
-      description:
-        "Comprehensive ICT solutions and media services for educational institutions.",
+      short_description: "Comprehensive ICT solutions and media services for educational institutions.",
     },
     {
-      icon: TrendingUp,
+      id: 5,
+      slug: "digital-marketing",
+      icon: "Megaphone",
       title: "Digital Marketing",
-      description:
-        "Data-driven marketing strategies to grow your online presence and reach.",
+      short_description: "Data-driven marketing strategies to grow your online presence and reach.",
     },
     {
-      icon: Code,
+      id: 6,
+      slug: "software-development",
+      icon: "FileCode2",
       title: "Software Development",
-      description:
-        "Custom software solutions tailored to your specific business requirements.",
+      short_description: "Custom software solutions tailored to your specific business requirements.",
     },
   ];
+
+  const displayServices = (services && services.length > 0 ? services : fallbackServices).slice(0, 6);
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center bg-white text-gray-900 overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center bg-white text-gray-900 overflow-hidden py-12 sm:py-0">
         <AnimatedTechBackground />
-        <div className="container-custom text-center space-y-8 animate-fade-in-up z-10">
-          <h1 className="hero-title text-black">
+        <div className="container-custom text-center space-y-6 sm:space-y-8 animate-fade-in-up z-10 px-4 sm:px-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-black leading-tight">
             Tech Trendo: Best IT Company
             <br />
-            <span className="gradient-text">In Eastern Nepal</span>
+            <span className="gradient-text block mt-1 sm:inline sm:mt-0">
+              In Eastern Nepal
+            </span>
           </h1>
-          <p className="hero-subtitle max-w-3xl mx-auto text-black">
+          <p className="text-xl sm:text-2xl font-medium max-w-3xl mx-auto text-black px-2">
             Your Trusted Technology Partner For Business Growth
           </p>
-          <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto px-2">
             Our aim is to provide real-time and effective IT solutions to
             enhance digital presence and operational efficiency.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href={"/contact"} prefetch={true}>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md mx-auto sm:max-w-none">
+            <Link href="/contact" prefetch={true} className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="btn-gradient text-lg px-8! py-6 text-white"
+                className="btn-gradient text-base sm:text-lg px-8 py-5 sm:py-6 text-white w-full sm:w-auto flex justify-center items-center"
               >
                 Contact Now
                 <ArrowRight className="ml-2" size={20} />
               </Button>
             </Link>
-            <Link href={"/services"} prefetch={true}>
+            <Link href="/services" prefetch={true} className="w-full sm:w-auto">
               <Button
                 size="lg"
                 variant="outline"
-                className="btn-outline-gradient text-lg text-primary px-8 py-6"
+                className="btn-outline-gradient text-base sm:text-lg text-primary px-8 py-5 sm:py-6 w-full sm:w-auto flex justify-center items-center"
               >
-                {/* text-[#4c9aff] */}
                 Our Services
               </Button>
             </Link>
@@ -288,7 +329,7 @@ export default async function Home() {
             <Card className="card-3d border-0 bg-linear-to-br from-[#0d9488]/5 to-[#4c9aff]/5">
               <CardContent className="p-8 text-center space-y-4">
                 <div className="w-16 h-16 rounded-full bg-linear-to-br from-[#0d9488] to-[#4c9aff] flex items-center justify-center mx-auto">
-                  <Users className="text-white" size={32} />
+                  <BriefcaseBusiness className="text-white" size={32} />
                 </div>
                 <h3 className="text-xl font-semibold text-foreground">
                   Our Team
@@ -320,8 +361,8 @@ export default async function Home() {
             {features.map((feature, index) => (
               <Card key={index} className="card-3d border-0 bg-white">
                 <CardContent className="p-8 text-center space-y-4">
-                  <div className="w-16 h-16 rounded-full btn-gradient flex items-center justify-center mx-auto shadow-lg">
-                    <feature.icon className="" size={32} />
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/15 bg-gradient-to-br from-slate-50 to-blue-50 text-primary shadow-[0_12px_30px_rgba(37,99,235,0.12)]">
+                    <feature.icon size={30} strokeWidth={2.2} />
                   </div>
                   <h3 className="text-xl font-semibold text-foreground">
                     {feature.title}
@@ -354,34 +395,38 @@ export default async function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <Card
-                key={index}
-                className="relative overflow-hidden card-3d bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 group"
-              >
-                <div className="absolute -top-2 -right-2 w-8 h-8 btn-gradient rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg">
-                  {index + 1}
-                </div>
-                <CardContent className="p-8 space-y-4 relative z-10">
-                  <div className="w-16 h-16 rounded-xl btn-gradient flex items-center justify-center mb-4 transition-transform duration-500 group-hover:scale-110">
-                    <service.icon className="text-white" size={32} />
+            {displayServices.map((service, index) => {
+              const IconComponent =
+                (LucideIcons as any)[service.icon] || LucideIcons.Code;
+              return (
+                <Card
+                  key={service.id || index}
+                  className="relative overflow-hidden card-3d bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 group"
+                >
+                  <div className="absolute -top-2 -right-2 w-8 h-8 btn-gradient rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg">
+                    {index + 1}
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground">
-                    {service.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {service.description}
-                  </p>
-                  <Link
-                    href="/services" // Replace with the route you want
-                    className="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-all duration-300 hover:translate-x-1 p-0"
-                  >
-                    <span>Learn More</span>
-                    <ArrowRight className="ml-2" size={16} />
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
+                  <CardContent className="p-8 space-y-4 relative z-10">
+                    <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/15 bg-gradient-to-br from-slate-50 to-blue-50 text-primary transition-transform duration-500 group-hover:scale-110 shadow-[0_12px_30px_rgba(37,99,235,0.12)]">
+                      <IconComponent size={30} strokeWidth={2.2} />
+                    </div>
+                    <h3 className="text-xl font-semibold text-foreground">
+                      {service.title}
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      {service.short_description}
+                    </p>
+                    <Link
+                      href={`/services/${service.slug}`}
+                      className="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-all duration-300 hover:translate-x-1 p-0"
+                    >
+                      <span>Learn More</span>
+                      <ArrowRight className="ml-2" size={16} />
+                    </Link>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
 
           <div className="text-center mt-12">

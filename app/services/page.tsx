@@ -143,16 +143,16 @@ export default async function Services() {
                     </div>
 
                     {/* Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <Link href={`/quote?serviceId=${service.id}`}>
-                        <Button className="btn-gradient flex-1">
+                    <div className="flex flex-col sm:flex-row gap-3 w-full">
+                      <Link href={`/quote?serviceId=${service.id}`} className="flex-1 w-full">
+                        <Button className="btn-gradient w-full">
                           Get Quote <ArrowRight className="ml-2" size={16} />
                         </Button>
                       </Link>
-                      <Link href={`/services/${service.slug}`}>
+                      <Link href={`/services/${service.slug}`} className="flex-1 w-full">
                         <Button
                           variant="outline"
-                          className="btn-outline-gradient flex-1"
+                          className="btn-outline-gradient w-full"
                         >
                           Learn More
                         </Button>

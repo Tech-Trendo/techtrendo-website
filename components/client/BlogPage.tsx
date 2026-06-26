@@ -26,9 +26,22 @@ interface BlogPost {
 }
 const Blog = () => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [totalPosts, setTotalPosts] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [categories, setCategories] = useState<{ name: string; slug: string }[]>([
+    { name: "All", slug: "All" }
+  ]);
+  const [featuredPosts, setFeaturedPosts] = useState<BlogPost[]>([]);
+
+  const POSTS_PER_PAGE = 20;
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  // Reset page when category changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory]);
 
   // Newsletter subscription
   const [email, setEmail] = useState<string>("");
@@ -45,13 +58,64 @@ const Blog = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Fetch unique categories on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get<any>(
+          "https://app.techtrendo.com/api/app/blogs/?page_size=100"
+        );
+        const data = res.data;
+        const postsArray = Array.isArray(data)
+          ? data
+          : (data && Array.isArray(data.results) ? data.results : []);
+
+        const catMap = new Map<string, string>();
+        postsArray.forEach((post: any) => {
+          if (post.category?.name && post.category?.slug) {
+            catMap.set(post.category.name, post.category.slug);
+          }
+        });
+
+        const extractedCategories = [{ name: "All", slug: "All" }];
+        catMap.forEach((slug, name) => {
+          extractedCategories.push({ name, slug });
+        });
+        setCategories(extractedCategories);
+
+        // Save featured posts from full list
+        const featured = postsArray.filter((post: any) => post.is_featured);
+        setFeaturedPosts(featured);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Fetch blog posts based on page and category
   useEffect(() => {
     const fetchBlogs = async () => {
+      setLoading(true);
       try {
-        const res = await axios.get<BlogPost[]>(
-          "https://app.techtrendo.com/api/app/blogs/"
-        );
-        setBlogPosts(res.data);
+        let url = `https://app.techtrendo.com/api/app/blogs/?page=${currentPage}`;
+        if (selectedCategory !== "All") {
+          const cat = categories.find((c) => c.name === selectedCategory);
+          if (cat && cat.slug !== "All") {
+            url += `&category=${cat.slug}`;
+          }
+        }
+
+        const res = await axios.get<any>(url);
+        const data = res.data;
+        const postsArray = Array.isArray(data)
+          ? data
+          : (data && Array.isArray(data.results) ? data.results : []);
+
+        const count = data && typeof data.count === "number" ? data.count : postsArray.length;
+
+        setBlogPosts(postsArray);
+        setTotalPosts(count);
       } catch (err) {
         setError("Failed to fetch blog posts");
       } finally {
@@ -59,25 +123,25 @@ const Blog = () => {
       }
     };
     fetchBlogs();
-  }, []);
+  }, [currentPage, selectedCategory, categories]);
 
-  const categories =
-    blogPosts.length > 0
-      ? [
-          "All",
-          ...Array.from(
-            new Set(
-              blogPosts.map((post) => post.category?.name || "Uncategorized")
-            )
-          ),
-        ]
-      : ["All"];
+  // Sort blog posts so featured ones appear first
+  const currentPosts = [...blogPosts].sort((a, b) => {
+    if (a.is_featured && !b.is_featured) return -1;
+    if (!a.is_featured && b.is_featured) return 1;
+    return 0;
+  });
+  const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
 
-  const featuredPosts = blogPosts.filter((post) => post.is_featured);
-  const filteredPosts =
-    selectedCategory === "All"
-      ? blogPosts
-      : blogPosts.filter((post) => post.category?.name === selectedCategory);
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    const articlesSection = document.getElementById("all-articles-section");
+    if (articlesSection) {
+      articlesSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+
 
   const handleSubscribe = async () => {
     if (!email) {
@@ -168,12 +232,20 @@ const Blog = () => {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredPosts.map((post) => (
                 <Card
                   key={post.id}
-                  className="card-hover border-0 shadow-large"
+                  className="card-hover border-0 shadow-large overflow-hidden"
                 >
+                  <div className="w-full h-56 bg-slate-50 overflow-hidden flex items-center justify-center p-2">
+                    <img
+                      src={post.image || fallbackImage}
+                      alt={post.title}
+                      className="max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-105"
+                      onError={(e) => (e.currentTarget.src = fallbackImage)}
+                    />
+                  </div>
                   <CardContent className="p-8 space-y-6">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
@@ -224,13 +296,13 @@ const Blog = () => {
           <div className="flex flex-wrap justify-center gap-3">
             {categories.map((category) => (
               <Button
-                key={category}
-                variant={selectedCategory === category ? "default" : "outline"}
-                className={selectedCategory === category ? "btn-gradient" : ""}
+                key={category.name}
+                variant={selectedCategory === category.name ? "default" : "outline"}
+                className={selectedCategory === category.name ? "btn-gradient" : ""}
                 size="sm"
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => setSelectedCategory(category.name)}
               >
-                {category}
+                {category.name}
               </Button>
             ))}
           </div>
@@ -238,7 +310,7 @@ const Blog = () => {
       </section>
 
       {/* All Posts */}
-      <section className="section-padding bg-background">
+      <section id="all-articles-section" className="section-padding bg-background">
         <div className="container-custom">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-foreground">
@@ -246,56 +318,93 @@ const Blog = () => {
             </h2>
           </div>
 
-          {filteredPosts.length === 0 ? (
+          {currentPosts.length === 0 ? (
             <p className="text-center text-muted-foreground">
               No posts available in this category.
             </p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPosts.map((post) => (
-                <Card key={post.id} className="card-hover">
-                  <CardContent className="p-6 space-y-4">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <Badge variant="outline">
-                          {post.category?.name || "Uncategorized"}
-                        </Badge>
-                      </div>
-                      <div className="w-full h-48 overflow-hidden rounded-lg">
-                        <img
-                          src={post.image || fallbackImage}
-                          alt={post.title}
-                          className="w-full h-full object-cover"
-                          onError={(e) => (e.currentTarget.src = fallbackImage)}
-                        />
+            <div className="space-y-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {currentPosts.map((post) => (
+                  <Card key={post.id} className="card-hover">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <Badge variant="outline">
+                            {post.category?.name || "Uncategorized"}
+                          </Badge>
+                        </div>
+                        <div className="w-full h-48 bg-slate-50 overflow-hidden rounded-lg flex items-center justify-center p-2">
+                          <img
+                            src={post.image || fallbackImage}
+                            alt={post.title}
+                            className="max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-105"
+                            onError={(e) => (e.currentTarget.src = fallbackImage)}
+                          />
+                        </div>
+
+                        <h3 className="text-xl font-bold text-foreground leading-tight">
+                          {post.title}
+                        </h3>
+                        {renderContent(post.content)}
                       </div>
 
-                      <h3 className="text-xl font-bold text-foreground leading-tight">
-                        {post.title}
-                      </h3>
-                      {renderContent(post.content)}
-                    </div>
-
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <div className="flex items-center space-x-1">
-                        <User size={14} />
-                        <span>Tech Trendo</span>
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <div className="flex items-center space-x-1">
+                          <User size={14} />
+                          <span>Tech Trendo</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Calendar size={14} />
+                          <span>{formatDate(post.pub_date)}</span>
+                        </div>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        <Calendar size={14} />
-                        <span>{formatDate(post.pub_date)}</span>
-                      </div>
-                    </div>
 
-                    <Link href={`/blog/${post.slug}`} className="block">
-                      <Button variant="outline" size="sm" className="w-full">
-                        Read More
-                        <ArrowRight className="ml-2" size={14} />
-                      </Button>
-                    </Link>
-                  </CardContent>
-                </Card>
-              ))}
+                      <Link href={`/blog/${post.slug}`} className="block">
+                        <Button variant="outline" size="sm" className="w-full">
+                          Read More
+                          <ArrowRight className="ml-2" size={14} />
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-2 pt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="border-slate-200 hover:bg-slate-100 disabled:opacity-50"
+                  >
+                    Previous
+                  </Button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+                    <Button
+                      key={pageNumber}
+                      variant={currentPage === pageNumber ? "default" : "outline"}
+                      className={currentPage === pageNumber ? "btn-gradient text-white border-0" : "border-slate-200 hover:bg-slate-100"}
+                      size="sm"
+                      onClick={() => handlePageChange(pageNumber)}
+                    >
+                      {pageNumber}
+                    </Button>
+                  ))}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="border-slate-200 hover:bg-slate-100 disabled:opacity-50"
+                  >
+                    Next
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </div>

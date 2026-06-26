@@ -71,7 +71,7 @@ const Footer = () => {
     width={100}
     height={100}
     alt="Tech Trendo Logo"
-    className="w-full h-full object-contain"
+    className="w-full h-full object-contain p-1"
   />
 </div>
               <span className="text-xl font-bold">Tech Trendo</span>

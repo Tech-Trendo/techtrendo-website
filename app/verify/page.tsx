@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toPng } from "html-to-image";
 
 interface Certificate {
   id: string;
@@ -24,10 +25,45 @@ interface Certificate {
 }
 
 const Verify = () => {
-  const [certificateCode, setCertificateCode] = useState("");
+  const [certificateCode, setCertificateCode] = useState("TTMCJ3R3GJ");
   const [certificate, setCertificate] = useState<Certificate | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [error, setError] = useState("");
+  const certificateRef = useRef<HTMLDivElement>(null);
+
+  const downloadCertificate = async () => {
+    if (certificateRef.current === null) return;
+    setIsDownloading(true);
+    try {
+      const targetWidth = 1000;
+      const targetHeight = 620;
+
+      const dataUrl = await toPng(certificateRef.current, {
+        cacheBust: true,
+        backgroundColor: "#ffffff",
+        width: targetWidth,
+        height: targetHeight,
+        style: {
+          margin: "0",
+          padding: "2.5rem",
+          width: `${targetWidth}px`,
+          height: `${targetHeight}px`,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        },
+      });
+      const link = document.createElement("a");
+      link.download = `certificate_${certificate?.certificate_no || "verification"}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Error generating certificate PNG:", err);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   const handleSearch = async () => {
     if (!certificateCode.trim()) {
@@ -138,79 +174,98 @@ const Verify = () => {
           {/* Certificate Display */}
           {certificate && (
             <div className="space-y-6">
-              <Card className="relative p-8 bg-white border-4 border-primary shadow-lg print:border-none print:shadow-none print:p-0 overflow-hidden">
-                {/* Watermark Background */}
-                <div className="absolute inset-0 flex flex-wrap opacity-5 pointer-events-none">
-                  {Array.from({ length: 300 }).map((_, idx) => (
-                    <span
-                      key={idx}
-                      className="text-4xl font-bold text-gray-300 m-2 transform rotate-12"
-                      style={{ flex: "0 0 auto" }}
-                    >
-                      Tech Trendo
-                    </span>
-                  ))}
-                </div>
-
-                {/* Certificate Content */}
-                <div className="relative z-10">
-                  <div className="text-center mb-8">
-                    <h2 className="text-4xl font-extrabold text-primary mb-2">
-                      Certificate of Completion
-                    </h2>
-                    <p className="text-lg text-muted-foreground">
-                      This certificate is proudly presented to
-                    </p>
-                    <h3 className="text-3xl font-bold text-foreground my-4">
-                      {certificate.holder_name}
-                    </h3>
-
-                    <p className="text-lg text-muted-foreground">
-                      for successfully completing the
-                    </p>
-                    <h4 className="text-2xl font-semibold text-primary mt-2">
-                      {getCertificateTypeText(certificate).toUpperCase()}
-                    </h4>
+              <div ref={certificateRef}>
+                <Card className="relative p-8 bg-white border-4 border-primary shadow-lg print:border-none print:shadow-none print:p-0 overflow-hidden">
+                  {/* Watermark Background */}
+                  <div className="absolute inset-0 flex flex-wrap opacity-15 pointer-events-none overflow-hidden" style={{ userSelect: "none" }}>
+                    {Array.from({ length: 300 }).map((_, idx) => (
+                      <span
+                        key={idx}
+                        style={{
+                          flex: "0 0 auto",
+                          margin: "12px",
+                          fontSize: "24px",
+                          fontWeight: "bold",
+                          color: "#94a3b8",
+                          transform: "rotate(-15deg)",
+                          display: "inline-block"
+                        }}
+                      >
+                        Tech Trendo
+                      </span>
+                    ))}
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-6 mb-8 text-center md:text-left">
-                    <div className="space-y-3">
-                      <p className="font-semibold text-muted-foreground">
-                        Certificate No:
+                  {/* Certificate Content */}
+                  <div className="relative z-10">
+                    <div className="text-center mb-8">
+                      <h2 className="text-4xl font-extrabold text-primary mb-2">
+                        Certificate of Completion
+                      </h2>
+                      <p className="text-lg text-muted-foreground">
+                        This certificate is proudly presented to
                       </p>
-                      <p className="text-lg">{certificate.certificate_no}</p>
+                      <h3 className="text-3xl font-bold text-foreground my-4">
+                        {certificate.holder_name}
+                      </h3>
 
-                      <p className="font-semibold text-muted-foreground">
-                        Start Date:
+                      <p className="text-lg text-muted-foreground">
+                        for successfully completing the
                       </p>
-                      <p className="text-lg">{certificate.start_date}</p>
-
-                      <p className="font-semibold text-muted-foreground">
-                        End Date:
-                      </p>
-                      <p className="text-lg">{certificate.end_date}</p>
+                      <h4 className="text-2xl font-semibold text-primary mt-2">
+                        {getCertificateTypeText(certificate).toUpperCase()}
+                      </h4>
                     </div>
-                    <div className="space-y-3">
-                      <p className="font-semibold text-muted-foreground">
-                        Issued Date:
-                      </p>
-                      <p className="text-lg">{certificate.issued_date}</p>
 
-                      <p className="font-semibold text-muted-foreground">
-                        Status:
-                      </p>
-                      <p className="text-lg">
-                        {certificate.status.toUpperCase()}
-                      </p>
+                    <div className="grid md:grid-cols-2 gap-6 mb-8 text-center md:text-left">
+                      <div className="space-y-3">
+                        <p className="font-semibold text-muted-foreground">
+                          Certificate No:
+                        </p>
+                        <p className="text-lg">{certificate.certificate_no}</p>
 
-                      <p className="font-semibold text-muted-foreground">
-                        Issuer:
-                      </p>
-                      <p className="text-lg">{certificate.issuer_company}</p>
+                        <p className="font-semibold text-muted-foreground">
+                          Start Date:
+                        </p>
+                        <p className="text-lg">{certificate.start_date}</p>
+
+                        <p className="font-semibold text-muted-foreground">
+                          End Date:
+                        </p>
+                        <p className="text-lg">{certificate.end_date}</p>
+                      </div>
+                      <div className="space-y-3">
+                        <p className="font-semibold text-muted-foreground">
+                          Issued Date:
+                        </p>
+                        <p className="text-lg">{certificate.issued_date}</p>
+
+                        <p className="font-semibold text-muted-foreground">
+                          Status:
+                        </p>
+                        <p className="text-lg">
+                          {certificate.status.toUpperCase()}
+                        </p>
+
+                        <p className="font-semibold text-muted-foreground">
+                          Issuer:
+                        </p>
+                        <p className="text-lg">{certificate.issuer_company}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Card>
+                </Card>
+              </div>
+
+              <div className="flex justify-center mt-6">
+                <Button
+                  onClick={downloadCertificate}
+                  disabled={isDownloading}
+                  className="btn-gradient px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  {isDownloading ? "Generating PNG..." : "Download Certificate (PNG)"}
+                </Button>
+              </div>
             </div>
           )}
 

@@ -51,13 +51,17 @@ const BlogSection: React.FC = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await fetch("https://app.techtrendo.com/api/app/blogs/");
+        const res = await fetch("https://app.techtrendo.com/api/app/blogs/?page_size=100");
         if (!res.ok) {
           setBlogs([]);
+          return;
         }
-        const data: BlogPost[] = await res.json();
+        const data = await res.json();
+        const postsArray = Array.isArray(data)
+          ? data
+          : (data && Array.isArray(data.results) ? data.results : []);
         // Filter only featured posts
-        const featured = data.filter((post) => post.is_featured);
+        const featured = postsArray.filter((post) => post.is_featured);
         setBlogs(featured);
       } catch (error) {
         console.error("Error fetching blogs:", error);
@@ -110,22 +114,32 @@ const BlogSection: React.FC = () => {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="grid grid-cols-1 md:grid-cols-3 gap-8"
           >
-            {blogs.map((post) => (
-              <Card
-                key={post.id}
-                className="card-3d border-0 bg-linear-to-br from-background to-muted/50"
-              >
-                <CardContent className="p-8 space-y-4">
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <Calendar size={16} />
-                    <span>
-                      {new Date(post.pub_date).toLocaleDateString(undefined, {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </span>
+            {blogs.map((post) => {
+              const fallbackImage = "https://via.placeholder.com/600x400?text=Tech+Blog";
+              return (
+                <Card
+                  key={post.id}
+                  className="card-3d border-0 bg-linear-to-br from-background to-muted/50 overflow-hidden"
+                >
+                  <div className="w-full h-48 bg-slate-50 overflow-hidden flex items-center justify-center p-2">
+                    <img
+                      src={post.image || fallbackImage}
+                      alt={post.title}
+                      className="max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-105"
+                      onError={(e) => (e.currentTarget.src = fallbackImage)}
+                    />
                   </div>
+                  <CardContent className="p-8 space-y-4">
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <Calendar size={16} />
+                      <span>
+                        {new Date(post.pub_date).toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </span>
+                    </div>
 
                   <h3 className="text-xl font-semibold text-foreground hover:text-primary transition-colors duration-300">
                     {post.title}
@@ -150,8 +164,9 @@ const BlogSection: React.FC = () => {
                     </Link>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+                </Card>
+              );
+            })}
           </motion.div>
         )}
 

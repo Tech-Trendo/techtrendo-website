@@ -17,6 +17,7 @@ const Navigation = () => {
     { name: "About Us", href: "/about" },
     { name: "Our Courses", href: "/courses" },
     { name: "Our Services", href: "/services" },
+    { name: "Outsource", href: "/outsource" },
     { name: "Our Products", href: "/products" },
     { name: "Careers", href: "/careers" },
     { name: "Blog", href: "/blog" },
@@ -33,7 +34,7 @@ const Navigation = () => {
             <img
               src="/tech-trendo.png"
               alt="Tech Trendo Logo"
-              className="w-14 h-14 object-contain"
+              className="w-12 h-12 object-contain p-1"
             />
             <span className="text-2xl font-bold text-foreground">
               Tech Trendo

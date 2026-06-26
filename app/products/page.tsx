@@ -83,29 +83,27 @@ export default async function Products() {
 
       {/* Products Grid */}
       <section className="py-20 bg-background">
-        <div className="container-custom grid gap-10 md:gap-12 md:grid-cols-2">
+        <div className="container-custom grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {products.map((product) => (
             <Card
               key={product.id}
               className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-xl transition duration-300"
             >
-              <div className="relative h-60 overflow-hidden">
+              <div className="relative h-56 bg-linear-to-b from-slate-50 to-slate-100 flex items-center justify-center p-8 overflow-hidden border-b border-slate-100">
                 <img
                   src={product.image}
                   alt={product.title}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-full object-contain rounded-lg shadow-md transition-transform duration-500 group-hover:scale-[1.02]"
                 />
-                <div className="absolute top-4 left-4 flex h-12 w-12 items-center justify-center rounded-xl shadow-lg">
-                  <div className="w-12 h-12 rounded-2xl shadow-lg overflow-hidden bg-white/10 group">
-                    {product.icon && (
-                      <img
-                        src={product.icon}
-                        alt={product.title}
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    )}
+                {product.icon && (
+                  <div className="absolute top-4 left-4 h-12 w-12 rounded-xl bg-white/85 backdrop-blur-md border border-white/50 shadow-md p-2 overflow-hidden z-20 transition-transform duration-500 group-hover:scale-105">
+                    <img
+                      src={product.icon}
+                      alt={`${product.title} icon`}
+                      className="h-full w-full object-contain"
+                    />
                   </div>
-                </div>
+                )}
               </div>
 
               <CardHeader>
@@ -117,31 +115,26 @@ export default async function Products() {
                 </p>
               </CardHeader>
 
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6 pb-8">
                 <p className="text-slate-600 text-base leading-relaxed">
                   {product.short_description}
                 </p>
 
-                {product.features && product.features.length > 0 && (
+                 {product.features && product.features.length > 0 && (
                   <div>
-                    <h4 className="font-semibold text-slate-900 mb-3">
+                    <h4 className="font-semibold text-slate-900 mb-2">
                       Key Features
                     </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {product.features.map((feature, i) => (
+                    <div className="grid grid-cols-1 gap-2">
+                      {product.features.slice(0, 6).map((feature, i) => (
                         <div
                           key={i}
-                          className="flex flex-col gap-1 p-3 rounded-lg border border-slate-200 bg-slate-50"
+                          className="flex items-center gap-2 text-slate-700 text-sm"
                         >
-                          <div className="flex items-center gap-2">
-                            <CheckCircle className="text-primary" size={18} />
-                            <span className="font-medium text-slate-900 text-sm">
-                              {feature.title || `Feature ${i + 1}`}
-                            </span>
-                          </div>
-                          {/* <p className="text-xs text-slate-600 leading-relaxed">
-                            {feature.description || "Detailed description coming soon."}
-                          </p> */}
+                          <CheckCircle className="text-primary shrink-0" size={16} />
+                          <span className="font-medium text-slate-800">
+                            {feature.title || `Feature ${i + 1}`}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -153,22 +146,21 @@ export default async function Products() {
                     href={product.link ? product.link : "#"}
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="flex-1 w-full"
                   >
                     <Button
                       size="lg"
-                      className="flex-1 bg-linear-to-r from-primary to-secondary text-white"
-                      // onClick={() => window.open(product.link || "#", "_blank")}
+                      className="w-full bg-linear-to-r from-primary to-secondary text-white"
                     >
                       <ExternalLink className="mr-2" size={18} />
                       View Demo
                     </Button>
                   </Link>
-                  <Link href={`/products/${product.slug}`}>
+                  <Link href={`/products/${product.slug}`} className="flex-1 w-full">
                     <Button
                       size="lg"
                       variant="outline"
-                      className="flex-1"
-                      // onClick={() => navigate(`/products/${product.slug}`)}
+                      className="w-full"
                     >
                       Learn More
                     </Button>
