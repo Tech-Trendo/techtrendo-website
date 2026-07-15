@@ -24,10 +24,17 @@ interface BlogPost {
   slug: string;
   category: Category;
 }
+
 const Blog = () => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [totalPosts, setTotalPosts] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(true);
+
+  // Separate loading flags so we never unmount the whole page.
+  // - initialLoading: true only until the very first successful fetch (categories)
+  // - postsLoading: true while (re)fetching the posts grid specifically
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
+  const [postsLoading, setPostsLoading] = useState<boolean>(true);
+
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [categories, setCategories] = useState<{ name: string; slug: string }[]>([
@@ -95,8 +102,10 @@ const Blog = () => {
 
   // Fetch blog posts based on page and category
   useEffect(() => {
+    let cancelled = false;
+
     const fetchBlogs = async () => {
-      setLoading(true);
+      setPostsLoading(true);
       try {
         let url = `https://app.techtrendo.com/api/app/blogs/?page=${currentPage}`;
         if (selectedCategory !== "All") {
@@ -107,6 +116,8 @@ const Blog = () => {
         }
 
         const res = await axios.get<any>(url);
+        if (cancelled) return;
+
         const data = res.data;
         const postsArray = Array.isArray(data)
           ? data
@@ -116,13 +127,21 @@ const Blog = () => {
 
         setBlogPosts(postsArray);
         setTotalPosts(count);
+        setError(null);
       } catch (err) {
-        setError("Failed to fetch blog posts");
+        if (!cancelled) setError("Failed to fetch blog posts");
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setPostsLoading(false);
+          setInitialLoading(false);
+        }
       }
     };
     fetchBlogs();
+
+    return () => {
+      cancelled = true;
+    };
   }, [currentPage, selectedCategory, categories]);
 
   // Sort blog posts so featured ones appear first
@@ -140,8 +159,6 @@ const Blog = () => {
       articlesSection.scrollIntoView({ behavior: "smooth" });
     }
   };
-
-
 
   const handleSubscribe = async () => {
     if (!email) {
@@ -171,22 +188,6 @@ const Blog = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[50vh]">
-        <p>Loading blogs...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center min-h-[50vh]">
-        <p className="text-red-500">{error}</p>
-      </div>
-    );
-  }
-
   const renderContent = (content: string) => {
     const isHTMLContent = /<\/?[a-z][\s\S]*>/i.test(content);
     return (
@@ -209,6 +210,17 @@ const Blog = () => {
   };
 
   const fallbackImage = "https://via.placeholder.com/600x400?text=Tech+Blog";
+
+  // Only show a full-page loading state on the very first load.
+  // After that, the rest of the page (hero, featured, filters, newsletter, CTA)
+  // stays mounted and only the articles grid shows its own loading/empty state.
+  if (initialLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <p>Loading blogs...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col">
@@ -318,7 +330,15 @@ const Blog = () => {
             </h2>
           </div>
 
-          {currentPosts.length === 0 ? (
+          {error ? (
+            <p className="text-center text-red-500">{error}</p>
+          ) : postsLoading ? (
+            // Keep the grid's footprint so the page doesn't jump, and keep
+            // everything else on the page mounted while this refetches.
+            <div className="flex justify-center items-center min-h-[30vh]">
+              <p className="text-muted-foreground">Loading articles...</p>
+            </div>
+          ) : currentPosts.length === 0 ? (
             <p className="text-center text-muted-foreground">
               No posts available in this category.
             </p>
