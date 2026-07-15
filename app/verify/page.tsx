@@ -25,7 +25,7 @@ interface Certificate {
 }
 
 const Verify = () => {
-  const [certificateCode, setCertificateCode] = useState("TTMCJ3R3GJ");
+  const [certificateCode, setCertificateCode] = useState("TTMC");
   const [certificate, setCertificate] = useState<Certificate | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
