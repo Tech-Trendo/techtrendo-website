@@ -1,7 +1,7 @@
 "use client";
 import { API_URL } from "@/lib/api";
 import { useEffect, useState } from "react";
-import { ArrowRight, Calendar, User } from "lucide-react";
+import { ArrowRight, Calendar, Clock, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +24,7 @@ interface BlogPost {
   image: string;
   slug: string;
   category: Category;
+  read_time?: number | null;
 }
 
 const Blog = () => {
@@ -286,6 +287,12 @@ const Blog = () => {
                           <Calendar size={16} />
                           <span>{formatDate(post.pub_date)}</span>
                         </div>
+                        {post.read_time ? (
+                          <div className="flex items-center space-x-1">
+                            <Clock size={16} />
+                            <span>{post.read_time} min read</span>
+                          </div>
+                        ) : null}
                       </div>
                     </div>
 
@@ -375,9 +382,17 @@ const Blog = () => {
                           <User size={14} />
                           <span>Tech Trendo</span>
                         </div>
-                        <div className="flex items-center space-x-1">
-                          <Calendar size={14} />
-                          <span>{formatDate(post.pub_date)}</span>
+                        <div className="flex items-center space-x-3">
+                          <div className="flex items-center space-x-1">
+                            <Calendar size={14} />
+                            <span>{formatDate(post.pub_date)}</span>
+                          </div>
+                          {post.read_time ? (
+                            <div className="flex items-center space-x-1">
+                              <Clock size={14} />
+                              <span>{post.read_time} min read</span>
+                            </div>
+                          ) : null}
                         </div>
                       </div>
 

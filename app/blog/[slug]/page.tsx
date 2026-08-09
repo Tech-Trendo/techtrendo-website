@@ -1,9 +1,11 @@
 import { API_URL } from "@/lib/api";
 import {
-  breadcrumbLd,
   blogPostingLd,
+  breadcrumbLd,
   canonicalUrl,
+  faqLd,
   seoMetadata,
+  type FaqItem,
   type SeoFields,
 } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
@@ -23,6 +25,7 @@ type Blog = SeoFields & {
   pub_date: string;
   image: string | null;
   category: { slug: string; name: string } | null;
+  faq?: FaqItem[] | null;
 };
 
 async function fetchBlog(slug: string): Promise<Blog | null> {
@@ -77,6 +80,7 @@ export default async function BlogPostPage(props: Props) {
   if (!blog) notFound();
 
   const canonical = canonicalUrl(blog.canonical_url, `/blog/${slug}`);
+  const faqs = Array.isArray(blog.faq) ? blog.faq : [];
 
   return (
     <>
@@ -98,6 +102,7 @@ export default async function BlogPostPage(props: Props) {
           categoryName: blog.category?.name,
         })}
       />
+      {faqs.length > 0 && <JsonLd data={faqLd(faqs)} />}
       <BlogDetail />
     </>
   );

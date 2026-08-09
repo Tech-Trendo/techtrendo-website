@@ -39,6 +39,9 @@ interface BlogData {
   image: string | null;
   slug: string;
   category: BlogCategory;
+  read_time?: number | null;
+  faq?: { question: string; answer: string }[] | null;
+  related_posts?: RelatedPost[] | null;
   meta_title?: string | null;
   meta_description?: string | null;
   meta_keywords?: string | null;
@@ -51,6 +54,27 @@ interface BlogData {
   twitter_image?: string | null;
 }
 
+interface RelatedPost {
+  title: string;
+  slug: string;
+  image: string | null;
+  pub_date: string;
+  read_time?: number | null;
+}
+
+const absoluteImage = (image: string | null | undefined) => {
+  if (!image) return undefined;
+  if (/^https?:\/\//.test(image)) return image;
+  return `${API_BASE_URL}${image.startsWith("/") ? image : "/" + image}`;
+};
+
+const readTime = (blog: BlogData) =>
+  blog.read_time ||
+  Math.max(
+    1,
+    Math.ceil(blog.content.replace(/<[^>]+>/g, " ").split(/\s+/).length / 200),
+  );
+
 const BlogDetail: React.FC = () => {
   const router = useRouter();
   const params = useParams();
@@ -62,6 +86,7 @@ const BlogDetail: React.FC = () => {
   const [blog, setBlog] = useState<BlogData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [relatedPosts, setRelatedPosts] = useState<RelatedPost[]>([]);
 
   useEffect(() => {
     if (!slug) {
@@ -76,6 +101,21 @@ const BlogDetail: React.FC = () => {
       try {
         const response = await axios.get<BlogData>(`${API_URL}/blogs/${slug}/`);
         setBlog(response.data);
+        if (Array.isArray(response.data.related_posts) && response.data.related_posts.length > 0) {
+          setRelatedPosts(response.data.related_posts);
+        } else if (response.data.category?.slug) {
+          const relatedRes = await axios.get<BlogData[]>(
+            `${API_URL}/blogs/?category__slug=${response.data.category.slug}&page_size=4`,
+          );
+          const list = Array.isArray(relatedRes.data)
+            ? relatedRes.data
+            : (relatedRes.data as any)?.results ?? [];
+          setRelatedPosts(
+            list
+              .filter((post: BlogData) => post.slug !== slug)
+              .slice(0, 3),
+          );
+        }
       } catch (err) {
         if (axios.isAxiosError(err) && err.response?.status === 404) {
           setError("The requested blog was not found (404).");
@@ -186,7 +226,7 @@ const BlogDetail: React.FC = () => {
           <div className="space-y-6 text-center">
             <h1 className="text-4xl md:text-6xl font-bold">{blog.title}</h1>
             <p className="text-lg md:text-xl text-white/90">
-              {formattedDate} | {blog.category.name}
+              {formattedDate} | {blog.category.name} | {readTime(blog)} min read
             </p>
           </div>
         </div>
@@ -211,6 +251,66 @@ const BlogDetail: React.FC = () => {
             className="ck-content w-full prose max-w-none font-['Inter, sans-serif'] [&_a]:text-blue-600 [&_a:hover]:underline [&_h1]:text-4xl [&_h1]:font-bold [&_h2]:text-3xl [&_h2]:font-semibold [&_ul]:list-disc [&_ul_ul]:list-disc [&_ol]:list-decimal [&_ol_ol]:list-decimal [&_li]:my-1 [&_ul]:ml-6 [&_ol]:ml-6"
             dangerouslySetInnerHTML={{ __html: fixedContent }}
           />
+
+          {Array.isArray(blog.faq) && blog.faq.length > 0 && (
+            <div className="space-y-4 pt-4">
+              <h2 className="text-3xl font-bold text-foreground">
+                Frequently Asked Questions
+              </h2>
+              {blog.faq.map((item, index) => (
+                <details
+                  key={index}
+                  className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
+                >
+                  <summary className="cursor-pointer px-6 py-4 font-semibold text-foreground hover:bg-slate-50 [&::-webkit-details-marker]:hidden flex items-center justify-between">
+                    <span>{item.question}</span>
+                    <span className="text-primary text-xl">+</span>
+                  </summary>
+                  <div className="px-6 pb-5 text-muted-foreground">
+                    {item.answer}
+                  </div>
+                </details>
+              ))}
+            </div>
+          )}
+
+          {relatedPosts.length > 0 && (
+            <div className="pt-12">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
+                Related Articles
+              </h2>
+              <div className="grid md:grid-cols-3 gap-6">
+                {relatedPosts.map((post) => (
+                  <Link
+                    key={post.slug}
+                    href={`/blog/${post.slug}`}
+                    className="group bg-white rounded-xl border border-border shadow-sm overflow-hidden hover:shadow-lg transition-shadow"
+                  >
+                    {post.image && (
+                      <div className="aspect-video overflow-hidden bg-slate-100">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={absoluteImage(post.image)}
+                          alt={post.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    )}
+                    <div className="p-5">
+                      <h3 className="font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+                        {post.title}
+                      </h3>
+                      {post.read_time && (
+                        <p className="text-sm text-muted-foreground mt-2">
+                          {post.read_time} min read
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="text-center pt-12">
             <Button
