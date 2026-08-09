@@ -1,3 +1,4 @@
+import { API_URL } from "@/lib/api";
 import * as LucideIcons from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
   let data: seoData | null = null;
   try {
     const res = await fetch(
-      "https://app.techtrendo.com/api/app/pages/service",
+      `${API_URL}/pages/service`,
       {
         next: { revalidate: 3600 },
       }
@@ -56,7 +57,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 async function fetchServices(): Promise<Service[]> {
   try {
-    const res = await fetch("https://app.techtrendo.com/api/app/services/", {
+    const res = await fetch(`${API_URL}/services/`, {
       next: { revalidate: 3600 }, // Revalidate every hour (ISR)
     });
     if (!res.ok) return [];

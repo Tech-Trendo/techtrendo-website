@@ -1,3 +1,4 @@
+import { API_URL } from "@/lib/api";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -43,7 +44,7 @@ interface Service {
 
 async function fetchServices(): Promise<Service[]> {
   try {
-    const res = await fetch("https://app.techtrendo.com/api/app/services/", {
+    const res = await fetch(`${API_URL}/services/`, {
       next: { revalidate: 3600 },
     });
     if (!res.ok) return [];
@@ -75,7 +76,7 @@ interface Gallery {
 }
 async function fetchReviews(): Promise<Review[]> {
   try {
-    const res = await fetch("https://app.techtrendo.com/api/app/reviews/", {
+    const res = await fetch(`${API_URL}/reviews/`, {
       next: { revalidate: 3600 },
     });
     if (!res.ok) return [];
@@ -88,7 +89,7 @@ async function fetchReviews(): Promise<Review[]> {
 async function fetchPartnerLogos(): Promise<PartnerLogo[]> {
   try {
     const res = await fetch(
-      "https://app.techtrendo.com/api/app/company-logos/",
+      `${API_URL}/company-logos/`,
       { cache: "no-store" }
     );
     if (!res.ok) return [];
@@ -100,7 +101,7 @@ async function fetchPartnerLogos(): Promise<PartnerLogo[]> {
 async function fetchGallery(): Promise<Gallery[]> {
   try {
     const res = await fetch(
-      "https://app.techtrendo.com/api/app/gallery-items/",
+      `${API_URL}/gallery-items/`,
       {
         next: { revalidate: 3600 },
       },

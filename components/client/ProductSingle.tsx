@@ -1,4 +1,5 @@
 "use client";
+import { API_URL } from "@/lib/api";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
@@ -66,7 +67,7 @@ const dummyUseCases = [
   "Customer Support Optimization",
 ];
 
-const API_BASE_URL = "https://app.techtrendo.com/api/app/products";
+const API_BASE_URL = `${API_URL}/products`;
 
 const ProductDetail: React.FC = () => {
   const router = useRouter();

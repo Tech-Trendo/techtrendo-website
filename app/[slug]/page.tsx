@@ -1,4 +1,5 @@
 "use client";
+import { API_URL } from "@/lib/api";
 import axios from "axios";
 import NotFound from "../not-found";
 import { useEffect, useState } from "react";
@@ -42,7 +43,7 @@ const Team = () => {
     const fetchMember = async () => {
       try {
         const res = await axios.get(
-          `https://app.techtrendo.com/api/app/members/${slug}/`
+          `${API_URL}/members/${slug}/`
         );
         setMember(res.data);
       } catch (error) {

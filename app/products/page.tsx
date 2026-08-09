@@ -1,3 +1,4 @@
+import { API_URL } from "@/lib/api";
 import Link from "next/link";
 import { ExternalLink, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
   let data: seoData | null = null;
   try {
     const res = await fetch(
-      "https://app.techtrendo.com/api/app/pages/products",
+      `${API_URL}/pages/products`,
       {
         next: { revalidate: 3600 },
       }
@@ -57,7 +58,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 async function fetchProducts(): Promise<Product[]> {
   try {
-    const res = await fetch("https://app.techtrendo.com/api/app/products/", {
+    const res = await fetch(`${API_URL}/products/`, {
       next: { revalidate: 3600 },
     });
     if (!res.ok) return [];

@@ -1,3 +1,4 @@
+import { API_URL } from "@/lib/api";
 import Careers from "@/components/client/CareerPage";
 import { seoData } from "@/types";
 import { Metadata } from "next";
@@ -5,7 +6,7 @@ export async function generateMetadata(): Promise<Metadata> {
   let data: seoData | null = null;
   try {
     const res = await fetch(
-      "https://app.techtrendo.com/api/app/pages/careers",
+      `${API_URL}/pages/careers`,
       {
         next: { revalidate: 3600 },
       }

@@ -1,3 +1,4 @@
+import { API_URL } from "@/lib/api";
 import ProductDetail from "@/components/client/ProductSingle";
 import { seoData } from "@/types";
 import { Metadata } from "next";
@@ -7,16 +8,24 @@ type Props = {
 };
 // 1. Tell Next.js which slugs exist so it can pre-build the HTML files
 export async function generateStaticParams() {
-  // If you fetch posts from an API or database, do it here:
-  // const posts = await fetch('https://api.example.com/posts').then((res) => res.json());
-  // return posts.map((post) => ({ slug: post.id }));
-
-  // For a hardcoded example, it looks like this:
-  return [
-    { slug: "my-first-post" },
-    { slug: "another-cool-article" },
-    { slug: "bun-is-fast" },
-  ];
+  try {
+    const res = await fetch(`${API_URL}/products/`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    const products = await res.json();
+    if (!Array.isArray(products)) return [];
+    const slugs: { slug: string }[] = [];
+    for (const product of products) {
+      if (product && typeof product.slug === "string" && product.slug) {
+        slugs.push({ slug: product.slug });
+      }
+    }
+    return slugs;
+  } catch (error) {
+    console.error("Failed to fetch product slugs for static generation:", error);
+    return [];
+  }
 }
 export async function generateMetadata(props: Props): Promise<Metadata> {
   let data: seoData | null = null;
@@ -24,7 +33,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     const params = await props.params;
     const { slug } = params;
     const res = await fetch(
-      `https://app.techtrendo.com/api/app/products/${slug}/`,
+      `${API_URL}/products/${slug}/`,
       {
         next: { revalidate: 3600 },
       },

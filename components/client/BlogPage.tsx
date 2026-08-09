@@ -1,4 +1,5 @@
 "use client";
+import { API_URL } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { ArrowRight, Calendar, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -70,7 +71,7 @@ const Blog = () => {
     const fetchCategories = async () => {
       try {
         const res = await axios.get<any>(
-          "https://app.techtrendo.com/api/app/blogs/?page_size=100"
+          `${API_URL}/blogs/?page_size=100`
         );
         const data = res.data;
         const postsArray = Array.isArray(data)
@@ -107,7 +108,7 @@ const Blog = () => {
     const fetchBlogs = async () => {
       setPostsLoading(true);
       try {
-        let url = `https://app.techtrendo.com/api/app/blogs/?page=${currentPage}`;
+        let url = `${API_URL}/blogs/?page=${currentPage}`;
         if (selectedCategory !== "All") {
           const cat = categories.find((c) => c.name === selectedCategory);
           if (cat && cat.slug !== "All") {
@@ -168,7 +169,7 @@ const Blog = () => {
     }
     try {
       const res = await axios.post(
-        "https://app.techtrendo.com/api/app/mail-subscribers/",
+        `${API_URL}/mail-subscribers/`,
         { email }
       );
       if (res.status === 201) {

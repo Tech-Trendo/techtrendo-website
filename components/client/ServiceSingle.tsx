@@ -1,4 +1,5 @@
 "use client";
+import { API_URL } from "@/lib/api";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import React, { useState, useEffect, useMemo } from "react";
@@ -82,7 +83,7 @@ const getPlaceholderFeatureDetails = (featureTitle: string, index: number) => ({
   index: index + 1,
 });
 
-const API_BASE_URL = "https://app.techtrendo.com/api/app/services";
+const API_BASE_URL = `${API_URL}/services`;
 
 // Fallback process & benefits
 const detailedFallbackProcess = [

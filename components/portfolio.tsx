@@ -1,4 +1,5 @@
 "use client";
+import { API_URL } from "@/lib/api";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
@@ -29,7 +30,7 @@ const Portfolio = () => {
     const fetchProjects = async () => {
       try {
         const res = await fetch(
-          "https://app.techtrendo.com/api/app/portfolio/"
+          `${API_URL}/portfolio/`
         );
         if (!res.ok) {
           setProjects([]);

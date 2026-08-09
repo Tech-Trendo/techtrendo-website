@@ -1,4 +1,5 @@
 "use client";
+import { API_URL, RECAPTCHA_SITE_KEY as SITE_KEY } from "@/lib/api";
 
 import { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -13,8 +14,6 @@ interface ApplicationProps {
   id?: number;
   onClose: () => void;
 }
-
-const SITE_KEY = "6LfeReYrAAAAAL-1oIYBYCBs1wQ7I_x_-Rc7At8O";
 
 const Application: React.FC<ApplicationProps> = ({ type, id, onClose }) => {
   const [formData, setFormData] = useState<{
@@ -85,8 +84,8 @@ const Application: React.FC<ApplicationProps> = ({ type, id, onClose }) => {
 
       const url =
         type === "intern"
-          ? "https://app.techtrendo.com/api/app/intern-applications/"
-          : "https://app.techtrendo.com/api/app/job-applications/";
+          ? `${API_URL}/intern-applications/`
+          : `${API_URL}/job-applications/`;
 
       const response = await fetch(url, {
         method: "POST",

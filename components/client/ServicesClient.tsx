@@ -1,4 +1,5 @@
 "use client";
+import { API_URL } from "@/lib/api";
 import { Card, CardContent } from "../ui/card";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -18,7 +19,7 @@ export default function ServicesClient() {
   const handleSubscribe = async () => {
     try {
       const res = await axios.post(
-        "https://app.techtrendo.com/api/app/mail-subscribers/",
+        `${API_URL}/mail-subscribers/`,
         { email }
       );
       if (res.status === 201) {

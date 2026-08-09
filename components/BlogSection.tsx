@@ -1,4 +1,5 @@
 "use client";
+import { API_URL } from "@/lib/api";
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -51,7 +52,7 @@ const BlogSection: React.FC = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await fetch("https://app.techtrendo.com/api/app/blogs/?page_size=100");
+        const res = await fetch(`${API_URL}/blogs/?page_size=100`);
         if (!res.ok) {
           setBlogs([]);
           return;
@@ -61,7 +62,9 @@ const BlogSection: React.FC = () => {
           ? data
           : (data && Array.isArray(data.results) ? data.results : []);
         // Filter only featured posts
-        const featured = postsArray.filter((post) => post.is_featured);
+        const featured = postsArray.filter(
+          (post: BlogPost) => post.is_featured
+        );
         setBlogs(featured);
       } catch (error) {
         console.error("Error fetching blogs:", error);

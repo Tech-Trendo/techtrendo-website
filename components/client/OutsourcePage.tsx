@@ -1,4 +1,5 @@
 "use client";
+import { API_URL, RECAPTCHA_SITE_KEY as SITE_KEY } from "@/lib/api";
 
 import { useEffect, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -91,7 +92,7 @@ export default function OutsourcePage({ initialServices }: OutsourcePageProps) {
 
     try {
       const response = await fetch(
-        "https://app.techtrendo.com/api/app/api/contact/",
+        `${API_URL}/contact/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -162,8 +163,6 @@ export default function OutsourcePage({ initialServices }: OutsourcePageProps) {
     { step: "04", title: "Deployment", description: "Launch your project with comprehensive testing, training, and full deployment support." },
     { step: "05", title: "Support", description: "Provide ongoing maintenance, performance optimization, and future feature enhancements." }
   ];
-
-  const SITE_KEY = "6LfeReYrAAAAAL-1oIYBYCBs1wQ7I_x_-Rc7At8O";
 
   return (
     <div className="flex flex-col">

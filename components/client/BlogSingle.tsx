@@ -1,6 +1,7 @@
 // Updated BlogDetail.tsx with preserved h1/h2 styles and blue links
 // (Your full TSX file starts below)
 "use client";
+import { API_URL, API_BASE_URL } from "@/lib/api";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
@@ -50,8 +51,6 @@ interface BlogData {
   twitter_image?: string | null;
 }
 
-const API_BASE_URL = "https://app.techtrendo.com/api/app/blogs";
-
 const BlogDetail: React.FC = () => {
   const router = useRouter();
   const params = useParams();
@@ -75,7 +74,7 @@ const BlogDetail: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get<BlogData>(`${API_BASE_URL}/${slug}/`);
+        const response = await axios.get<BlogData>(`${API_URL}/blogs/${slug}/`);
         setBlog(response.data);
       } catch (err) {
         if (axios.isAxiosError(err) && err.response?.status === 404) {
@@ -149,7 +148,7 @@ const BlogDetail: React.FC = () => {
   const fixedContent = blog.content.replace(
     /src="(?!http)([^"]+)"/g,
     (match, p1) =>
-      `src="https://app.techtrendo.com${p1.startsWith("/") ? p1 : "/" + p1}"`
+      `src="${API_BASE_URL}${p1.startsWith("/") ? p1 : "/" + p1}"`
   );
 
   return (

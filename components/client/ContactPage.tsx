@@ -1,4 +1,5 @@
 "use client";
+import { API_URL, RECAPTCHA_SITE_KEY as SITE_KEY } from "@/lib/api";
 
 import { useEffect, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -61,7 +62,7 @@ const Contact = () => {
 
     try {
       const response = await fetch(
-        "https://app.techtrendo.com/api/app/api/contact/",
+        `${API_URL}/contact/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -128,8 +129,6 @@ const Contact = () => {
     "ICT Services",
     "Other",
   ];
-
-  const SITE_KEY = "6LfeReYrAAAAAL-1oIYBYCBs1wQ7I_x_-Rc7At8O";
 
   return (
     <div className="flex flex-col">

@@ -1,4 +1,5 @@
 "use client";
+import { API_URL } from "@/lib/api";
 
 import { useState, useEffect } from "react";
 import { ArrowRight, MapPin, Clock, GraduationCap, Users } from "lucide-react";
@@ -46,7 +47,7 @@ const Careers = () => {
   useEffect(() => {
     const fetchPositions = async () => {
       try {
-        const internRes = await fetch("https://app.techtrendo.com/api/app/interns/");
+        const internRes = await fetch(`${API_URL}/interns/`);
         const internData = await internRes.json();
         setInternships(
           internData.map((pos: any) => ({
@@ -63,7 +64,7 @@ const Careers = () => {
           }))
         );
 
-        const jobRes = await fetch("https://app.techtrendo.com/api/app/jobs/");
+        const jobRes = await fetch(`${API_URL}/jobs/`);
         const jobData = await jobRes.json();
         setFullTimePositions(
           jobData.map((pos: any) => ({

@@ -1,5 +1,6 @@
 "use client";
 
+import { API_BASE_URL } from "@/lib/api";
 import { useState, useRef } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -82,7 +83,7 @@ const Verify = () => {
 
     try {
       const res = await fetch(
-        `https://app.techtrendo.com/api/verify/certificates/verify/code/${certificateCode}`,
+        `${API_BASE_URL}/api/verify/certificates/verify/code/${certificateCode}`,
       );
 
       if (!res.ok) {

@@ -1,4 +1,5 @@
 "use client";
+import { API_URL, RECAPTCHA_SITE_KEY as SITE_KEY } from "@/lib/api";
 
 import { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -13,8 +14,6 @@ interface SendResumeProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-const SITE_KEY = "6LfeReYrAAAAAL-1oIYBYCBs1wQ7I_x_-Rc7At8O";
 
 const SendResume: React.FC<SendResumeProps> = ({ isOpen, onClose }) => {
   const [fullName, setFullName] = useState("");
@@ -61,7 +60,7 @@ const SendResume: React.FC<SendResumeProps> = ({ isOpen, onClose }) => {
     formData.append("recaptcha_token", captchaValue);
 
     try {
-      const response = await fetch("https://app.techtrendo.com/api/app/send-resume/", {
+      const response = await fetch(`${API_URL}/send-resume/`, {
         method: "POST",
         body: formData,
       });

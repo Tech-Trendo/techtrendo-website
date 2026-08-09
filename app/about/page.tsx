@@ -1,3 +1,4 @@
+import { API_URL } from "@/lib/api";
 import { Users, Target, Award, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
@@ -14,7 +15,7 @@ interface Member {
 export async function generateMetadata(): Promise<Metadata> {
   let data: seoData | null = null;
   try {
-    const res = await fetch("https://app.techtrendo.com/api/app/pages/about", {
+    const res = await fetch(`${API_URL}/pages/about`, {
       next: { revalidate: 3600 },
     });
     if (res.ok) {
@@ -43,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 async function fetchTeamMembers(): Promise<Member[]> {
   try {
-    const res = await fetch("https://app.techtrendo.com/api/app/members/", {
+    const res = await fetch(`${API_URL}/members/`, {
       next: { revalidate: 3600 },
     });
     if (!res.ok) return [];

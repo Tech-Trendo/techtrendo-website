@@ -1,3 +1,4 @@
+import { API_URL } from "@/lib/api";
 import BlogDetail from "@/components/client/BlogSingle";
 import { seoData } from "@/types";
 import { Metadata } from "next";
@@ -11,7 +12,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     const params = await props.params;
     const { slug } = params;
     const res = await fetch(
-      `https://app.techtrendo.com/api/app/blogs/${slug}/`,
+      `${API_URL}/blogs/${slug}/`,
       {
         next: { revalidate: 3600 },
       }

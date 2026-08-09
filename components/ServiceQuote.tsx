@@ -1,4 +1,5 @@
 "use client";
+import { API_URL, RECAPTCHA_SITE_KEY as SITE_KEY } from "@/lib/api";
 import { useState, useEffect } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Send, X, CheckCircle2 } from "lucide-react";
@@ -31,8 +32,6 @@ interface ServiceQuoteProps {
   onClose?: () => void;
 }
 
-const SITE_KEY = "6LfeReYrAAAAAL-1oIYBYCBs1wQ7I_x_-Rc7At8O";
-
 const ServiceQuote: React.FC<ServiceQuoteProps> = ({
   preselectedService,
   preselectedProduct,
@@ -63,8 +62,8 @@ const ServiceQuote: React.FC<ServiceQuoteProps> = ({
     const fetchOptions = async () => {
       try {
         const [serviceRes, productRes] = await Promise.all([
-          fetch("https://app.techtrendo.com/api/app/services/"),
-          fetch("https://app.techtrendo.com/api/app/products/"),
+          fetch(`${API_URL}/services/`),
+          fetch(`${API_URL}/products/`),
         ]);
         const serviceData = await serviceRes.json();
         const productData = await productRes.json();
@@ -116,7 +115,7 @@ const ServiceQuote: React.FC<ServiceQuoteProps> = ({
 
     try {
       const response = await fetch(
-        "https://app.techtrendo.com/api/app/quotes/",
+        `${API_URL}/quotes/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

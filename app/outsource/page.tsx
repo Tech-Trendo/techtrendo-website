@@ -1,3 +1,4 @@
+import { API_URL } from "@/lib/api";
 import { Metadata } from "next";
 import { seoData } from "@/types";
 import OutsourcePage from "@/components/client/OutsourcePage";
@@ -21,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
   let data: seoData | null = null;
   try {
     const res = await fetch(
-      "https://app.techtrendo.com/api/app/pages/outsource",
+      `${API_URL}/pages/outsource`,
       {
         next: { revalidate: 3600 },
       }
@@ -53,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 async function fetchServices(): Promise<Service[]> {
   try {
-    const res = await fetch("https://app.techtrendo.com/api/app/services/", {
+    const res = await fetch(`${API_URL}/services/`, {
       next: { revalidate: 3600 }, // Revalidate every hour (ISR)
     });
     if (!res.ok) return [];

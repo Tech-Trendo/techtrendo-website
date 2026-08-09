@@ -1,4 +1,5 @@
 'use client';
+import { API_URL } from "@/lib/api";
 import { useState } from "react";
 import Link from "next/link";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
@@ -42,7 +43,7 @@ const Footer = () => {
     }
 
     try {
-      const res = await axios.post("https://app.techtrendo.com/api/app/mail-subscribers/", { email });
+      const res = await axios.post(`${API_URL}/mail-subscribers/`, { email });
       if (res.status === 201) {
         setSubscriptionStatus("success");
         setSubscriptionMessage("Thank you! You have successfully subscribed to our newsletter.");
