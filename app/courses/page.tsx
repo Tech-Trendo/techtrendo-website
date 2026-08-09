@@ -4,6 +4,8 @@ import { ArrowRight, Clock, Users, Award, BookOpen } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { SITE_NAME, SITE_URL, courseLd, countryAlternates } from "@/lib/seo";
 export const metadata: Metadata = {
   title:
     "Tech Trendo Courses | Advanced Course Management System & eLearning Solutions",
@@ -11,14 +13,30 @@ export const metadata: Metadata = {
     "Explore Tech Trendo’s Courses — featuring a powerful Course Management System (CMS) to manage, track, and deliver online courses efficiently. Designed for educational institutions, trainers, and learners in Nepal, Itahari, and globally.",
   keywords:
     "course management system Nepal, online courses Itahari, eLearning solutions Nepal, CMS software for schools, Tech Trendo courses, digital education platform, learning management system Nepal, online training software, educational software Nepal, remote learning solutions",
-  alternates: {
-    canonical: "https://techtrendo.com",
-  },
+  alternates: countryAlternates(`${SITE_URL}/courses`),
   openGraph: {
-    images: ["https://techtrendo.com/preview.png"],
+    title: "Tech Trendo Courses | Advanced Course Management System & eLearning Solutions",
+    description:
+      "Explore Tech Trendo’s Courses — a powerful Course Management System to manage, track, and deliver online courses efficiently for institutions and learners in Nepal and globally.",
+    url: `${SITE_URL}/courses`,
+    siteName: SITE_NAME,
+    images: [
+      {
+        url: `${SITE_URL}/preview.png`,
+        width: 1200,
+        height: 630,
+        alt: "Tech Trendo Courses",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
-    images: ["https://techtrendo.com/preview.png"],
+    card: "summary_large_image",
+    title: "Tech Trendo Courses | Advanced Course Management System",
+    description:
+      "Course Management System & eLearning solutions by Tech Trendo for institutions and learners in Nepal.",
+    images: [`${SITE_URL}/preview.png`],
   },
 };
 const Courses: React.FC = () => {
@@ -50,6 +68,13 @@ const Courses: React.FC = () => {
 
   return (
     <div className="flex flex-col">
+      <JsonLd
+        data={courseLd({
+          name: "Tech Trendo IT Courses",
+          description:
+            "Industry-relevant IT courses in web development, mobile apps, software, and digital marketing with flexible schedules and industry-recognized certification.",
+        })}
+      />
       {/* Hero Section */}
       <section className="section-padding bg-linear-to-br from-primary via-secondary to-accent text-white">
         <div className="container-custom text-center space-y-6">

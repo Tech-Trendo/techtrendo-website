@@ -26,6 +26,8 @@ import CallToAction from "@/components/CallToAction";
 import BlogSection from "@/components/BlogSection";
 import WorkMech from "@/components/client/WorkMech";
 import { Metadata } from "next";
+import { countryAlternates, organizationLd, websiteLd } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
 
 interface ServiceFeature {
   title?: string;
@@ -122,13 +124,29 @@ export const metadata: Metadata = {
     "Tech Trendo – Eastern Nepal’s Best & Leading IT company for Web, App, Software Development & Digital Marketing that drives real business growth.",
   keywords:
     "Tech Trendo,Best IT Company Nepal, IT Company Nepal,IT Company Eastern Nepal, Web Development, Mobile App Development, Software Development, Digital Marketing, SEO Services, Tech Company Itahari, tech trend, tech in trend, web, app, software, App Development in Itahari, Software Company in Itahari,Software Company in Dharan,Software Company in Biratnagar,Software Company in Jhapa,Software Company in Morang,Software Company in Sunsari",
-  alternates: {
-    canonical: "https://techtrendo.com",
-  },
+  alternates: countryAlternates("https://techtrendo.com"),
   openGraph: {
-    images: ["https://techtrendo.com/preview.png"],
+    title: "Tech Trendo | Best IT Company in Eastern Nepal",
+    description:
+      "Leading IT company in Eastern Nepal for web development, mobile apps, software solutions & digital marketing that drive real business growth.",
+    url: "https://techtrendo.com",
+    siteName: "Tech Trendo",
+    images: [
+      {
+        url: "https://techtrendo.com/preview.png",
+        width: 1200,
+        height: 630,
+        alt: "Tech Trendo | Best IT Company in Eastern Nepal",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
+    card: "summary_large_image",
+    title: "Tech Trendo | Best IT Company in Eastern Nepal",
+    description:
+      "Web, App & Software Development + Digital Marketing services in Nepal.",
     images: ["https://techtrendo.com/preview.png"],
   },
 };
@@ -237,6 +255,8 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col">
+      <JsonLd data={organizationLd} />
+      <JsonLd data={websiteLd} />
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center bg-white text-gray-900 overflow-hidden py-12 sm:py-0">
         <AnimatedTechBackground />

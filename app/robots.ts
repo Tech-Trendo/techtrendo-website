@@ -1,5 +1,6 @@
 // app/robots.ts
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/seo";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,26 +8,19 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "Googlebot",
         allow: "/",
+        disallow: ["/dash/", "/dashboard/", "/api/", "/admin/"],
       },
       {
         userAgent: "Bingbot",
         allow: "/",
-      },
-      {
-        userAgent: "Twitterbot",
-        allow: "/",
-      },
-      {
-        userAgent: "facebookexternalhit",
-        allow: "/",
+        disallow: ["/dash/", "/dashboard/", "/api/", "/admin/"],
       },
       {
         userAgent: "*",
-        allow: "/",
+        allow: ["/", "/blog/", "/services/", "/products/"],
+        disallow: ["/dash/", "/dashboard/", "/api/", "/admin/"],
       },
     ],
-    sitemap: `${
-      process.env.NEXT_PUBLIC_SITE_URL || "https://techtrendo.com"
-    }/sitemap.xml`,
+    sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }

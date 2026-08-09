@@ -1,46 +1,104 @@
 import { API_URL } from "@/lib/api";
+import {
+  breadcrumbLd,
+  blogPostingLd,
+  canonicalUrl,
+  seoMetadata,
+  type SeoFields,
+} from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
 import BlogDetail from "@/components/client/BlogSingle";
-import { seoData } from "@/types";
 import { Metadata } from "next";
-type Props = {
-  params: Promise<{ slug: string }>; // Important in React 19 + Next.js 15+
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-};
-export async function generateMetadata(props: Props): Promise<Metadata> {
-  let data: seoData | null = null;
-  try {
-    const params = await props.params;
-    const { slug } = params;
-    const res = await fetch(
-      `${API_URL}/blogs/${slug}/`,
-      {
-        next: { revalidate: 3600 },
-      }
-    );
-    if (res.ok) {
-      data = await res.json();
-    }
-  } catch {}
-  return {
-    title: data?.meta_title,
-    description: data?.meta_description,
-    keywords: data?.meta_keywords,
-    alternates: {
-      canonical: data?.canonical_url,
-    },
-    openGraph: {
-      title: data?.og_title || "",
-      description: data?.og_description || "",
-      url: data?.canonical_url || "",
-    },
+import { notFound } from "next/navigation";
 
-    twitter: {
-      card: "summary_large_image",
-      title: data?.twitter_title || data?.title,
-      description: data?.twitter_description || "",
-    },
-  };
+const REVALIDATE = 3600;
+
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+type Blog = SeoFields & {
+  title: string;
+  content: string;
+  pub_date: string;
+  image: string | null;
+  category: { slug: string; name: string } | null;
+};
+
+async function fetchBlog(slug: string): Promise<Blog | null> {
+  try {
+    const res = await fetch(`${API_URL}/blogs/${slug}/`, {
+      next: { revalidate: REVALIDATE },
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
 }
-export default function () {
-  return <BlogDetail />;
+
+async function fetchBlogSlugs(): Promise<string[]> {
+  try {
+    const res = await fetch(`${API_URL}/blogs/?page_size=100`, {
+      next: { revalidate: REVALIDATE },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    const posts = Array.isArray(data) ? data : data?.results;
+    if (!Array.isArray(posts)) return [];
+    return posts
+      .map((post: { slug?: unknown }) => post?.slug)
+      .filter((slug): slug is string => typeof slug === "string" && !!slug);
+  } catch {
+    return [];
+  }
+}
+
+export async function generateStaticParams() {
+  const slugs = await fetchBlogSlugs();
+  return slugs.map((slug) => ({ slug }));
+}
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const { slug } = await props.params;
+  const blog = await fetchBlog(slug);
+  if (!blog) notFound();
+  return seoMetadata(
+    blog,
+    `/blog/${slug}`,
+    blog.title,
+    blog.meta_description || "Read the latest blog post from Tech Trendo.",
+  );
+}
+
+export default async function BlogPostPage(props: Props) {
+  const { slug } = await props.params;
+  const blog = await fetchBlog(slug);
+  if (!blog) notFound();
+
+  const canonical = canonicalUrl(blog.canonical_url, `/blog/${slug}`);
+
+  return (
+    <>
+      <JsonLd
+        data={breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Blog", path: "/blog" },
+          { name: blog.title, path: `/blog/${slug}` },
+        ])}
+      />
+      <JsonLd
+        data={blogPostingLd({
+          headline: blog.title,
+          description: blog.meta_description || blog.title,
+          image: blog.image,
+          datePublished: blog.pub_date,
+          dateModified: blog.pub_date,
+          canonical,
+          categoryName: blog.category?.name,
+        })}
+      />
+      <BlogDetail />
+    </>
+  );
 }

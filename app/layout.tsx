@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { countryAlternates } from "@/lib/seo";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -42,9 +43,7 @@ export const metadata: Metadata = {
     follow: true,
   },
 
-  alternates: {
-    canonical: "https://techtrendo.com",
-  },
+  alternates: countryAlternates("https://techtrendo.com"),
 
   openGraph: {
     title: "Tech Trendo | Best IT Company in Eastern Nepal",

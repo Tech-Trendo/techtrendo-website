@@ -2,6 +2,7 @@ import { API_URL } from "@/lib/api";
 import { Metadata } from "next";
 import { seoData } from "@/types";
 import OutsourcePage from "@/components/client/OutsourcePage";
+import { seoMetadata } from "@/lib/seo";
 
 interface ServiceFeature {
   title?: string;
@@ -32,24 +33,12 @@ export async function generateMetadata(): Promise<Metadata> {
     }
   } catch {}
 
-  return {
-    title: data?.meta_title || "Outsource IT Projects - TechTrendo",
-    description: data?.meta_description || "Partner with Tech Trendo to outsource your IT, software, and design projects to our expert development teams.",
-    keywords: data?.meta_keywords || "IT outsourcing, software outsourcing, hire developers, Tech Trendo outsourcing",
-    alternates: {
-      canonical: data?.canonical_url || "https://techtrendo.com/outsource",
-    },
-    openGraph: {
-      title: data?.og_title || data?.meta_title || "Outsource IT Projects - TechTrendo",
-      description: data?.og_description || data?.meta_description || "",
-      url: data?.canonical_url || "https://techtrendo.com/outsource",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: data?.twitter_title || data?.meta_title || "Outsource IT Projects - TechTrendo",
-      description: data?.twitter_description || data?.meta_description || "",
-    },
-  };
+  return seoMetadata(
+    data,
+    "/outsource",
+    "Outsource IT Projects to Nepal | Tech Trendo",
+    "Partner with Tech Trendo to outsource your IT, software, and design projects to expert development teams in Nepal.",
+  );
 }
 
 async function fetchServices(): Promise<Service[]> {

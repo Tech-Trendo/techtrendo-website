@@ -7,6 +7,7 @@ import ServicesClient from "@/components/client/ServicesClient";
 import Link from "next/link";
 import { seoData } from "@/types";
 import { Metadata } from "next";
+import { seoMetadata } from "@/lib/seo";
 
 // Define type for service object
 interface ServiceFeature {
@@ -35,25 +36,12 @@ export async function generateMetadata(): Promise<Metadata> {
       data = await res.json();
     }
   } catch {}
-  return {
-    title: data?.meta_title || "Services - TechTrendo",
-    description: data?.meta_description,
-    keywords: data?.meta_keywords,
-    alternates: {
-      canonical: data?.canonical_url,
-    },
-    openGraph: {
-      title: data?.og_title || "",
-      description: data?.og_description || "",
-      url: data?.canonical_url || "",
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title: data?.twitter_title || data?.title,
-      description: data?.twitter_description || "",
-    },
-  };
+  return seoMetadata(
+    data,
+    "/services",
+    "IT Services | Web, App & Software Development by Tech Trendo Nepal",
+    "Explore Tech Trendo's complete range of IT services — web design & development, mobile app development, software development, digital marketing, graphic design and ICT media services.",
+  );
 }
 async function fetchServices(): Promise<Service[]> {
   try {

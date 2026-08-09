@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProductsCTA from "@/components/client/ProductsCTA";
 import { Metadata } from "next";
 import { seoData } from "@/types";
+import { seoMetadata } from "@/lib/seo";
 interface ProductFeature {
   title: string;
   description: string;
@@ -36,25 +37,12 @@ export async function generateMetadata(): Promise<Metadata> {
       data = await res.json();
     }
   } catch {}
-  return {
-    title: data?.meta_title || "Products - TechTrendo",
-    description: data?.meta_description,
-    keywords: data?.meta_keywords,
-    alternates: {
-      canonical: data?.canonical_url,
-    },
-    openGraph: {
-      title: data?.og_title || "",
-      description: data?.og_description || "",
-      url: data?.canonical_url || "",
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title: data?.twitter_title || data?.title,
-      description: data?.twitter_description || "",
-    },
-  };
+  return seoMetadata(
+    data,
+    "/products",
+    "Products | Software Solutions by Tech Trendo",
+    "Explore Tech Trendo's software products — School Management System, Business Management System, Cooperative Management System, and more.",
+  );
 }
 async function fetchProducts(): Promise<Product[]> {
   try {

@@ -4,6 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { Metadata } from "next";
 import { seoData } from "@/types";
+import JsonLd from "@/components/JsonLd";
+import { SITE_URL, seoMetadata } from "@/lib/seo";
 interface Member {
   id: number;
   slug: string;
@@ -22,25 +24,12 @@ export async function generateMetadata(): Promise<Metadata> {
       data = await res.json();
     }
   } catch {}
-  return {
-    title: data?.meta_title || "About us | Tech Trendo",
-    description: data?.meta_description,
-    keywords: data?.meta_keywords,
-    alternates: {
-      canonical: data?.canonical_url,
-    },
-    openGraph: {
-      title: data?.og_title || "",
-      description: data?.og_description || "",
-      url: data?.canonical_url || "",
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title: data?.twitter_title || data?.title,
-      description: data?.twitter_description || "",
-    },
-  };
+  return seoMetadata(
+    data,
+    "/about",
+    "About Tech Trendo | Best IT Company in Itahari, Nepal",
+    "Meet Tech Trendo – a young, innovative IT company in Itahari, Nepal delivering web design, app development, software solutions, and digital marketing to clients worldwide.",
+  );
 }
 async function fetchTeamMembers(): Promise<Member[]> {
   try {
@@ -55,6 +44,54 @@ async function fetchTeamMembers(): Promise<Member[]> {
 }
 export default async function About() {
   const teamMembers = await fetchTeamMembers().catch(() => []);
+  const localBusinessLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    name: "Tech Trendo",
+    url: SITE_URL,
+    image: `${SITE_URL}/preview.png`,
+    email: "info@techtrendo.com",
+    telephone: "+977-9815602535",
+    priceRange: "$$",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Sundarharaincha, Morang (Near Itahari)",
+      addressLocality: "Sundarharaincha",
+      addressRegion: "Koshi Pradesh",
+      addressCountry: "NP",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 26.6599577,
+      longitude: 87.2863306,
+    },
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+        ],
+        opens: "09:00",
+        closes: "18:00",
+      },
+    ],
+    founder: { "@id": "https://techtrendo.com/#organization" },
+    areaServed: [
+      { "@type": "Country", name: "Nepal" },
+      { "@type": "AdministrativeArea", name: "Global" },
+    ],
+    sameAs: [
+      "https://www.facebook.com/techtrendo.np",
+      "https://www.linkedin.com/company/tech-trendo/",
+      "https://www.instagram.com/tech.trendo.np/",
+    ],
+  };
+
   const values = [
     {
       icon: Target,
@@ -84,6 +121,7 @@ export default async function About() {
 
   return (
     <div className="flex flex-col">
+      <JsonLd data={localBusinessLd} />
       {/* Hero Section */}
       <section className="section-padding bg-linear-to-br from-primary via-secondary to-accent text-white">
         {/* <section className="section-padding card-gradient text-white"> */}

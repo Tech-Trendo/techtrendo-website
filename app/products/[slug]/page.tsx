@@ -1,67 +1,100 @@
 import { API_URL } from "@/lib/api";
+import {
+  breadcrumbLd,
+  canonicalUrl,
+  productLd,
+  seoMetadata,
+  type SeoFields,
+} from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
 import ProductDetail from "@/components/client/ProductSingle";
-import { seoData } from "@/types";
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
+
+const REVALIDATE = 3600;
+
 type Props = {
-  params: Promise<{ slug: string }>; // Important in React 19 + Next.js 15+
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  params: Promise<{ slug: string }>;
 };
-// 1. Tell Next.js which slugs exist so it can pre-build the HTML files
-export async function generateStaticParams() {
+
+type Product = SeoFields & {
+  title: string;
+  short_description: string;
+  description: string;
+  image: string | null;
+  category: string;
+};
+
+async function fetchProduct(slug: string): Promise<Product | null> {
+  try {
+    const res = await fetch(`${API_URL}/products/${slug}/`, {
+      next: { revalidate: REVALIDATE },
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+async function fetchProductSlugs(): Promise<string[]> {
   try {
     const res = await fetch(`${API_URL}/products/`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: REVALIDATE },
     });
     if (!res.ok) return [];
     const products = await res.json();
     if (!Array.isArray(products)) return [];
-    const slugs: { slug: string }[] = [];
-    for (const product of products) {
-      if (product && typeof product.slug === "string" && product.slug) {
-        slugs.push({ slug: product.slug });
-      }
-    }
-    return slugs;
-  } catch (error) {
-    console.error("Failed to fetch product slugs for static generation:", error);
+    return products
+      .map((product: { slug?: unknown }) => product?.slug)
+      .filter((slug): slug is string => typeof slug === "string" && !!slug);
+  } catch {
     return [];
   }
 }
-export async function generateMetadata(props: Props): Promise<Metadata> {
-  let data: seoData | null = null;
-  try {
-    const params = await props.params;
-    const { slug } = params;
-    const res = await fetch(
-      `${API_URL}/products/${slug}/`,
-      {
-        next: { revalidate: 3600 },
-      },
-    );
-    if (res.ok) {
-      data = await res.json();
-    }
-  } catch {}
-  return {
-    title: data?.meta_title,
-    description: data?.meta_description,
-    keywords: data?.meta_keywords,
-    alternates: {
-      canonical: data?.canonical_url,
-    },
-    openGraph: {
-      title: data?.og_title || "",
-      description: data?.og_description || "",
-      url: data?.canonical_url || "",
-    },
 
-    twitter: {
-      card: "summary_large_image",
-      title: data?.twitter_title || data?.title,
-      description: data?.twitter_description || "",
-    },
-  };
+export async function generateStaticParams() {
+  const slugs = await fetchProductSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
-export default function page() {
-  return <ProductDetail />;
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const { slug } = await props.params;
+  const product = await fetchProduct(slug);
+  if (!product) notFound();
+  return seoMetadata(
+    product,
+    `/products/${slug}`,
+    product.title,
+    product.short_description,
+  );
+}
+
+export default async function ProductPage(props: Props) {
+  const { slug } = await props.params;
+  const product = await fetchProduct(slug);
+  if (!product) notFound();
+
+  const canonical = canonicalUrl(product.canonical_url, `/products/${slug}`);
+
+  return (
+    <>
+      <JsonLd
+        data={breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Products", path: "/products" },
+          { name: product.title, path: `/products/${slug}` },
+        ])}
+      />
+      <JsonLd
+        data={productLd({
+          name: product.title,
+          description: product.description || product.short_description,
+          url: canonical,
+          image: product.image,
+        })}
+      />
+      <ProductDetail />
+    </>
+  );
 }

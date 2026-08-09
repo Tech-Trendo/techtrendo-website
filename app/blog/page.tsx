@@ -2,6 +2,7 @@ import { API_URL } from "@/lib/api";
 import Blog from "@/components/client/BlogPage";
 import { seoData } from "@/types";
 import { Metadata } from "next";
+import { seoMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   let data: seoData | null = null;
@@ -13,25 +14,12 @@ export async function generateMetadata(): Promise<Metadata> {
       data = await res.json();
     }
   } catch {}
-  return {
-    title: data?.meta_title || "Blog - TechTrendo",
-    description: data?.meta_description,
-    keywords: data?.meta_keywords,
-    alternates: {
-      canonical: data?.canonical_url,
-    },
-    openGraph: {
-      title: data?.og_title || "",
-      description: data?.og_description || "",
-      url: data?.canonical_url || "",
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title: data?.twitter_title || data?.title,
-      description: data?.twitter_description || "",
-    },
-  };
+  return seoMetadata(
+    data,
+    "/blog",
+    "Blog | Tech Trendo - Insights on Web, Apps, Software & Digital Marketing",
+    "Read the latest insights from Tech Trendo on web development, mobile apps, custom software, digital marketing, outsourcing, and technology trends in Nepal and beyond.",
+  );
 }
 export default function page() {
   return <Blog />;
