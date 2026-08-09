@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface Project {
   id: number;
@@ -64,11 +65,13 @@ const Portfolio = () => {
           >
             <Card className="card-3d bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden">
               {/* Square image container */}
-              <div className="aspect-square w-full overflow-hidden">
-                <img
+              <div className="relative aspect-square w-full overflow-hidden bg-slate-100">
+                <Image
                   src={project.image}
                   alt={project.title}
-                  className="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105"
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover object-center transition-transform duration-500 hover:scale-105"
                 />
               </div>
 

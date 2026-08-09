@@ -28,7 +28,7 @@ type Product = SeoFields & {
 async function fetchProduct(slug: string): Promise<Product | null> {
   try {
     const res = await fetch(`${API_URL}/products/${slug}/`, {
-      next: { revalidate: REVALIDATE },
+      next: { revalidate: REVALIDATE, tags: ["product"] },
     });
     if (!res.ok) return null;
     return await res.json();
@@ -40,7 +40,7 @@ async function fetchProduct(slug: string): Promise<Product | null> {
 async function fetchProductSlugs(): Promise<string[]> {
   try {
     const res = await fetch(`${API_URL}/products/`, {
-      next: { revalidate: REVALIDATE },
+      next: { revalidate: REVALIDATE, tags: ["product"] },
     });
     if (!res.ok) return [];
     const products = await res.json();

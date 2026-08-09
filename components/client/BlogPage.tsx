@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import Image from "next/image";
 import axios from "axios";
 import SuggestTopic from "@/components/SuggestTopic"; // import the modal component
 
@@ -211,7 +212,7 @@ const Blog = () => {
     });
   };
 
-  const fallbackImage = "https://via.placeholder.com/600x400?text=Tech+Blog";
+  const cardImage = (post: BlogPost) => post.image;
 
   // Only show a full-page loading state on the very first load.
   // After that, the rest of the page (hero, featured, filters, newsletter, CTA)
@@ -252,14 +253,23 @@ const Blog = () => {
                   key={post.id}
                   className="card-hover border-0 shadow-large overflow-hidden"
                 >
-                  <div className="w-full h-56 bg-slate-50 overflow-hidden flex items-center justify-center p-2">
-                    <img
-                      src={post.image || fallbackImage}
-                      alt={post.title}
-                      className="max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-105"
-                      onError={(e) => (e.currentTarget.src = fallbackImage)}
-                    />
-                  </div>
+                  <div className="relative w-full h-56 bg-slate-50 overflow-hidden">
+  {cardImage(post) && (
+    <Image
+      src={cardImage(post)!}
+      alt={post.title}
+      fill
+      priority
+      sizes="(max-width: 768px) 100vw, 33vw"
+      className="object-contain"
+    />
+  )}
+  {!cardImage(post) && (
+    <div className="w-full h-full flex items-center justify-center">
+      <Badge variant="outline">Image unavailable</Badge>
+    </div>
+  )}
+</div>
                   <CardContent className="p-8 space-y-6">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
@@ -362,14 +372,21 @@ const Blog = () => {
                             {post.category?.name || "Uncategorized"}
                           </Badge>
                         </div>
-                        <div className="w-full h-48 bg-slate-50 overflow-hidden rounded-lg flex items-center justify-center p-2">
-                          <img
-                            src={post.image || fallbackImage}
-                            alt={post.title}
-                            className="max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-105"
-                            onError={(e) => (e.currentTarget.src = fallbackImage)}
-                          />
-                        </div>
+                        <div className="relative w-full h-48 bg-slate-50 overflow-hidden rounded-lg">
+  {cardImage(post) ? (
+    <Image
+      src={cardImage(post)!}
+      alt={post.title}
+      fill
+      sizes="(max-width: 768px) 100vw, 33vw"
+      className="object-contain"
+    />
+  ) : (
+    <div className="w-full h-full flex items-center justify-center">
+      <Badge variant="outline">Image unavailable</Badge>
+    </div>
+  )}
+</div>
 
                         <h3 className="text-xl font-bold text-foreground leading-tight">
                           {post.title}

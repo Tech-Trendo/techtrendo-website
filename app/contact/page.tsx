@@ -9,7 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const res = await fetch(
       `${API_URL}/pages/contact`,
       {
-        next: { revalidate: 3600 },
+        next: { revalidate: 3600, tags: ["page"] },
       }
     );
     if (res.ok) {

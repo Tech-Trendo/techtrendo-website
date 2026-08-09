@@ -30,7 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const res = await fetch(
       `${API_URL}/pages/products`,
       {
-        next: { revalidate: 3600 },
+        next: { revalidate: 3600, tags: ["page"] },
       }
     );
     if (res.ok) {
@@ -47,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
 async function fetchProducts(): Promise<Product[]> {
   try {
     const res = await fetch(`${API_URL}/products/`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600, tags: ["product"] },
     });
     if (!res.ok) return [];
     return (await res.json()) ?? [];

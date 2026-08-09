@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   let data: seoData | null = null;
   try {
     const res = await fetch(`${API_URL}/pages/blog`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600, tags: ["page"] },
     });
     if (res.ok) {
       data = await res.json();

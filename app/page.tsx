@@ -47,7 +47,7 @@ interface Service {
 async function fetchServices(): Promise<Service[]> {
   try {
     const res = await fetch(`${API_URL}/services/`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600, tags: ["service"] },
     });
     if (!res.ok) return [];
     return (await res.json()) ?? [];
@@ -79,7 +79,7 @@ interface Gallery {
 async function fetchReviews(): Promise<Review[]> {
   try {
     const res = await fetch(`${API_URL}/reviews/`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600, tags: ["review"] },
     });
     if (!res.ok) return [];
     return (await res.json()) ?? [];
@@ -105,7 +105,7 @@ async function fetchGallery(): Promise<Gallery[]> {
     const res = await fetch(
       `${API_URL}/gallery-items/`,
       {
-        next: { revalidate: 3600 },
+        next: { revalidate: 3600, tags: ["gallery"] },
       },
     );
     if (!res.ok) {

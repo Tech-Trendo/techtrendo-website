@@ -27,7 +27,7 @@ type Service = SeoFields & {
 async function fetchService(slug: string): Promise<Service | null> {
   try {
     const res = await fetch(`${API_URL}/services/${slug}/`, {
-      next: { revalidate: REVALIDATE },
+      next: { revalidate: REVALIDATE, tags: ["service"] },
     });
     if (!res.ok) return null;
     return await res.json();
@@ -39,7 +39,7 @@ async function fetchService(slug: string): Promise<Service | null> {
 async function fetchServiceSlugs(): Promise<string[]> {
   try {
     const res = await fetch(`${API_URL}/services/`, {
-      next: { revalidate: REVALIDATE },
+      next: { revalidate: REVALIDATE, tags: ["service"] },
     });
     if (!res.ok) return [];
     const services = await res.json();

@@ -23,7 +23,7 @@ type Member = SeoFields & {
 async function fetchMember(slug: string): Promise<Member | null> {
   try {
     const res = await fetch(`${API_URL}/members/${slug}/`, {
-      next: { revalidate: REVALIDATE },
+      next: { revalidate: REVALIDATE, tags: ["member"] },
     });
     if (!res.ok) return null;
     return await res.json();

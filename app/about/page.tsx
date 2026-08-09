@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
   let data: seoData | null = null;
   try {
     const res = await fetch(`${API_URL}/pages/about`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600, tags: ["page"] },
     });
     if (res.ok) {
       data = await res.json();
@@ -34,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
 async function fetchTeamMembers(): Promise<Member[]> {
   try {
     const res = await fetch(`${API_URL}/members/`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600, tags: ["member"] },
     });
     if (!res.ok) return [];
     return (await res.json()) ?? [];

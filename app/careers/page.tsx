@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const res = await fetch(
       `${API_URL}/pages/careers`,
       {
-        next: { revalidate: REVALIDATE },
+        next: { revalidate: REVALIDATE, tags: ["page"] },
       }
     );
     if (res.ok) {
@@ -53,8 +53,8 @@ export async function generateMetadata(): Promise<Metadata> {
 async function fetchJobs(): Promise<Job[]> {
   try {
     const [jobsRes, internsRes] = await Promise.all([
-      fetch(`${API_URL}/jobs/`, { next: { revalidate: REVALIDATE } }),
-      fetch(`${API_URL}/interns/`, { next: { revalidate: REVALIDATE } }),
+      fetch(`${API_URL}/jobs/`, { next: { revalidate: REVALIDATE, tags: ["job"] } }),
+      fetch(`${API_URL}/interns/`, { next: { revalidate: REVALIDATE, tags: ["job"] } }),
     ]);
     const [jobs, interns] = await Promise.all([
       jobsRes.ok ? jobsRes.json() : [],

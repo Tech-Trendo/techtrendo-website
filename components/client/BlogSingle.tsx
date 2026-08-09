@@ -10,7 +10,7 @@ import { ArrowLeft } from "lucide-react";
 // import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { motion } from "framer-motion";
+import Image from "next/image";
 
 // CKEditor default styles
 // import "ckeditor5/ckeditor5.css";
@@ -184,12 +184,18 @@ const BlogDetail: React.FC = () => {
   //   const twitterDescription = blog.twitter_description || seoDescription;
   //   const twitterImage = blog.twitter_image || undefined;
 
-  // ✅ FIX: Add absolute URL for CKEditor images
-  const fixedContent = blog.content.replace(
-    /src="(?!http)([^"]+)"/g,
-    (match, p1) =>
-      `src="${API_BASE_URL}${p1.startsWith("/") ? p1 : "/" + p1}"`
-  );
+  // ✅ FIX: Add absolute URL for CKEditor images + lazy-load below-the-fold rich text images
+  const fixedContent = blog.content
+    .replace(
+      /src="(?!http)([^"]+)"/g,
+      (match, p1) =>
+        `src="${API_BASE_URL}${p1.startsWith("/") ? p1 : "/" + p1}"`
+    )
+    .replace(
+      /<img(?![^>]*\bloading=)[^>]*>/gi,
+      (match) =>
+        match.replace(/^<img/, '<img loading="lazy" decoding="async"')
+    );
 
   return (
     // <HelmetProvider>
@@ -236,14 +242,16 @@ const BlogDetail: React.FC = () => {
       <section className="py-16 bg-background">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           {blog.image && (
-            <motion.img
-              src={blog.image}
-              alt={blog.title}
-              className="w-full rounded-xl shadow-lg"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6 }}
-            />
+            <div className="relative w-full aspect-video overflow-hidden rounded-xl shadow-lg bg-slate-100">
+              <Image
+                src={absoluteImage(blog.image) ?? ""}
+                alt={blog.title}
+                fill
+                priority
+                sizes="(max-width: 896px) 100vw, 896px"
+                className="object-cover"
+              />
+            </div>
           )}
 
           {/* Preserved CKEditor formatting + blue links */}
@@ -287,12 +295,13 @@ const BlogDetail: React.FC = () => {
                     className="group bg-white rounded-xl border border-border shadow-sm overflow-hidden hover:shadow-lg transition-shadow"
                   >
                     {post.image && (
-                      <div className="aspect-video overflow-hidden bg-slate-100">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={absoluteImage(post.image)}
+                      <div className="relative aspect-video overflow-hidden bg-slate-100">
+                        <Image
+                          src={absoluteImage(post.image) ?? ""}
                           alt={post.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
                     )}

@@ -31,7 +31,7 @@ type Blog = SeoFields & {
 async function fetchBlog(slug: string): Promise<Blog | null> {
   try {
     const res = await fetch(`${API_URL}/blogs/${slug}/`, {
-      next: { revalidate: REVALIDATE },
+      next: { revalidate: REVALIDATE, tags: ["blog"] },
     });
     if (!res.ok) return null;
     return await res.json();
@@ -43,7 +43,7 @@ async function fetchBlog(slug: string): Promise<Blog | null> {
 async function fetchBlogSlugs(): Promise<string[]> {
   try {
     const res = await fetch(`${API_URL}/blogs/?page_size=100`, {
-      next: { revalidate: REVALIDATE },
+      next: { revalidate: REVALIDATE, tags: ["blog"] },
     });
     if (!res.ok) return [];
     const data = await res.json();

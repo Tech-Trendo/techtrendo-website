@@ -29,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const res = await fetch(
       `${API_URL}/pages/service`,
       {
-        next: { revalidate: 3600 },
+        next: { revalidate: 3600, tags: ["page"] },
       }
     );
     if (res.ok) {
@@ -46,7 +46,7 @@ export async function generateMetadata(): Promise<Metadata> {
 async function fetchServices(): Promise<Service[]> {
   try {
     const res = await fetch(`${API_URL}/services/`, {
-      next: { revalidate: 3600 }, // Revalidate every hour (ISR)
+      next: { revalidate: 3600, tags: ["service"] }, // Revalidate every hour (ISR) + on-demand
     });
     if (!res.ok) return [];
 
