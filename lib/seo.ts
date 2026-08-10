@@ -23,9 +23,36 @@ export type SeoFields = {
   twitter_image?: string | null;
 };
 
-export function canonicalUrl(canonical: string | null | undefined, path: string): string {
-  if (canonical && canonical.trim()) return canonical.trim();
-  return `${SITE_URL}${path}`;
+function normalizePath(path: string): string {
+  const stripped = path.replace(/\/+$/, "");
+  return stripped === "" ? "/" : stripped;
+}
+
+function isSameRouteUrl(candidate: string, path: string): boolean {
+  try {
+    const url = new URL(candidate);
+    const siteUrl = new URL(SITE_URL);
+    return (
+      url.hostname === siteUrl.hostname &&
+      normalizePath(url.pathname) === normalizePath(path)
+    );
+  } catch {
+    return false;
+  }
+}
+
+export function canonicalUrl(
+  canonical: string | null | undefined,
+  path: string,
+): string {
+  const derived = `${SITE_URL}${path}`;
+  if (!canonical || !canonical.trim()) {
+    return derived;
+  }
+  if (!isSameRouteUrl(canonical.trim(), path)) {
+    return derived;
+  }
+  return derived;
 }
 
 export const COUNTRY_REGIONS = ["en-US", "en-GB", "en-IN"] as const;
