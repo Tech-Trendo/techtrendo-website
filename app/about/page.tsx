@@ -1,19 +1,10 @@
 import { API_URL } from "@/lib/api";
 import { Users, Target, Award, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import Link from "next/link";
 import { Metadata } from "next";
 import { seoData } from "@/types";
 import JsonLd from "@/components/JsonLd";
 import { SITE_URL, seoMetadata } from "@/lib/seo";
-interface Member {
-  id: number;
-  slug: string;
-  name: string;
-  role: string;
-  email: string;
-  image: string | null;
-}
 export async function generateMetadata(): Promise<Metadata> {
   let data: seoData | null = null;
   try {
@@ -31,19 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
     "Meet Tech Trendo – a young, innovative IT company in Itahari, Nepal delivering web design, app development, software solutions, and digital marketing to clients worldwide.",
   );
 }
-async function fetchTeamMembers(): Promise<Member[]> {
-  try {
-    const res = await fetch(`${API_URL}/members/`, {
-      next: { revalidate: 3600, tags: ["member"] },
-    });
-    if (!res.ok) return [];
-    return (await res.json()) ?? [];
-  } catch {
-    return [];
-  }
-}
 export default async function About() {
-  const teamMembers = await fetchTeamMembers().catch(() => []);
   const localBusinessLd = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
@@ -189,64 +168,6 @@ export default async function About() {
                 </Card>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Our Team */}
-      <section className="section-padding bg-muted">
-        <div className="container-custom">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground">
-              Our <span className="gradient-text">Team</span>
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Meet the passionate individuals driving Tech Trendo&apos;s success
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {teamMembers.length > 0 ? (
-              teamMembers.map((member) => (
-                <Link key={member.slug} href={`/${member.slug}`}>
-                  <Card className="card-hover bg-white">
-                    <CardContent className="p-8 text-center space-y-6">
-                      <div className="w-24 h-24 rounded-full bg-linear-to-br from-primary to-secondary flex items-center justify-center mx-auto">
-                        {member.image ? (
-                          <img
-                            src={member.image}
-                            alt={member.name}
-                            className="w-24 h-24 rounded-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-white text-2xl font-bold">
-                            {member.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")}
-                          </span>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <h3 className="text-xl font-bold text-foreground">
-                          {member.name}
-                        </h3>
-                        <p className="text-primary font-medium">
-                          {member.role}
-                        </p>
-                        <p className="text-muted-foreground leading-relaxed">
-                          {member.email}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))
-            ) : (
-              <p className="text-center text-muted-foreground col-span-3">
-                No team members found.
-              </p>
-            )}
           </div>
         </div>
       </section>

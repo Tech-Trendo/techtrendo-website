@@ -9,7 +9,6 @@ const ALLOWED_TAGS = new Set([
   "service",
   "page",
   "job",
-  "member",
   "review",
   "gallery",
   "portfolio",
