@@ -320,28 +320,3 @@ export function jobPostingLd(data: {
     url: data.url,
   };
 }
-
-export function courseLd(data: {
-  name: string;
-  description?: string;
-  provider?: { name: string; url: string };
-  image?: string | null;
-}) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "Course",
-    name: data.name,
-    description: data.description || "",
-    image: data.image ? absoluteImageUrl(data.image) : FALLBACK_OG_IMAGE,
-    provider: data.provider || {
-      "@type": "Organization",
-      name: SITE_NAME,
-      url: SITE_URL,
-    },
-    hasCourseInstance: {
-      "@type": "CourseInstance",
-      courseMode: "online",
-      courseWorkload: "PT2M",
-    },
-  };
-}
