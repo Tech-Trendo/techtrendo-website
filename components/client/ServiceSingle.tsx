@@ -138,11 +138,7 @@ const ServiceDetail: React.FC = () => {
 
   // Fetch service detail
   useEffect(() => {
-    if (!slug) {
-      setError("No service identifier provided in the URL.");
-      setLoading(false);
-      return;
-    }
+    if (!slug) return;
 
     const fetchServiceDetail = async () => {
       setLoading(true);
@@ -198,7 +194,7 @@ const ServiceDetail: React.FC = () => {
       ? iconMap[service.icon as keyof typeof iconMap]
       : Code;
 
-  if (loading) {
+  if (loading && slug) {
     return (
       <div className="min-h-screen p-8 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 pt-16">
@@ -414,7 +410,7 @@ const ServiceDetail: React.FC = () => {
                   transition={{ delay: 0.4, duration: 0.6 }}
                   className="text-xl max-w-2xl mx-auto opacity-90"
                 >
-                  Let's discuss how our {data.title} services can help your
+                  Let&apos;s discuss how our {data.title} services can help your
                   business grow.
                 </motion.p>
                 <motion.div

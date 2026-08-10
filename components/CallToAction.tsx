@@ -35,7 +35,7 @@ const CallToAction: React.FC = () => {
               className="text-xl text-white/90 max-w-2xl mx-auto"
             >
               Join hundreds of satisfied clients who have elevated their digital
-              presence with Tech Trendo's innovative solutions.
+              presence with Tech Trendo&apos;s innovative solutions.
             </motion.p>
 
             {/* Buttons */}

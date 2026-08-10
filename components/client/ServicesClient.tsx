@@ -29,8 +29,12 @@ export default function ServicesClient() {
         );
         setEmail("");
       }
-    } catch (err: any) {
-      if (err.response?.data?.email && err.response.data.email.length > 0) {
+    } catch (err) {
+      if (
+        axios.isAxiosError(err) &&
+        err.response?.data?.email &&
+        err.response.data.email.length > 0
+      ) {
         setSubscriptionMessage(err.response.data.email[0]);
       } else {
         setSubscriptionMessage("Subscription failed. Please try again later.");
@@ -96,7 +100,7 @@ export default function ServicesClient() {
             Ready to Get Started?
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Let's discuss your project and see how we can help bring your vision
+            Let&apos;s discuss your project and see how we can help bring your vision
             to life.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

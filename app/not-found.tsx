@@ -1,4 +1,5 @@
 import { FileText } from "lucide-react";
+import Link from "next/link";
 
 export default function NotFound() {
   return (
@@ -17,12 +18,12 @@ export default function NotFound() {
             The page you are looking for might be removed or does not exist.
           </p>
 
-          <a
+          <Link
             href="/"
             className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-lg hover:bg-blue-700 transition-all duration-300"
           >
             GO HOME
-          </a>
+          </Link>
         </div>
       </main>
 

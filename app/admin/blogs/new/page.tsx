@@ -15,7 +15,6 @@ export default function AdminBlogNewPage() {
       .then((res) => res.json())
       .then((data: { results?: AdminCategory[] }) => setCategories(data.results ?? []))
       .catch(() => undefined);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.checked]);
 
   if (!auth.checked) {

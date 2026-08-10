@@ -28,6 +28,8 @@ interface BlogPost {
   read_time?: number | null;
 }
 
+type BlogListResponse = { results: BlogPost[]; count?: number } | BlogPost[];
+
 const Blog = () => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [totalPosts, setTotalPosts] = useState<number>(0);
@@ -48,12 +50,7 @@ const Blog = () => {
   const POSTS_PER_PAGE = 20;
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  // Reset page when category changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedCategory]);
-
-  // Newsletter subscription
+  // Newsletter subscriptioner subscription
   const [email, setEmail] = useState<string>("");
   const [subscriptionStatus, setSubscriptionStatus] = useState<
     "idle" | "success" | "error"
@@ -72,7 +69,7 @@ const Blog = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get<any>(
+        const res = await axios.get<BlogListResponse>(
           `${API_URL}/blogs/?page_size=100`
         );
         const data = res.data;
@@ -81,7 +78,7 @@ const Blog = () => {
           : (data && Array.isArray(data.results) ? data.results : []);
 
         const catMap = new Map<string, string>();
-        postsArray.forEach((post: any) => {
+        postsArray.forEach((post) => {
           if (post.category?.name && post.category?.slug) {
             catMap.set(post.category.name, post.category.slug);
           }
@@ -94,7 +91,7 @@ const Blog = () => {
         setCategories(extractedCategories);
 
         // Save featured posts from full list
-        const featured = postsArray.filter((post: any) => post.is_featured);
+        const featured = postsArray.filter((post) => post.is_featured);
         setFeaturedPosts(featured);
       } catch (err) {
         console.error("Error fetching categories:", err);
@@ -118,15 +115,18 @@ const Blog = () => {
           }
         }
 
-        const res = await axios.get<any>(url);
+        const res = await axios.get<BlogListResponse>(url);
         if (cancelled) return;
 
         const data = res.data;
         const postsArray = Array.isArray(data)
           ? data
-          : (data && Array.isArray(data.results) ? data.results : []);
+          : (data.results ?? []);
 
-        const count = data && typeof data.count === "number" ? data.count : postsArray.length;
+        const count =
+          !Array.isArray(data) && typeof data.count === "number"
+            ? data.count
+            : postsArray.length;
 
         setBlogPosts(postsArray);
         setTotalPosts(count);
@@ -181,8 +181,12 @@ const Blog = () => {
         );
         setEmail("");
       }
-    } catch (err: any) {
-      if (err.response?.data?.email && err.response.data.email.length > 0) {
+    } catch (err) {
+      if (
+        axios.isAxiosError(err) &&
+        err.response?.data?.email &&
+        err.response.data.email.length > 0
+      ) {
         setSubscriptionMessage(err.response.data.email[0]);
       } else {
         setSubscriptionMessage("Subscription failed. Please try again later.");
@@ -330,7 +334,10 @@ const Blog = () => {
                 variant={selectedCategory === category.name ? "default" : "outline"}
                 className={selectedCategory === category.name ? "btn-gradient" : ""}
                 size="sm"
-                onClick={() => setSelectedCategory(category.name)}
+                onClick={() => {
+                  setSelectedCategory(category.name);
+                  setCurrentPage(1);
+                }}
               >
                 {category.name}
               </Button>
@@ -513,7 +520,7 @@ const Blog = () => {
             Have a Topic Suggestion?
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            We'd love to hear from you! Suggest topics you'd like us to cover or
+            We&apos;d love to hear from you! Suggest topics you&apos;d like us to cover or
             share your own expertise.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

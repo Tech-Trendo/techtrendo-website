@@ -96,9 +96,9 @@ const Verify = () => {
       const data: Certificate = await res.json();
       setCertificate(data);
       setError("");
-    } catch (err: any) {
+    } catch (err) {
       setCertificate(null);
-      setError(err.message || "Something went wrong.");
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setIsLoading(false);
     }
@@ -280,7 +280,7 @@ const Verify = () => {
               <ul className="space-y-2 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <span className="text-primary">â€¢</span>
-                  Enter the complete certificate code starting with "TTMC"
+                  Enter the complete certificate code starting with &quot;TTMC&quot;
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary">â€¢</span>

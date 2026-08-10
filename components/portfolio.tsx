@@ -186,7 +186,7 @@ const Portfolio = () => {
                     transition={{ delay: 0.4, duration: 0.6 }}
                     className="text-xl max-w-2xl mx-auto opacity-90"
                   >
-                    Let's bring your ideas to life. Connect with us and let's
+                    Let&apos;s bring your ideas to life. Connect with us and let&apos;s
                     build something amazing together.
                   </motion.p>
                   <motion.div

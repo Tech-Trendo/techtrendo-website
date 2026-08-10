@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import Link from "next/link";
 import * as LucideIcons from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { 
   CheckCircle2, 
   Code, 
@@ -228,7 +229,9 @@ export default function OutsourcePage({ initialServices }: OutsourcePageProps) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {initialServices.map((service) => {
               const IconComponent =
-                (LucideIcons as any)[service.icon] || Code;
+                (LucideIcons as unknown as Record<string, LucideIcon>)[
+                  service.icon
+                ] || Code;
               return (
                 <Card key={service.id} className="card-hover border border-slate-100 shadow-large hover:border-primary/20 hover:shadow-xl transition-all duration-300">
                   <CardContent className="p-8 space-y-6">
@@ -250,7 +253,7 @@ export default function OutsourcePage({ initialServices }: OutsourcePageProps) {
                     {/* Features List */}
                     <div className="space-y-3">
                       <h4 className="font-semibold text-foreground">
-                        What's Included:
+                        What&apos;s Included:
                       </h4>
                       <ul className="space-y-2">
                         {service.features?.map((feature, idx) => (

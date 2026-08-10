@@ -155,17 +155,17 @@ export default async function About() {
                   the digital divide in Eastern Nepal by providing world-class
                   IT solutions that are both accessible and effective. We
                   specialize in serving the education sector, recognizing its
-                  crucial role in shaping Nepal's future.
+                  crucial role in shaping Nepal&apos;s future.
                 </p>
                 <p>
                   With our comprehensive suite of services ranging from web
-                  development to digital marketing, we've become the trusted
+                  development to digital marketing, we&apos;ve become the trusted
                   partner for businesses, educational institutions, and
                   organizations looking to embrace digital transformation.
                 </p>
                 <p>
                   What sets us apart is our deep understanding of the local
-                  market combined with global best practices. We don't just
+                  market combined with global best practices. We don&apos;t just
                   deliver projects; we build lasting partnerships that drive
                   sustainable growth and success.
                 </p>
@@ -201,7 +201,7 @@ export default async function About() {
               Our <span className="gradient-text">Team</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Meet the passionate individuals driving Tech Trendo's success
+              Meet the passionate individuals driving Tech Trendo&apos;s success
             </p>
           </div>
 

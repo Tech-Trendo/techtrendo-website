@@ -1,5 +1,6 @@
 import { API_URL } from "@/lib/api";
 import * as LucideIcons from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -84,7 +85,9 @@ export default async function Services() {
             {services.map((service) => {
               // Dynamically pick icon from LucideIcons
               const IconComponent =
-                (LucideIcons as any)[service.icon] || LucideIcons.Code;
+                (LucideIcons as unknown as Record<string, LucideIcon>)[
+                  service.icon
+                ] || LucideIcons.Code;
               return (
                 <Card
                   key={service.id}
@@ -109,7 +112,7 @@ export default async function Services() {
                     {/* Features List */}
                     <div className="space-y-3">
                       <h4 className="font-semibold text-foreground">
-                        What's Included:
+                        What&apos;s Included:
                       </h4>
                       <ul className="space-y-2">
                         {service.features?.map((feature, idx) => (

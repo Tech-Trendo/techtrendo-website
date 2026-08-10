@@ -51,9 +51,7 @@ export default function AdminBlogsPage() {
       .catch(() => undefined);
   }, []);
 
-  const loadList = useCallback(async () => {
-    setLoading(true);
-    setLoadError(null);
+  const fetchList = useCallback(async () => {
     try {
       const params = new URLSearchParams({ page: String(page), page_size: String(PAGE_SIZE) });
       if (search) params.set("search", search);
@@ -75,10 +73,17 @@ export default function AdminBlogsPage() {
     }
   }, [page, search, category]);
 
+  const loadList = useCallback(async () => {
+    setLoading(true);
+    setLoadError(null);
+    await fetchList();
+  }, [fetchList]);
+
   useEffect(() => {
     if (!auth.checked) return;
-    void loadList();
-  }, [loadList, auth.checked]);
+    const timer = setTimeout(() => void fetchList(), 0);
+    return () => clearTimeout(timer);
+  }, [fetchList, auth.checked]);
 
   useEffect(() => {
     if (searchTimer.current) clearTimeout(searchTimer.current);

@@ -22,6 +22,18 @@ interface Position {
   deadline?: string | null;
 }
 
+interface RawPosition {
+  id: number;
+  title: string;
+  location?: string | null;
+  duration?: string | null;
+  description?: string | null;
+  requirements?: string[] | null;
+  qualifications?: string | null;
+  img?: string | null;
+  deadline?: string | null;
+}
+
 const formatDate = (dateString: string | null): string | null => {
   if (!dateString) return null;
   const date = new Date(dateString);
@@ -48,9 +60,9 @@ const Careers = () => {
     const fetchPositions = async () => {
       try {
         const internRes = await fetch(`${API_URL}/interns/`);
-        const internData = await internRes.json();
+        const internData: RawPosition[] = await internRes.json();
         setInternships(
-          internData.map((pos: any) => ({
+          internData.map((pos) => ({
             id: pos.id,
             title: pos.title,
             location: pos.location || "Not specified",
@@ -60,14 +72,14 @@ const Careers = () => {
             requirements: pos.requirements || [],
             qualifications: pos.qualifications || "",
             img: pos.img,
-            deadline: formatDate(pos.deadline),
+            deadline: formatDate(pos.deadline ?? null),
           }))
         );
 
         const jobRes = await fetch(`${API_URL}/jobs/`);
-        const jobData = await jobRes.json();
+        const jobData: RawPosition[] = await jobRes.json();
         setFullTimePositions(
-          jobData.map((pos: any) => ({
+          jobData.map((pos) => ({
             id: pos.id,
             title: pos.title,
             location: pos.location || "Not specified",
@@ -77,7 +89,7 @@ const Careers = () => {
             requirements: pos.requirements || [],
             qualifications: pos.qualifications || "",
             img: pos.img,
-            deadline: formatDate(pos.deadline),
+            deadline: formatDate(pos.deadline ?? null),
           }))
         );
       } catch (error) {
@@ -201,7 +213,7 @@ const Careers = () => {
         <div className="container-custom text-center space-y-6">
           <h1 className="text-5xl md:text-6xl font-bold">Shape the Future with Tech Trendo</h1>
           <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto">
-            Join our innovative team and be part of Nepal's digital transformation
+            Join our innovative team and be part of Nepal&apos;s digital transformation
           </p>
         </div>
       </section>
@@ -295,9 +307,9 @@ const Careers = () => {
       {/* CTA Section */}
       <section className="section-padding bg-linear-to-r from-primary to-secondary text-white">
         <div className="container-custom text-center space-y-8">
-          <h2 className="text-4xl md:text-5xl font-bold">Don't See a Perfect Match?</h2>
+          <h2 className="text-4xl md:text-5xl font-bold">Don&apos;t See a Perfect Match?</h2>
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            We're always looking for talented individuals. Send us your resume and let's discuss opportunities.
+            We&apos;re always looking for talented individuals. Send us your resume and let&apos;s discuss opportunities.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button

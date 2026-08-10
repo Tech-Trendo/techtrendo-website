@@ -85,11 +85,7 @@ const ProductDetail: React.FC = () => {
   const [quoteOpen, setQuoteOpen] = useState(false);
 
   useEffect(() => {
-    if (!slug) {
-      setError("No product identifier provided in the URL.");
-      setLoading(false);
-      return;
-    }
+    if (!slug) return;
 
     const fetchProduct = async () => {
       setLoading(true);
@@ -116,7 +112,7 @@ const ProductDetail: React.FC = () => {
 
   // const IconComponent = product?.icon ? iconMap[product.icon] || Box : Box;
 
-  if (loading) {
+  if (loading && slug) {
     return (
       <div className="min-h-screen p-8 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 pt-16">

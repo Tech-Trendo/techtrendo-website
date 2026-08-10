@@ -1,10 +1,20 @@
 "use client";
 import { useEffect, useRef } from "react";
 
+interface Particle {
+  x: number;
+  y: number;
+  size: number;
+  speedX: number;
+  speedY: number;
+  opacity: number;
+  pulse: number;
+}
+
 const AnimatedTechBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>(0); //
-  const particlesRef = useRef<any[]>([]);
+  const particlesRef = useRef<Particle[]>([]);
   const mouseRef = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {

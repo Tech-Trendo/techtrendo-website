@@ -28,7 +28,6 @@ export default function AdminBlogEditPage() {
 
   useEffect(() => {
     if (!slug || !auth.checked) return;
-    setLoading(true);
     fetch(`/api/admin/blogs/${encodeURIComponent(slug)}`, { cache: "no-store" })
       .then(async (res) => {
         if (!res.ok) throw new Error("not found");

@@ -137,7 +137,7 @@ const Contact = () => {
         <div className="container-custom text-center space-y-6">
           <h1 className="text-5xl md:text-6xl font-bold">Contact Us</h1>
           <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto">
-            Ready to start your project? Let's discuss how we can help you
+            Ready to start your project? Let&apos;s discuss how we can help you
             achieve your goals.
           </p>
         </div>
@@ -151,7 +151,7 @@ const Contact = () => {
               Get In <span className="gradient-text">Touch</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              We're here to help and answer any questions you might have
+              We&apos;re here to help and answer any questions you might have
             </p>
           </div>
 
@@ -190,7 +190,7 @@ const Contact = () => {
                     Send Us a Message
                   </h3>
                   <p className="text-muted-foreground">
-                    Fill out the form below and we'll get back to you as soon as
+                    Fill out the form below and we&apos;ll get back to you as soon as
                     possible.
                   </p>
                 </div>
@@ -415,7 +415,7 @@ const Contact = () => {
             Ready to Start Your Project?
           </h2>
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Let's discuss your ideas and turn them into reality. Contact us
+            Let&apos;s discuss your ideas and turn them into reality. Contact us
             today for a free consultation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

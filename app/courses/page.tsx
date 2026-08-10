@@ -162,7 +162,7 @@ const Courses: React.FC = () => {
                 <span className="gradient-text">Management Product</span>
               </h2>
               <p className="text-muted-foreground leading-relaxed text-lg">
-                We've developed a comprehensive course management system that
+                We&apos;ve developed a comprehensive course management system that
                 helps educational institutions organize courses, manage
                 subjects, create timetables, plan curriculum, and conduct
                 examinations efficiently.

@@ -49,8 +49,12 @@ const Footer = () => {
         setSubscriptionMessage("Thank you! You have successfully subscribed to our newsletter.");
         setEmail("");
       }
-    } catch (err: any) {
-      if (err.response?.data?.email && err.response.data.email.length > 0) {
+    } catch (err) {
+      if (
+        axios.isAxiosError(err) &&
+        err.response?.data?.email &&
+        err.response.data.email.length > 0
+      ) {
         setSubscriptionMessage(err.response.data.email[0]);
       } else {
         setSubscriptionMessage("Subscription failed. Please try again later.");

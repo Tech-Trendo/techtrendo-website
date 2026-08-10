@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import LinkExtension from "@tiptap/extension-link";
@@ -67,7 +67,9 @@ function clampUrl(raw: string): string {
 export default function RichTextEditor({ initialContent, onChange }: RichTextEditorProps) {
   const [activeState, setActiveState] = useState<Record<string, boolean>>({});
   const onChangeRef = useRef(onChange);
-  onChangeRef.current = onChange;
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   const editor = useEditor(
     {

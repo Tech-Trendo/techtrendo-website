@@ -17,6 +17,7 @@ import {
   FileCode2,
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import AnimatedTechBackground from "@/components/AnimatedTechBackground";
@@ -309,7 +310,7 @@ export default async function Home() {
               About <span className="gradient-text">Tech Trendo</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              We are Eastern Nepal's leading IT company, dedicated to providing
+              We are Eastern Nepal&apos;s leading IT company, dedicated to providing
               innovative digital solutions that transform businesses and drive
               growth. Our young, dynamic team combines creativity with technical
               expertise to deliver exceptional results.
@@ -418,7 +419,9 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {displayServices.map((service, index) => {
               const IconComponent =
-                (LucideIcons as any)[service.icon] || LucideIcons.Code;
+                (LucideIcons as unknown as Record<string, LucideIcon>)[
+                  service.icon
+                ] || LucideIcons.Code;
               return (
                 <Card
                   key={service.id || index}
@@ -551,7 +554,7 @@ export default async function Home() {
                 >
                   <CardContent className="p-8 flex flex-col justify-between h-full space-y-6">
                     <p className="text-foreground leading-relaxed italic">
-                      "{testimonial.review}"
+                      &quot;{testimonial.review}&quot;
                     </p>
                     <div className="flex items-center gap-4">
                       {testimonial.reviewerImage ? (

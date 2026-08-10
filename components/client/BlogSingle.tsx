@@ -89,11 +89,7 @@ const BlogDetail: React.FC = () => {
   const [relatedPosts, setRelatedPosts] = useState<RelatedPost[]>([]);
 
   useEffect(() => {
-    if (!slug) {
-      setError("No blog identifier provided in the URL.");
-      setLoading(false);
-      return;
-    }
+    if (!slug) return;
 
     const fetchBlogDetail = async () => {
       setLoading(true);
@@ -104,12 +100,10 @@ const BlogDetail: React.FC = () => {
         if (Array.isArray(response.data.related_posts) && response.data.related_posts.length > 0) {
           setRelatedPosts(response.data.related_posts);
         } else if (response.data.category?.slug) {
-          const relatedRes = await axios.get<BlogData[]>(
+          const relatedRes = await axios.get<{ results?: BlogData[] }>(
             `${API_URL}/blogs/?category__slug=${response.data.category.slug}&page_size=4`,
           );
-          const list = Array.isArray(relatedRes.data)
-            ? relatedRes.data
-            : (relatedRes.data as any)?.results ?? [];
+          const list = relatedRes.data.results ?? [];
           setRelatedPosts(
             list
               .filter((post: BlogData) => post.slug !== slug)
@@ -131,7 +125,7 @@ const BlogDetail: React.FC = () => {
     fetchBlogDetail();
   }, [slug]);
 
-  if (loading) {
+  if (loading && slug) {
     return (
       <div className="min-h-screen p-8 bg-background">
         <div className="max-w-4xl mx-auto space-y-8">
