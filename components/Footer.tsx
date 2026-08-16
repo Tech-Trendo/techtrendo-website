@@ -23,7 +23,7 @@ const Footer = () => {
     { name: "Careers", href: "/careers" },
     { name: "Blog", href: "/blog" },
     { name: "Contact Us", href: "/contact" },
-
+    { name: "Markets We Serve", href: "/markets" },
   ];
 
   const socialLinks = [

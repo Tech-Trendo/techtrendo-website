@@ -12,6 +12,7 @@ const ALLOWED_TAGS = new Set([
   "review",
   "gallery",
   "portfolio",
+  "market",
 ]);
 
 export async function POST(request: NextRequest) {

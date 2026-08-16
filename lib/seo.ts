@@ -137,6 +137,16 @@ export const organizationLd = {
     addressRegion: "Koshi Pradesh",
     addressCountry: "NP",
   },
+  // Markets served. Each one must have a real published /markets page with
+  // hand-written content before being added here.
+  areaServed: [
+    { "@type": "Country", name: "Nepal" },
+    { "@type": "Country", name: "United States" },
+    { "@type": "Country", name: "United Kingdom" },
+    { "@type": "Country", name: "India" },
+    { "@type": "Country", name: "Australia" },
+    { "@type": "Country", name: "United Arab Emirates" },
+  ],
   sameAs: [
     "https://www.facebook.com/techtrendo.np",
     "https://www.linkedin.com/company/tech-trendo/",
@@ -237,7 +247,17 @@ export function serviceLd(data: {
   description: string;
   url: string;
   image?: string | null;
+  areaServed?: string[];
 }) {
+  // areaServed is the Google-sanctioned way to signal "we serve this region".
+  // Market pages pass their country; service pages keep the Nepal/Global default.
+  const areaServed = data.areaServed
+    ? data.areaServed.map((name) => ({ "@type": "Country", name }))
+    : [
+        { "@type": "Country", name: "Nepal" },
+        { "@type": "AdministrativeArea", name: "Global" },
+      ];
+
   return {
     "@context": "https://schema.org",
     "@type": "Service",
@@ -246,10 +266,7 @@ export function serviceLd(data: {
     url: data.url,
     image: data.image ? absoluteImageUrl(data.image) : undefined,
     provider: { "@id": `${SITE_URL}/#organization` },
-    areaServed: [
-      { "@type": "Country", name: "Nepal" },
-      { "@type": "AdministrativeArea", name: "Global" },
-    ],
+    areaServed,
     availableChannel: {
       "@type": "ServiceChannel",
       serviceUrl: data.url,

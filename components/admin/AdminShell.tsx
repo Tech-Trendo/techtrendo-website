@@ -1,14 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { ExternalLink, FileText, LogOut } from "lucide-react";
+import { ExternalLink, FileText, LayoutDashboard, LogOut, Mail, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function AdminShell({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
+const NAV_ITEMS = [
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/admin/blogs", label: "Posts", icon: FileText },
+  { href: "/admin/contact-messages", label: "Contacts", icon: Mail },
+];
+
+function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
+  const router = useRouter();
 
   const handleLogout = async () => {
     await fetch("/api/admin/auth/logout", { method: "POST", cache: "no-store" });
@@ -17,43 +24,108 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
-        <div className="mx-auto max-w-6xl px-4 h-14 flex items-center gap-6">
-          <Link href="/admin/blogs" className="font-bold tracking-tight text-foreground">
-            TechTrendo <span className="text-primary">Admin</span>
-          </Link>
-          <nav className="flex items-center gap-1">
+    <aside className="flex h-full w-64 flex-col border-r border-border bg-card">
+      <div className="flex h-16 items-center gap-2.5 border-b border-border px-5">
+        <img
+          src="/tech-trendo.png"
+          alt="Tech Trendo Logo"
+          className="h-9 w-9 object-contain"
+        />
+        <div className="leading-tight">
+          <p className="text-sm font-bold tracking-tight">TechTrendo</p>
+          <p className="text-xs font-medium text-primary">Admin Panel</p>
+        </div>
+      </div>
+
+      <nav className="flex-1 space-y-1 px-3 py-4">
+        {NAV_ITEMS.map((item) => {
+          const active = item.exact
+            ? pathname === item.href
+            : pathname.startsWith(item.href);
+          return (
             <Link
-              href="/admin/blogs"
+              key={item.href}
+              href={item.href}
+              onClick={onNavigate}
               className={cn(
-                "px-3 py-1.5 rounded-md text-sm transition-colors",
-                pathname.startsWith("/admin/blogs")
-                  ? "bg-primary/10 text-primary font-medium"
-                  : "text-muted-foreground hover:text-foreground",
+                "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                active
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
               )}
             >
-              Posts
+              <item.icon className="h-4 w-4" />
+              {item.label}
             </Link>
-          </nav>
-          <div className="ml-auto flex items-center gap-2">
-            <Link
-              href="/"
-              target="_blank"
-              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ExternalLink className="h-3.5 w-3.5" /> View site
-            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="space-y-1 border-t border-border px-3 py-4">
+        <Link
+          href="/"
+          target="_blank"
+          onClick={onNavigate}
+          className="flex items-center gap-2.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          <ExternalLink className="h-4 w-4" /> View site
+        </Link>
+        <button
+          onClick={handleLogout}
+          className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+        >
+          <LogOut className="h-4 w-4" /> Logout
+        </button>
+      </div>
+    </aside>
+  );
+}
+
+export default function AdminShell({ children }: { children: React.ReactNode }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  return (
+    <div className="min-h-screen bg-muted/30">
+      <div className="fixed inset-y-0 left-0 z-40 hidden lg:block">
+        <AdminSidebar />
+      </div>
+
+      <div className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-background/95 px-4 backdrop-blur lg:hidden">
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+          aria-label="Open sidebar"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+        <img src="/tech-trendo.png" alt="Tech Trendo Logo" className="h-7 w-7 object-contain" />
+        <span className="font-bold tracking-tight">
+          TechTrendo <span className="text-primary">Admin</span>
+        </span>
+      </div>
+
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setSidebarOpen(false)}
+          />
+          <div className="absolute inset-y-0 left-0 flex shadow-xl">
+            <AdminSidebar onNavigate={() => setSidebarOpen(false)} />
             <button
-              onClick={handleLogout}
-              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              onClick={() => setSidebarOpen(false)}
+              className="ml-2 mt-4 h-fit rounded-md p-1.5 text-white hover:bg-white/10"
+              aria-label="Close sidebar"
             >
-              <LogOut className="h-3.5 w-3.5" /> Logout
+              <X className="h-5 w-5" />
             </button>
           </div>
         </div>
-      </header>
-      <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
+      )}
+
+      <main className="lg:pl-64">
+        <div className="mx-auto max-w-6xl px-4 py-8">{children}</div>
+      </main>
     </div>
   );
 }

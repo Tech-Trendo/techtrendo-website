@@ -40,3 +40,22 @@ export interface AdminLoginResponse {
   ok: boolean;
   username?: string;
 }
+
+export interface AdminContactMessage {
+  id: number;
+  first_name: string;
+  last_name: string | null;
+  email: string;
+  phone: string | null;
+  service: string;
+  message: string;
+  recaptcha_token: string;
+  submitted_at: string;
+}
+
+export interface ContactMessageListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: AdminContactMessage[];
+}

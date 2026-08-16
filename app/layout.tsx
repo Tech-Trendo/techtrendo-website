@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { countryAlternates } from "@/lib/seo";
 import "./globals.css";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import SiteChrome from "@/components/SiteChrome";
 import { Toaster } from "react-hot-toast";
 
 const GA_ID = "G-5Y03DLNYKZ";
@@ -98,10 +97,8 @@ export default function RootLayout({
       </head>
 
       <body className="antialiased min-h-screen flex flex-col">
-        <Navigation />
+        <SiteChrome>{children}</SiteChrome>
         <Toaster />
-        <main className="flex-1">{children}</main>
-        <Footer />
       </body>
     </html>
   );

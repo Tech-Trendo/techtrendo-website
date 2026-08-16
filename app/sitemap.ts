@@ -31,6 +31,7 @@ const STATIC_URLS: { path: string; cfg: EntryCfg }[] = [
   { path: "/contact", cfg: { changeFrequency: "monthly", priority: 0.8 } },
   { path: "/quote", cfg: { changeFrequency: "monthly", priority: 0.7 } },
   { path: "/verify", cfg: { changeFrequency: "monthly", priority: 0.5 } },
+  { path: "/markets", cfg: { changeFrequency: "monthly", priority: 0.5 } },
 ];
 
 // CMS Page slug -> frontend route (slug may differ from the route, e.g.
@@ -40,6 +41,7 @@ const PAGE_ROUTES: Record<string, EntryCfg & { path: string }> = {
   blog: { path: "/blog", changeFrequency: "weekly", priority: 0.9 },
   careers: { path: "/careers", changeFrequency: "weekly", priority: 0.8 },
   contact: { path: "/contact", changeFrequency: "monthly", priority: 0.8 },
+  markets: { path: "/markets", changeFrequency: "monthly", priority: 0.5 },
   outsource: { path: "/outsource", changeFrequency: "monthly", priority: 0.8 },
   products: { path: "/products", changeFrequency: "weekly", priority: 0.9 },
   service: { path: "/services", changeFrequency: "weekly", priority: 0.9 },
@@ -49,7 +51,7 @@ const PAGE_ROUTES: Record<string, EntryCfg & { path: string }> = {
 async function fetchJson<T>(path: string): Promise<T | null> {
   try {
     const res = await fetch(`${API_URL}${path}`, {
-      next: { revalidate: REVALIDATE, tags: ["page", "blog", "service", "product", "portfolio"] },
+      next: { revalidate: REVALIDATE, tags: ["page", "blog", "service", "product", "portfolio", "market"] },
     });
     if (!res.ok) return null;
     return await res.json();
@@ -75,7 +77,7 @@ function toUrl(
     : { url: `${SITE_URL}${path}`, changeFrequency: cfg.changeFrequency, priority: cfg.priority };
 }
 
-type ListItem = { slug?: string; updated_at?: string | null; pub_date?: string | null };
+type ListItem = { slug?: string; updated_at?: string | null; pub_date?: string | null; status?: string };
 
 function listOf(data: unknown): ListItem[] {
   if (Array.isArray(data)) return data as ListItem[];
@@ -92,11 +94,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entries.set(`${SITE_URL}${path}`, toUrl(path, cfg, STATIC_LAST_MOD));
   }
 
-  const [blogsData, services, products, pages] = await Promise.all([
+  const [blogsData, services, products, pages, markets] = await Promise.all([
     fetchJson<unknown>("/blogs/?page_size=100"),
     fetchJson<unknown>("/services/"),
     fetchJson<unknown>("/products/"),
     fetchJson<unknown>("/pages/"),
+    fetchJson<unknown>("/markets/"),
   ]);
 
   const pageItems = listOf(pages).map((item) => ({
@@ -132,6 +135,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (!slug) continue;
     const path = `/products/${slug}`;
     entries.set(`${SITE_URL}${path}`, toUrl(path, { changeFrequency: "monthly", priority: 0.8 }, lastModOf(product.updated_at)));
+  }
+
+  // Markets: only status=published pages belong in the sitemap. Draft market
+  // pages are noindex and must not be crawled at all.
+  const publishedMarkets = listOf(markets).filter(
+    (m) => m?.status === "published",
+  );
+  for (const market of publishedMarkets) {
+    const slug = market.slug ?? "";
+    if (!slug) continue;
+    const path = `/markets/${slug}`;
+    entries.set(`${SITE_URL}${path}`, toUrl(path, { changeFrequency: "monthly", priority: 0.6 }, lastModOf(market.updated_at)));
   }
 
   // Portfolio has no public detail route yet (homepage section only), so it is
