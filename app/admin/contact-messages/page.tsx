@@ -1,12 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import toast from "react-hot-toast";
 import {
   Loader2,
   Mail,
-  MessageSquare,
   Phone,
   RefreshCw,
   Search,
