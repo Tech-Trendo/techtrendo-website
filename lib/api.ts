@@ -1,8 +1,8 @@
-// === API BASE URL (toggle between the two) ===
-// DEVELOPMENT:
-export const API_BASE_URL = "http://localhost:8000";
-// PRODUCTION (comment the line above and uncomment this when deploying):
-// export const API_BASE_URL = "https://app.techtrendo.com";
+// === API BASE URL ===
+// Reads from NEXT_PUBLIC_API_URL env var (set in .env.local or the hosting platform).
+// Defaults to localhost:8000 for local development.
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export const API_URL = `${API_BASE_URL}/api/app`;
 
