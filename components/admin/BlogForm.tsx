@@ -185,7 +185,7 @@ export default function BlogForm({ mode, blog, categories }: BlogFormProps) {
 
   return (
     <form
-      className="max-w-3xl mx-auto pb-20"
+      className="pb-20"
       onSubmit={(e) => {
         e.preventDefault();
         void handleSubmit();

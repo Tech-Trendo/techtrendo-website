@@ -427,7 +427,7 @@ export default async function Home() {
                   key={service.id || index}
                   className="relative overflow-hidden card-3d bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 group"
                 >
-                  <div className="absolute -top-2 -right-2 w-8 h-8 btn-gradient rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg">
+                  <div className="absolute top-2 right-2 z-20 w-8 h-8 btn-gradient rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg">
                     {index + 1}
                   </div>
                   <CardContent className="p-8 space-y-4 relative z-10">

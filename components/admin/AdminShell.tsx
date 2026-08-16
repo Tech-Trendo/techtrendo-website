@@ -4,13 +4,78 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { ExternalLink, FileText, LayoutDashboard, LogOut, Mail, Menu, X } from "lucide-react";
+import {
+  CalendarDays,
+  ExternalLink,
+  FileText,
+  FolderOpen,
+  Globe,
+  Image,
+  Landmark,
+  LayoutDashboard,
+  LogOut,
+  Mail,
+  Menu,
+  MessageSquareQuote,
+  Package,
+  PenSquare,
+  Star,
+  Tags,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const NAV_ITEMS = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/admin/blogs", label: "Posts", icon: FileText },
-  { href: "/admin/contact-messages", label: "Contacts", icon: Mail },
+interface NavItem {
+  href: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  exact?: boolean;
+}
+
+interface NavGroup {
+  label?: string;
+  items: NavItem[];
+}
+
+const NAV_GROUPS: NavGroup[] = [
+  {
+    items: [{ href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true }],
+  },
+  {
+    label: "Content",
+    items: [
+      { href: "/admin/blogs", label: "Posts", icon: FileText },
+      { href: "/admin/blog-categories", label: "Blog Categories", icon: Tags },
+      { href: "/admin/services", label: "Services", icon: PenSquare },
+      { href: "/admin/products", label: "Products", icon: Package },
+      { href: "/admin/portfolio", label: "Portfolio", icon: FolderOpen },
+      { href: "/admin/pages", label: "Pages", icon: FileText },
+    ],
+  },
+  {
+    label: "Testimonials",
+    items: [
+      { href: "/admin/testimonials", label: "Testimonials", icon: Star },
+      { href: "/admin/student-testimonials", label: "Student Testimonials", icon: Star },
+      { href: "/admin/reviews", label: "Reviews", icon: MessageSquareQuote },
+    ],
+  },
+  {
+    label: "Media",
+    items: [
+      { href: "/admin/events", label: "Events", icon: CalendarDays },
+      { href: "/admin/gallery-items", label: "Gallery", icon: Image },
+      { href: "/admin/company-logos", label: "Company Logos", icon: Landmark },
+    ],
+  },
+  {
+    label: "Markets",
+    items: [{ href: "/admin/markets", label: "Market Pages", icon: Globe }],
+  },
+  {
+    label: "Inbox",
+    items: [{ href: "/admin/contact-messages", label: "Contacts", icon: Mail }],
+  },
 ];
 
 function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
@@ -37,28 +102,37 @@ function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
         </div>
       </div>
 
-      <nav className="flex-1 space-y-1 px-3 py-4">
-        {NAV_ITEMS.map((item) => {
-          const active = item.exact
-            ? pathname === item.href
-            : pathname.startsWith(item.href);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={onNavigate}
-              className={cn(
-                "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                active
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          );
-        })}
+      <nav className="flex-1 overflow-y-auto space-y-4 px-3 py-4">
+        {NAV_GROUPS.map((group, groupIndex) => (
+          <div key={group.label ?? `group-${groupIndex}`} className="space-y-1">
+            {group.label && (
+              <p className="px-3 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+                {group.label}
+              </p>
+            )}
+            {group.items.map((item) => {
+              const active = item.exact
+                ? pathname === item.href
+                : pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={onNavigate}
+                  className={cn(
+                    "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    active
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                  )}
+                >
+                  <item.icon className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        ))}
       </nav>
 
       <div className="space-y-1 border-t border-border px-3 py-4">
@@ -124,7 +198,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
       )}
 
       <main className="lg:pl-64">
-        <div className="mx-auto max-w-6xl px-4 py-8">{children}</div>
+        <div className="px-4 py-8">{children}</div>
       </main>
     </div>
   );

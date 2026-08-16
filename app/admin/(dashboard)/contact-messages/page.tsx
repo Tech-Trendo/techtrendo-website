@@ -268,7 +268,7 @@ export default function AdminContactMessagesPage() {
         )}
       </div>
 
-      {count > PAGE_SIZE && (
+      {count > 0 && (
         <div className="flex items-center justify-between mt-4 text-sm">
           <span className="text-muted-foreground">
             Page {page} of {totalPages}
