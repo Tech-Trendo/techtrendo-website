@@ -32,6 +32,7 @@ const STATIC_URLS: { path: string; cfg: EntryCfg }[] = [
   { path: "/quote", cfg: { changeFrequency: "monthly", priority: 0.7 } },
   { path: "/verify", cfg: { changeFrequency: "monthly", priority: 0.5 } },
   { path: "/markets", cfg: { changeFrequency: "monthly", priority: 0.5 } },
+  { path: "/locations/eastern-nepal", cfg: { changeFrequency: "monthly", priority: 0.6 } },
 ];
 
 // CMS Page slug -> frontend route (slug may differ from the route, e.g.
@@ -42,6 +43,7 @@ const PAGE_ROUTES: Record<string, EntryCfg & { path: string }> = {
   careers: { path: "/careers", changeFrequency: "weekly", priority: 0.8 },
   contact: { path: "/contact", changeFrequency: "monthly", priority: 0.8 },
   markets: { path: "/markets", changeFrequency: "monthly", priority: 0.5 },
+  "locations-eastern-nepal": { path: "/locations/eastern-nepal", changeFrequency: "monthly", priority: 0.6 },
   outsource: { path: "/outsource", changeFrequency: "monthly", priority: 0.8 },
   products: { path: "/products", changeFrequency: "weekly", priority: 0.9 },
   service: { path: "/services", changeFrequency: "weekly", priority: 0.9 },

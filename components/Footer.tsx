@@ -24,6 +24,7 @@ const Footer = () => {
     { name: "Blog", href: "/blog" },
     { name: "Contact Us", href: "/contact" },
     { name: "Markets We Serve", href: "/markets" },
+    { name: "Local Presence in Eastern Nepal", href: "/locations/eastern-nepal" },
   ];
 
   const socialLinks = [

@@ -17,6 +17,7 @@ const PAGE_ROUTE_HINTS: Record<string, string> = {
   products: "/products",
   outsource: "/outsource",
   markets: "/markets",
+  "locations-eastern-nepal": "/locations/eastern-nepal",
 };
 
 interface PageFormProps {

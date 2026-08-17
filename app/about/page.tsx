@@ -2,6 +2,7 @@ import { API_URL } from "@/lib/api";
 import { Users, Target, Award, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Metadata } from "next";
+import Link from "next/link";
 import { seoData } from "@/types";
 import JsonLd from "@/components/JsonLd";
 import { SITE_URL, seoMetadata } from "@/lib/seo";
@@ -131,7 +132,11 @@ export default async function About() {
                   Tech Trendo is a dynamic IT company based in Itahari City,
                   Eastern Nepal, founded by a team of young, passionate
                   innovators who believe in the transformative power of
-                  technology.
+                  technology.{" "}
+                  <Link href="/locations/eastern-nepal" className="text-primary hover:underline">
+                    See our local Eastern Nepal services
+                  </Link>
+                  .
                 </p>
                 <p>
                   Our journey began with a simple yet powerful vision: to bridge
