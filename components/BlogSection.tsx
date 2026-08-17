@@ -1,12 +1,23 @@
 "use client";
-import { API_URL } from "@/lib/api";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Calendar, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+
+export interface BlogPost {
+  id: number;
+  title: string;
+  is_featured: boolean;
+  content: string;
+  pub_date: string;
+  image: string;
+  slug: string;
+  category: Category;
+  meta_description: string | null;
+  og_description: string | null;
+}
 
 interface Category {
   id: number;
@@ -24,57 +35,7 @@ interface Category {
   canonical_url: string | null;
 }
 
-interface BlogPost {
-  id: number;
-  title: string;
-  is_featured: boolean;
-  content: string;
-  pub_date: string;
-  image: string;
-  slug: string;
-  category: Category;
-  meta_title: string | null;
-  meta_description: string;
-  meta_keywords: string | null;
-  og_title: string | null;
-  og_description: string | null;
-  og_image: string | null;
-  twitter_title: string | null;
-  twitter_description: string | null;
-  twitter_image: string | null;
-  canonical_url: string | null;
-}
-
-const BlogSection: React.FC = () => {
-  const [blogs, setBlogs] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const res = await fetch(`${API_URL}/blogs/?page_size=100`);
-        if (!res.ok) {
-          setBlogs([]);
-          return;
-        }
-        const data = await res.json();
-        const postsArray = Array.isArray(data)
-          ? data
-          : (data && Array.isArray(data.results) ? data.results : []);
-        // Filter only featured posts
-        const featured = postsArray.filter(
-          (post: BlogPost) => post.is_featured
-        );
-        setBlogs(featured);
-      } catch (error) {
-        console.error("Error fetching blogs:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBlogs();
-  }, []);
+const BlogSection: React.FC<{ posts: BlogPost[] }> = ({ posts }) => {
 
   return (
     <section className="section-padding bg-background section-3d">
@@ -102,11 +63,7 @@ const BlogSection: React.FC = () => {
         </div>
 
         {/* Loading State */}
-        {loading ? (
-          <div className="text-center text-muted-foreground text-lg">
-            Loading blogs...
-          </div>
-        ) : blogs.length === 0 ? (
+        {posts.length === 0 ? (
           <div className="text-center text-muted-foreground text-lg">
             No featured blog posts found.
           </div>
@@ -117,7 +74,7 @@ const BlogSection: React.FC = () => {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="grid grid-cols-1 md:grid-cols-3 gap-8"
           >
-            {blogs.map((post) => {
+            {posts.map((post) => {
               const fallbackImage = "https://via.placeholder.com/600x400?text=Tech+Blog";
               return (
                 <Card

@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
     data,
     "/blog",
     "Blog | Tech Trendo - Insights on Web, Apps, Software & Digital Marketing",
-    "Read the latest insights from Tech Trendo on web development, mobile apps, custom software, digital marketing, outsourcing, and technology trends in Nepal and beyond.",
+    "Read the latest insights from Tech Trendo on web development, mobile apps, custom software, digital marketing, and outsourcing across global markets.",
   );
 }
 export default function page() {

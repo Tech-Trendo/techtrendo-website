@@ -250,13 +250,19 @@ export function serviceLd(data: {
   areaServed?: string[];
 }) {
   // areaServed is the Google-sanctioned way to signal "we serve this region".
-  // Market pages pass their country; service pages keep the Nepal/Global default.
+  // Market pages pass their country; service pages keep a global default that
+  // mirrors organizationLd.areaServed — keep both lists in sync.
+  const globalAreas = [
+    "Nepal",
+    "United States",
+    "United Kingdom",
+    "India",
+    "Australia",
+    "United Arab Emirates",
+  ];
   const areaServed = data.areaServed
     ? data.areaServed.map((name) => ({ "@type": "Country", name }))
-    : [
-        { "@type": "Country", name: "Nepal" },
-        { "@type": "AdministrativeArea", name: "Global" },
-      ];
+    : globalAreas.map((name) => ({ "@type": "Country", name }));
 
   return {
     "@context": "https://schema.org",

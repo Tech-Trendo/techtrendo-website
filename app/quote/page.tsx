@@ -6,7 +6,7 @@ import { countryAlternates } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Get a Free Quote | Tech Trendo",
   description:
-    "Request a free, no-obligation quote for web development, mobile apps, software solutions, and digital marketing from Tech Trendo, Nepal's leading IT company.",
+    "Request a free, no-obligation quote for web development, mobile apps, software solutions, and digital marketing from Tech Trendo, a global software development company.",
   alternates: countryAlternates("https://techtrendo.com/quote"),
   openGraph: {
     title: "Get a Free Quote | Tech Trendo",

@@ -24,7 +24,7 @@ import AnimatedTechBackground from "@/components/AnimatedTechBackground";
 import ChatFAB from "@/components/ChatFAB";
 import Portfolio from "@/components/portfolio";
 import CallToAction from "@/components/CallToAction";
-import BlogSection from "@/components/BlogSection";
+import BlogSection, { type BlogPost } from "@/components/BlogSection";
 import WorkMech from "@/components/client/WorkMech";
 import { Metadata } from "next";
 import { countryAlternates, organizationLd, websiteLd } from "@/lib/seo";
@@ -64,6 +64,47 @@ interface Review {
   reviewerRole: string;
   review: string;
   reviewerImage: string | null;
+}
+
+interface Project {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  type: "mobile_app" | "software" | "website";
+  points?: string;
+  link?: string;
+}
+
+async function fetchPortfolio(): Promise<Project[]> {
+  try {
+    const res = await fetch(`${API_URL}/portfolio/`, {
+      next: { revalidate: 3600, tags: ["portfolio"] },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
+}
+
+async function fetchFeaturedBlogs(): Promise<BlogPost[]> {
+  try {
+    const res = await fetch(`${API_URL}/blogs/?page_size=100`, {
+      next: { revalidate: 3600, tags: ["blog"] },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    const posts = Array.isArray(data)
+      ? data
+      : data && Array.isArray(data.results)
+        ? data.results
+        : [];
+    return posts.filter((post: BlogPost) => post.is_featured);
+  } catch {
+    return [];
+  }
 }
 
 interface PartnerLogo {
@@ -120,16 +161,16 @@ async function fetchGallery(): Promise<Gallery[]> {
 }
 
 export const metadata: Metadata = {
-  title: "Tech Trendo | Best IT Company in Eastern Nepal",
+  title: "Tech Trendo | Global Software Development & IT Services",
   description:
-    "Tech Trendo – Eastern Nepal’s Best & Leading IT company for Web, App, Software Development & Digital Marketing that drives real business growth.",
+    "Global software development company delivering custom software, web apps, mobile apps, cloud solutions, and IT outsourcing for businesses worldwide.",
   keywords:
-    "Tech Trendo,Best IT Company Nepal, IT Company Nepal,IT Company Eastern Nepal, Web Development, Mobile App Development, Software Development, Digital Marketing, SEO Services, Tech Company Itahari, tech trend, tech in trend, web, app, software, App Development in Itahari, Software Company in Itahari,Software Company in Dharan,Software Company in Biratnagar,Software Company in Jhapa,Software Company in Morang,Software Company in Sunsari",
+    "Tech Trendo, Global IT Company, Software Development Company, Custom Software Development, Web Development Services, Mobile App Development, Digital Marketing Services, IT Outsourcing, Cloud Solutions, Software Company Nepal, Technology Partner, tech trend, tech in trend",
   alternates: countryAlternates("https://techtrendo.com"),
   openGraph: {
-    title: "Tech Trendo | Best IT Company in Eastern Nepal",
+    title: "Tech Trendo | Global Software Development & IT Services",
     description:
-      "Leading IT company in Eastern Nepal for web development, mobile apps, software solutions & digital marketing that drive real business growth.",
+      "Global software development company delivering custom software, web apps, mobile apps, cloud solutions, and IT outsourcing services worldwide.",
     url: "https://techtrendo.com",
     siteName: "Tech Trendo",
     images: [
@@ -137,7 +178,7 @@ export const metadata: Metadata = {
         url: "https://techtrendo.com/preview.png",
         width: 1200,
         height: 630,
-        alt: "Tech Trendo | Best IT Company in Eastern Nepal",
+        alt: "Tech Trendo | Global Software Development & IT Services",
       },
     ],
     locale: "en_US",
@@ -145,21 +186,25 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tech Trendo | Best IT Company in Eastern Nepal",
+    title: "Tech Trendo | Global Software Development & IT Services",
     description:
-      "Web, App & Software Development + Digital Marketing services in Nepal.",
+      "Web, App & Software Development + Digital Marketing services for businesses worldwide.",
     images: ["https://techtrendo.com/preview.png"],
   },
 };
 export default async function Home() {
-  const [reviews, partnerLogos, gallery, services] = await Promise.all([
-    fetchReviews(),
-    fetchPartnerLogos(),
-    fetchGallery(),
-    fetchServices(),
-  ]).catch(() => {
-    return [[], [], [], []] as const;
-  });
+  const [reviews, partnerLogos, gallery, services, portfolio, featuredBlogs] =
+    await Promise.all([
+      fetchReviews(),
+      fetchPartnerLogos(),
+      fetchGallery(),
+      fetchServices(),
+      fetchPortfolio(),
+      fetchFeaturedBlogs(),
+    ]).catch(
+      (): [Review[], PartnerLogo[], Gallery[], Service[], Project[], BlogPost[]] =>
+        [[], [], [], [], [], []],
+    );
   const getInitials = (name: string) => {
     const words = name.split(" ");
     return words
@@ -263,26 +308,27 @@ export default async function Home() {
         <AnimatedTechBackground />
         <div className="container-custom text-center space-y-6 sm:space-y-8 animate-fade-in-up z-10 px-4 sm:px-6">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-black leading-tight">
-            Tech Trendo: Best IT Company
+            Tech Trendo: Software Development
             <br />
             <span className="gradient-text block mt-1 sm:inline sm:mt-0">
-              In Eastern Nepal
+              & IT Services for Businesses Worldwide
             </span>
           </h1>
           <p className="text-xl sm:text-2xl font-medium max-w-3xl mx-auto text-black px-2">
             Your Trusted Technology Partner For Business Growth
           </p>
           <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto px-2">
-            Our aim is to provide real-time and effective IT solutions to
+            From custom software and web apps to cloud solutions and digital
+            marketing, we deliver real-time, effective IT solutions that
             enhance digital presence and operational efficiency.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md mx-auto sm:max-w-none">
-            <Link href="/contact" prefetch={true} className="w-full sm:w-auto">
+            <Link href="/quote" prefetch={true} className="w-full sm:w-auto">
               <Button
                 size="lg"
                 className="btn-gradient text-base sm:text-lg px-8 py-5 sm:py-6 text-white w-full sm:w-auto flex justify-center items-center"
               >
-                Contact Now
+                Start a Project
                 <ArrowRight className="ml-2" size={20} />
               </Button>
             </Link>
@@ -295,6 +341,12 @@ export default async function Home() {
                 Our Services
               </Button>
             </Link>
+          </div>
+          <div className="flex flex-wrap justify-center gap-x-10 gap-y-3 pt-2 text-sm sm:text-base font-medium text-gray-600">
+            <span>60+ Projects Delivered</span>
+            <span>50+ Happy Clients</span>
+            <span>6+ Countries Served</span>
+            <span>24/7 Support</span>
           </div>
         </div>
       </section>
@@ -310,10 +362,11 @@ export default async function Home() {
               About <span className="gradient-text">Tech Trendo</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              We are Eastern Nepal&apos;s leading IT company, dedicated to providing
-              innovative digital solutions that transform businesses and drive
-              growth. Our young, dynamic team combines creativity with technical
-              expertise to deliver exceptional results.
+              We are a global software development company dedicated to
+              providing innovative digital solutions that transform businesses
+              and drive growth. Our young, dynamic team combines creativity
+              with technical expertise to deliver exceptional results for
+              clients worldwide.
             </p>
           </div>
 
@@ -342,7 +395,7 @@ export default async function Home() {
                   Our Vision
                 </h3>
                 <p className="text-muted-foreground">
-                  To be the most trusted IT partner in Nepal, driving digital
+                  To be the most trusted IT partner worldwide, driving digital
                   transformation across all industries.
                 </p>
               </CardContent>
@@ -375,7 +428,7 @@ export default async function Home() {
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Discover what makes Tech Trendo the preferred choice for
-              businesses across Eastern Nepal
+              businesses around the world
             </p>
           </div>
 
@@ -468,7 +521,7 @@ export default async function Home() {
       </section>
 
       {/* Portfolio Section */}
-      <Portfolio />
+      <Portfolio projects={portfolio} />
 
       {/* Partners Section */}
       <section className="section-padding bg-background section-3d">
@@ -506,7 +559,7 @@ export default async function Home() {
               ))
             ) : (
               <p className="text-center text-muted-foreground col-span-full">
-                Loading partner logos...
+                No partner logos available.
               </p>
             )}
           </div>
@@ -584,13 +637,13 @@ export default async function Home() {
               ))
             ) : (
               <p className="text-center text-muted-foreground col-span-3">
-                Loading testimonials...
+                No testimonials available.
               </p>
             )}
           </div>
         </div>
       </section>
-      <BlogSection />
+      <BlogSection posts={featuredBlogs} />
       <CallToAction />
     </div>
   );

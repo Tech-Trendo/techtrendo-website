@@ -19,8 +19,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return seoMetadata(
     data,
     "/contact",
-    "Contact Tech Trendo | Best IT Company in Itahari, Nepal",
-    "Contact Tech Trendo for web development, mobile apps, software solutions, and digital marketing. Visit us in Sundarharaincha, Morang (Near Itahari), Nepal.",
+    "Contact Tech Trendo | Global Software Development Team",
+    "Contact Tech Trendo for web development, mobile apps, software solutions, and digital marketing. Based in Itahari, Nepal, serving clients worldwide.",
   );
 }
 export default function page() {

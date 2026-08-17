@@ -81,7 +81,7 @@ const Footer = () => {
               <span className="text-xl font-bold">Tech Trendo</span>
             </div>
             <p className="text-white/80 text-sm leading-relaxed">
-              Best IT Company In Eastern Nepal providing real-time and effective IT solutions to enhance digital presence and operational efficiency.
+              Global software development company providing real-time and effective IT solutions to enhance digital presence and operational efficiency for businesses worldwide.
             </p>
             <div className="space-y-2">
               <div className="flex items-center space-x-2 text-sm">

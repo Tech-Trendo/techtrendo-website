@@ -18,8 +18,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return seoMetadata(
     data,
     "/about",
-    "About Tech Trendo | Best IT Company in Itahari, Nepal",
-    "Meet Tech Trendo – a young, innovative IT company in Itahari, Nepal delivering web design, app development, software solutions, and digital marketing to clients worldwide.",
+    "About Tech Trendo | Global Software Development Team",
+    "Founded in Itahari, Nepal, Tech Trendo is a global software development team delivering web, app, software, and digital marketing solutions worldwide.",
   );
 }
 export default async function About() {
@@ -62,7 +62,11 @@ export default async function About() {
     founder: { "@id": "https://techtrendo.com/#organization" },
     areaServed: [
       { "@type": "Country", name: "Nepal" },
-      { "@type": "AdministrativeArea", name: "Global" },
+      { "@type": "Country", name: "United States" },
+      { "@type": "Country", name: "United Kingdom" },
+      { "@type": "Country", name: "India" },
+      { "@type": "Country", name: "Australia" },
+      { "@type": "Country", name: "United Arab Emirates" },
     ],
     sameAs: [
       "https://www.facebook.com/techtrendo.np",
@@ -107,8 +111,8 @@ export default async function About() {
         <div className="container-custom text-center space-y-6">
           <h1 className="text-5xl md:text-6xl font-bold">About Tech Trendo</h1>
           <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto">
-            Leading the digital transformation in Eastern Nepal with innovative
-            IT solutions
+            A global software development team, founded in Nepal, delivering
+            innovative IT solutions to businesses worldwide
           </p>
         </div>
       </section>
@@ -131,22 +135,24 @@ export default async function About() {
                 </p>
                 <p>
                   Our journey began with a simple yet powerful vision: to bridge
-                  the digital divide in Eastern Nepal by providing world-class
-                  IT solutions that are both accessible and effective. We
-                  specialize in serving the education sector, recognizing its
-                  crucial role in shaping Nepal&apos;s future.
+                  the digital divide by providing world-class IT solutions that
+                  are both accessible and effective. Today we serve clients
+                  across the United States, United Kingdom, India, Australia,
+                  the UAE, and beyond, while staying rooted in our commitment to
+                  education and to shaping Nepal&apos;s digital future.
                 </p>
                 <p>
                   With our comprehensive suite of services ranging from web
                   development to digital marketing, we&apos;ve become the trusted
                   partner for businesses, educational institutions, and
-                  organizations looking to embrace digital transformation.
+                  organizations worldwide looking to embrace digital
+                  transformation.
                 </p>
                 <p>
-                  What sets us apart is our deep understanding of the local
-                  market combined with global best practices. We don&apos;t just
-                  deliver projects; we build lasting partnerships that drive
-                  sustainable growth and success.
+                  What sets us apart is our deep understanding of both frontier
+                  and global markets, combined with global best practices. We
+                  don&apos;t just deliver projects; we build lasting partnerships
+                  that drive sustainable growth and success.
                 </p>
               </div>
             </div>
@@ -185,9 +191,9 @@ export default async function About() {
                   Our Mission
                 </h3>
                 <p className="text-muted-foreground text-lg leading-relaxed">
-                  To empower businesses and educational institutions in Eastern
-                  Nepal with innovative, accessible, and effective IT solutions
-                  that drive digital transformation and sustainable growth.
+                  To empower businesses and educational institutions worldwide
+                  with innovative, accessible, and effective IT solutions that
+                  drive digital transformation and sustainable growth.
                 </p>
               </CardContent>
             </Card>
@@ -201,8 +207,8 @@ export default async function About() {
                   Our Vision
                 </h3>
                 <p className="text-muted-foreground text-lg leading-relaxed">
-                  To be the leading IT solutions provider in Nepal, recognized
-                  for our innovation, quality, and commitment to bridging the
+                  To be a leading global IT solutions provider, recognized for
+                  our innovation, quality, and commitment to bridging the
                   digital divide across all sectors of society.
                 </p>
               </CardContent>

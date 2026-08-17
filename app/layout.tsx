@@ -11,26 +11,25 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://techtrendo.com"),
 
   title: {
-    default: "Tech Trendo | Best IT Company in Eastern Nepal",
+    default: "Tech Trendo | Global Software Development & IT Services",
     template: "%s | Tech Trendo",
   },
 
   description:
-    "Tech Trendo – Eastern Nepal’s leading IT company providing web development, mobile apps, software solutions, and digital marketing services that drive real business growth.",
+    "Global software development company delivering custom software, web apps, mobile apps, cloud solutions, and IT outsourcing for businesses worldwide.",
 
   keywords: [
     "Tech Trendo",
-    "IT Company Nepal",
-    "Best IT Company Eastern Nepal",
-    "Web Development Nepal",
-    "Mobile App Development Nepal",
-    "Software Development Nepal",
-    "Digital Marketing Nepal",
-    "SEO Services Nepal",
-    "IT Company Itahari",
-    "Software Company Biratnagar",
-    "Software Company Dharan",
-    "Software Company Jhapa",
+    "Global IT Company",
+    "Software Development Company",
+    "Custom Software Development",
+    "Web Development Services",
+    "Mobile App Development",
+    "Digital Marketing Services",
+    "IT Outsourcing",
+    "Cloud Solutions",
+    "Software Company Nepal",
+    "Technology Partner",
   ],
 
   authors: [{ name: "Tech Trendo" }],
@@ -45,9 +44,9 @@ export const metadata: Metadata = {
   alternates: countryAlternates("https://techtrendo.com"),
 
   openGraph: {
-    title: "Tech Trendo | Best IT Company in Eastern Nepal",
+    title: "Tech Trendo | Global Software Development & IT Services",
     description:
-      "Leading IT company in Eastern Nepal for web, app, and software development with powerful digital marketing solutions.",
+      "Global software development company delivering custom software, web apps, mobile apps, cloud solutions, and IT outsourcing services worldwide.",
     url: "https://techtrendo.com",
     siteName: "Tech Trendo",
     images: [
@@ -64,9 +63,9 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Tech Trendo | Best IT Company in Eastern Nepal",
+    title: "Tech Trendo | Global Software Development & IT Services",
     description:
-      "Web, App & Software Development + Digital Marketing services in Nepal.",
+      "Web, App & Software Development + Digital Marketing services for businesses worldwide.",
     images: ["https://techtrendo.com/preview.png"],
   },
 };

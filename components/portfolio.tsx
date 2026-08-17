@@ -1,6 +1,5 @@
 "use client";
-import { API_URL } from "@/lib/api";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
@@ -18,38 +17,13 @@ interface Project {
   link?: string;
 }
 
-const Portfolio = () => {
+const Portfolio = ({ projects }: { projects: Project[] }) => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<
     "Mobile App" | "Software" | "Website"
   >("Mobile App");
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Fetch data from API
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const res = await fetch(
-          `${API_URL}/portfolio/`
-        );
-        if (!res.ok) {
-          setProjects([]);
-        }
-        const data: Project[] = await res.json();
-        setProjects(data);
-      } catch (err) {
-        console.error("Failed to fetch projects:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProjects();
-  }, []);
 
   const renderProjects = (projects: Project[]) => {
-    if (loading) return <p className="text-center">Loading...</p>;
     if (projects.length === 0)
       return <p className="text-center">No projects found.</p>;
 
@@ -115,7 +89,7 @@ const Portfolio = () => {
   return (
     <div className="flex flex-col">
       {/* Portfolio Section */}
-      <section className="section-padding bg-white section-3d">
+      <section id="portfolio" className="section-padding bg-white section-3d">
         <div className="container-custom text-center space-y-6 mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground">
             Our <span className="gradient-text">Portfolio</span>
