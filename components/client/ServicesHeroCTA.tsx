@@ -18,7 +18,7 @@ export default function ServicesHeroCTA() {
         >
           Start a Project <ArrowRight className="ml-2" size={20} />
         </Button>
-        <Link href="#portfolio" className="flex-1 sm:flex-none">
+        <Link href="/portfolio" className="flex-1 sm:flex-none">
           <Button
             size="lg"
             className="btn-gradient w-full sm:w-auto"

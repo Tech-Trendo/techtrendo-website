@@ -57,21 +57,14 @@ function LoginForm() {
 
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center px-4">
-      <Link
-        href="/"
-        className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Go back to home
-      </Link>
       <div className="w-full max-w-sm border border-border rounded-xl bg-card p-6 space-y-5">
         <div className="text-center space-y-2">
           <div className="mx-auto w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
             <Lock className="h-5 w-5" />
           </div>
-          <h1 className="text-lg font-semibold">Admin Login</h1>
+          <h1 className="text-lg font-semibold">Log in to dashboard</h1>
           <p className="text-xs text-muted-foreground">
-            Restricted area — superadmin credentials required.
+            Enter your credentials to access the admin portal.
           </p>
         </div>
 
@@ -121,10 +114,17 @@ function LoginForm() {
             className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium disabled:opacity-60 hover:opacity-90"
           >
             {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-            {submitting ? "Signing in..." : "Sign in"}
+            {submitting ? "Signing in..." : "Continue"}
           </button>
         </form>
       </div>
+      <Link
+        href="/"
+        className="mt-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to home page
+      </Link>
     </div>
   );
 }
