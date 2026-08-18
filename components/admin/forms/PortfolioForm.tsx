@@ -140,7 +140,7 @@ export default function PortfolioForm({ mode, item }: PortfolioFormProps) {
       </section>
 
       <section className="border border-border rounded-lg p-4 bg-card">
-        <JsonListEditor label="Region tags" value={regionTags} onChange={setRegionTags} placeholder="e.g. United States, United Kingdom, India" />
+        <JsonListEditor label="Region tags" value={regionTags} onChange={setRegionTags} placeholder="e.g. Nepal, Australia, India, UAE, New Zealand" />
       </section>
 
       <SeoFields values={seo} onChange={(next) => setSeo((prev) => ({ ...prev, ...next }))} />

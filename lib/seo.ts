@@ -141,11 +141,10 @@ export const organizationLd = {
   // hand-written content before being added here.
   areaServed: [
     { "@type": "Country", name: "Nepal" },
-    { "@type": "Country", name: "United States" },
-    { "@type": "Country", name: "United Kingdom" },
-    { "@type": "Country", name: "India" },
     { "@type": "Country", name: "Australia" },
+    { "@type": "Country", name: "India" },
     { "@type": "Country", name: "United Arab Emirates" },
+    { "@type": "Country", name: "New Zealand" },
   ],
   sameAs: [
     "https://www.facebook.com/techtrendo.np",
@@ -254,11 +253,10 @@ export function serviceLd(data: {
   // mirrors organizationLd.areaServed — keep both lists in sync.
   const globalAreas = [
     "Nepal",
-    "United States",
-    "United Kingdom",
-    "India",
     "Australia",
+    "India",
     "United Arab Emirates",
+    "New Zealand",
   ];
   const areaServed = data.areaServed
     ? data.areaServed.map((name) => ({ "@type": "Country", name }))

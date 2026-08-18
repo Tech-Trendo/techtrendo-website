@@ -63,11 +63,10 @@ export default async function About() {
     founder: { "@id": "https://techtrendo.com/#organization" },
     areaServed: [
       { "@type": "Country", name: "Nepal" },
-      { "@type": "Country", name: "United States" },
-      { "@type": "Country", name: "United Kingdom" },
-      { "@type": "Country", name: "India" },
       { "@type": "Country", name: "Australia" },
+      { "@type": "Country", name: "India" },
       { "@type": "Country", name: "United Arab Emirates" },
+      { "@type": "Country", name: "New Zealand" },
     ],
     sameAs: [
       "https://www.facebook.com/techtrendo.np",
@@ -142,9 +141,9 @@ export default async function About() {
                   Our journey began with a simple yet powerful vision: to bridge
                   the digital divide by providing world-class IT solutions that
                   are both accessible and effective. Today we serve clients
-                  across the United States, United Kingdom, India, Australia,
-                  the UAE, and beyond, while staying rooted in our commitment to
-                  education and to shaping Nepal&apos;s digital future.
+                  across Nepal, Australia, India, the UAE, and New Zealand,
+                  while staying rooted in our commitment to education and to
+                  shaping Nepal&apos;s digital future.
                 </p>
                 <p>
                   With our comprehensive suite of services ranging from web

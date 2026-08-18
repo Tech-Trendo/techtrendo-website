@@ -2,7 +2,6 @@ import { API_URL } from "@/lib/api";
 import * as LucideIcons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
   Globe2,
@@ -17,6 +16,8 @@ import {
   Users,
 } from "lucide-react";
 import ServicesClient from "@/components/client/ServicesClient";
+import ServicesHeroCTA from "@/components/client/ServicesHeroCTA";
+import ServiceCardActions from "@/components/client/ServiceCardActions";
 import Link from "next/link";
 import { seoData } from "@/types";
 import { Metadata } from "next";
@@ -47,11 +48,10 @@ interface Service {
 // in lib/seo.ts — keep in sync when market pages are added).
 const GLOBAL_AREAS = [
   "Nepal",
-  "United States",
-  "United Kingdom",
-  "India",
   "Australia",
+  "India",
   "United Arab Emirates",
+  "New Zealand",
 ];
 
 const GLOBAL_META_TITLE =
@@ -63,7 +63,7 @@ const faqs = [
   {
     question: "How do you work with clients in different time zones?",
     answer:
-      "We run a distributed, async-friendly delivery process. Milestones, progress updates, and decisions are tracked in shared project management tools, with scheduled overlap calls that fit your working hours. Clients in the United States, United Kingdom, India, Australia, and the UAE routinely coordinate with us without friction.",
+      "We run a distributed, async-friendly delivery process. Milestones, progress updates, and decisions are tracked in shared project management tools, with scheduled overlap calls that fit your working hours. Clients in Australia, India, the UAE, and New Zealand routinely coordinate with us without friction.",
   },
   {
     question: "What engagement models do you offer?",
@@ -206,16 +206,7 @@ export default async function Services() {
             </span>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Link href="/quote" className="flex-1 sm:flex-none">
-              <Button size="lg" className="bg-white text-primary hover:bg-white/90 w-full sm:w-auto">
-                Start a Project <ArrowRight className="ml-2" size={20} />
-              </Button>
-            </Link>
-            <Link href="#portfolio" className="flex-1 sm:flex-none">
-              <Button size="lg" variant="outline" className="border-white/60 text-white hover:bg-white/10 w-full sm:w-auto">
-                See Related Work
-              </Button>
-            </Link>
+            <ServicesHeroCTA />
           </div>
         </div>
       </section>
@@ -294,22 +285,8 @@ export default async function Services() {
                       </ul>
                     </div>
 
-                    {/* Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-3 w-full">
-                      <Link href={`/quote?serviceId=${service.id}`} className="flex-1 w-full">
-                        <Button className="btn-gradient w-full">
-                          Start a Project <ArrowRight className="ml-2" size={16} />
-                        </Button>
-                      </Link>
-                      <Link href={`/services/${service.slug}`} className="flex-1 w-full">
-                        <Button
-                          variant="outline"
-                          className="btn-outline-gradient w-full"
-                        >
-                          See Related Work
-                        </Button>
-                      </Link>
-                    </div>
+                     {/* Buttons */}
+                     <ServiceCardActions serviceId={service.id} serviceSlug={service.slug} />
                   </CardContent>
                 </Card>
               );

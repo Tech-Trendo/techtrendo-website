@@ -24,6 +24,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import ServiceQuote from "@/components/ServiceQuote";
 
 interface ServiceFeature {
   title?: string;
@@ -58,6 +59,8 @@ export default function OutsourcePage({ initialServices }: OutsourcePageProps) {
     service: "",
     message: "",
   });
+  const [quoteOpen, setQuoteOpen] = useState(false);
+  const [selectedServiceId, setSelectedServiceId] = useState<number | null>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -153,7 +156,7 @@ export default function OutsourcePage({ initialServices }: OutsourcePageProps) {
     {
       icon: Award,
       title: "Proven Track Record",
-      description: "Successfully delivered 500+ projects for clients across 30+ countries."
+      description: "Successfully delivered 60+ projects for clients across 5 countries."
     }
   ];
 
@@ -272,19 +275,23 @@ export default function OutsourcePage({ initialServices }: OutsourcePageProps) {
                       </ul>
                     </div>
 
-                    {/* Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-3 w-full">
-                      <Link href={`/quote?serviceId=${service.id}`} className="flex-1 w-full">
-                        <Button className="btn-gradient w-full">
-                          Get Quote <ArrowRight className="ml-2" size={16} />
-                        </Button>
-                      </Link>
-                      <Link href={`/services/${service.slug}`} className="flex-1 w-full">
-                        <Button variant="outline" className="btn-outline-gradient w-full">
-                          Learn More
-                        </Button>
-                      </Link>
-                    </div>
+                     {/* Buttons */}
+                     <div className="flex flex-col sm:flex-row gap-3 w-full">
+                       <Button
+                         className="btn-gradient w-full"
+                         onClick={() => {
+                           setSelectedServiceId(service.id);
+                           setQuoteOpen(true);
+                         }}
+                       >
+                         Get Quote <ArrowRight className="ml-2" size={16} />
+                       </Button>
+                       <Link href={`/services/${service.slug}`} className="flex-1 w-full">
+                         <Button variant="outline" className="btn-outline-gradient w-full">
+                           Learn More
+                         </Button>
+                       </Link>
+                     </div>
                   </CardContent>
                 </Card>
               );
@@ -519,6 +526,16 @@ export default function OutsourcePage({ initialServices }: OutsourcePageProps) {
           </div>
         </div>
       </section>
+
+      {quoteOpen && selectedServiceId !== null && (
+        <ServiceQuote
+          preselectedService={selectedServiceId}
+          onClose={() => {
+            setQuoteOpen(false);
+            setSelectedServiceId(null);
+          }}
+        />
+      )}
     </div>
   );
 }

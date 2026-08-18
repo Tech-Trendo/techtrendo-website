@@ -3,7 +3,8 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
-import { Loader2, Lock } from "lucide-react";
+import { ArrowLeft, Loader2, Lock } from "lucide-react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 function LoginForm() {
@@ -55,7 +56,14 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center px-4">
+    <div className="min-h-[70vh] flex flex-col items-center justify-center px-4">
+      <Link
+        href="/"
+        className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Go back to home
+      </Link>
       <div className="w-full max-w-sm border border-border rounded-xl bg-card p-6 space-y-5">
         <div className="text-center space-y-2">
           <div className="mx-auto w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">

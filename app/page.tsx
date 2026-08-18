@@ -26,6 +26,7 @@ import Portfolio from "@/components/portfolio";
 import CallToAction from "@/components/CallToAction";
 import BlogSection, { type BlogPost } from "@/components/BlogSection";
 import WorkMech from "@/components/client/WorkMech";
+import HeroCTA from "@/components/client/HeroCTA";
 import { Metadata } from "next";
 import { countryAlternates, organizationLd, websiteLd } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
@@ -323,29 +324,12 @@ export default async function Home() {
             enhance digital presence and operational efficiency.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md mx-auto sm:max-w-none">
-            <Link href="/quote" prefetch={true} className="w-full sm:w-auto">
-              <Button
-                size="lg"
-                className="btn-gradient text-base sm:text-lg px-8 py-5 sm:py-6 text-white w-full sm:w-auto flex justify-center items-center"
-              >
-                Start a Project
-                <ArrowRight className="ml-2" size={20} />
-              </Button>
-            </Link>
-            <Link href="/services" prefetch={true} className="w-full sm:w-auto">
-              <Button
-                size="lg"
-                variant="outline"
-                className="btn-outline-gradient text-base sm:text-lg text-primary px-8 py-5 sm:py-6 w-full sm:w-auto flex justify-center items-center"
-              >
-                Our Services
-              </Button>
-            </Link>
+            <HeroCTA />
           </div>
           <div className="flex flex-wrap justify-center gap-x-10 gap-y-3 pt-2 text-sm sm:text-base font-medium text-gray-600">
             <span>60+ Projects Delivered</span>
             <span>50+ Happy Clients</span>
-            <span>6+ Countries Served</span>
+            <span>5 Countries Served</span>
             <span>24/7 Support</span>
           </div>
         </div>

@@ -37,7 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
     data,
     "/markets",
     "Markets We Serve | Tech Trendo Software Development",
-    "Tech Trendo serves clients across the United States, United Kingdom, India, Australia, the UAE and beyond with web, app and software development.",
+    "Tech Trendo serves clients across Nepal, Australia, India, the UAE and New Zealand with web, app and software development.",
   );
 }
 
