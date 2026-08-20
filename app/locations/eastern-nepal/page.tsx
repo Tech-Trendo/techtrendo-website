@@ -216,7 +216,7 @@ export default async function EasternNepalPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="btn-outline-gradient text-base sm:text-lg text-white px-8 py-5 sm:py-6 border-white/40"
+                className="btn-outline-gradient text-base sm:text-lg text-primary px-8 py-5 sm:py-6 border-white/40"
               >
                 Our Services
               </Button>
