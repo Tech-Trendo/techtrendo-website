@@ -23,7 +23,12 @@ export async function GET() {
   if (!res.ok) {
     return NextResponse.json({ authenticated: false });
   }
-  const data = (await res.json()) as { access: string };
+  let data: { access: string };
+  try {
+    data = (await res.json()) as typeof data;
+  } catch {
+    return NextResponse.json({ authenticated: false });
+  }
   await setAdminCookies(data.access, refresh);
   return NextResponse.json({ authenticated: true });
 }

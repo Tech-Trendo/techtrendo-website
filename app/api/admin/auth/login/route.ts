@@ -35,7 +35,15 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const data = (await res.json()) as { access: string; refresh: string };
+  let data: { access: string; refresh: string };
+  try {
+    data = (await res.json()) as typeof data;
+  } catch {
+    return NextResponse.json(
+      { error: "Login service returned an invalid response. Try again shortly." },
+      { status: 502 },
+    );
+  }
 
   await setAdminCookies(data.access, data.refresh);
 

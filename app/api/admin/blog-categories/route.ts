@@ -6,7 +6,17 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   const res = await adminFetch("/api/app/blog-categories/?page_size=100");
-  const data = (await res.json()) as { count?: number; results?: unknown[]; error?: string };
+  // The upstream may return non-JSON (e.g. an HTML error page from a stale
+  // or misconfigured backend) — degrade gracefully instead of throwing 500.
+  let data: { count?: number; results?: unknown[]; error?: string };
+  try {
+    data = (await res.json()) as typeof data;
+  } catch {
+    return NextResponse.json(
+      { error: `Backend returned a non-JSON response (status ${res.status}).` },
+      { status: 502 },
+    );
+  }
   if (!res.ok) {
     return NextResponse.json(data, { status: res.status });
   }
