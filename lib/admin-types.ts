@@ -205,6 +205,95 @@ export interface AdminMarketPage {
   updated_at: string;
 }
 
+export interface AdminJob {
+  id: number;
+  slug: string;
+  img: string | null;
+  title: string;
+  location: string;
+  type: string;
+  duration: string | null;
+  description: string;
+  requirements: string[];
+  qualifications: string;
+  deadline: string | null;
+  date_posted: string;
+  status: "OPEN" | "CLOSED";
+  meta_title: string | null;
+  meta_description: string | null;
+}
+
+export type AdminIntern = AdminJob;
+
+export interface AdminMailSubscriber {
+  id: number;
+  email: string;
+}
+
+export interface AdminJobApplication {
+  id: number;
+  job: number;
+  job_title: string;
+  full_name: string;
+  email: string;
+  phone: string;
+  cover_letter: string;
+  resume: string;
+  submitted_at: string;
+}
+
+export interface AdminInternApplication {
+  id: number;
+  intern: number;
+  intern_title: string;
+  full_name: string;
+  email: string;
+  phone: string;
+  cover_letter: string;
+  resume: string;
+  submitted_at: string;
+}
+
+export interface AdminResume {
+  id: number;
+  full_name: string;
+  email: string;
+  phone: string | null;
+  designation: string | null;
+  resume: string;
+  submitted_at: string;
+}
+
+export interface AdminSuggestTopic {
+  id: number;
+  full_name: string;
+  email: string;
+  phone: string | null;
+  topic: string | null;
+  submitted_at: string;
+}
+
+export interface AdminQuoteRequest {
+  id: number;
+  service: number | null;
+  service_title: string | null;
+  product: number | null;
+  product_title: string | null;
+  full_name: string;
+  email: string;
+  phone: string | null;
+  company: string | null;
+  message: string;
+  submitted_at: string;
+}
+
+export interface AdminSiteSettings {
+  id: number;
+  site_name: string;
+  recaptcha_secret_key: string | null;
+  recaptcha_site_key: string | null;
+}
+
 export interface PaginatedResponse<T> {
   count: number;
   next: string | null;

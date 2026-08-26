@@ -5,22 +5,30 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import {
+  Briefcase,
   CalendarDays,
+  ClipboardList,
   ExternalLink,
   FileText,
   FolderOpen,
   Globe,
+  GraduationCap,
   Image,
   Landmark,
   LayoutDashboard,
+  Lightbulb,
   LogOut,
   Mail,
   Menu,
   MessageSquareQuote,
   Package,
   PenSquare,
+  Receipt,
+  ScrollText,
+  Settings,
   Star,
   Tags,
+  Users,
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -73,8 +81,27 @@ const NAV_GROUPS: NavGroup[] = [
     items: [{ href: "/dash/markets", label: "Market Pages", icon: Globe }],
   },
   {
+    label: "Careers",
+    items: [
+      { href: "/dash/jobs", label: "Jobs", icon: Briefcase },
+      { href: "/dash/interns", label: "Internships", icon: GraduationCap },
+      { href: "/dash/job-applications", label: "Job Applications", icon: ClipboardList },
+      { href: "/dash/intern-applications", label: "Intern Applications", icon: ClipboardList },
+      { href: "/dash/resumes", label: "Resumes", icon: ScrollText },
+    ],
+  },
+  {
     label: "Inbox",
-    items: [{ href: "/dash/contact-messages", label: "Contacts", icon: Mail }],
+    items: [
+      { href: "/dash/contact-messages", label: "Contacts", icon: Mail },
+      { href: "/dash/quote-requests", label: "Quote Requests", icon: Receipt },
+      { href: "/dash/suggested-topics", label: "Suggested Topics", icon: Lightbulb },
+      { href: "/dash/mail-subscribers", label: "Subscribers", icon: Users },
+    ],
+  },
+  {
+    label: "Settings",
+    items: [{ href: "/dash/site-settings", label: "Site Settings", icon: Settings }],
   },
 ];
 

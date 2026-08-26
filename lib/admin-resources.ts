@@ -68,6 +68,35 @@ export const ADMIN_RESOURCES: Record<string, AdminResourceConfig> = {
     revalidateTags: ["market"],
     revalidatePaths: ["/markets"],
   },
+  jobs: {
+    backend: "/api/app/jobs",
+    revalidatePaths: ["/careers"],
+  },
+  interns: {
+    backend: "/api/app/interns",
+    revalidatePaths: ["/careers"],
+  },
+  "mail-subscribers": {
+    backend: "/api/app/mail-subscribers",
+  },
+  "job-applications": {
+    backend: "/api/app/job-applications",
+  },
+  "intern-applications": {
+    backend: "/api/app/intern-applications",
+  },
+  resumes: {
+    backend: "/api/app/send-resume",
+  },
+  "suggested-topics": {
+    backend: "/api/app/topic",
+  },
+  "quote-requests": {
+    backend: "/api/app/quotes",
+  },
+  "site-settings": {
+    backend: "/api/app/site-settings",
+  },
   "blog-categories": {
     backend: "/api/app/blog-categories",
     revalidateTags: ["blog"],
