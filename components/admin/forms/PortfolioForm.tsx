@@ -69,7 +69,7 @@ export default function PortfolioForm({ mode, item }: PortfolioFormProps) {
         return;
       }
       toast.success(mode === "edit" ? "Portfolio item updated." : "Portfolio item created.");
-      router.push("/admin/portfolio");
+      router.push("/dash/portfolio");
     } finally {
       setSubmitting(false);
     }
@@ -78,7 +78,7 @@ export default function PortfolioForm({ mode, item }: PortfolioFormProps) {
   return (
     <AdminForm
       title={mode === "edit" ? "Edit Portfolio Item" : "New Portfolio Item"}
-      backHref="/admin/portfolio"
+      backHref="/dash/portfolio"
       submitLabel={mode === "edit" ? "Save changes" : "Create item"}
       submitting={submitting}
       onSubmit={() => void handleSubmit()}

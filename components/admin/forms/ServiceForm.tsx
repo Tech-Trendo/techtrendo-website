@@ -72,7 +72,7 @@ export default function ServiceForm({ mode, item }: ServiceFormProps) {
         return;
       }
       toast.success(mode === "edit" ? "Service updated." : "Service created.");
-      router.push("/admin/services");
+      router.push("/dash/services");
     } finally {
       setSubmitting(false);
     }
@@ -81,7 +81,7 @@ export default function ServiceForm({ mode, item }: ServiceFormProps) {
   return (
     <AdminForm
       title={mode === "edit" ? "Edit Service" : "New Service"}
-      backHref="/admin/services"
+      backHref="/dash/services"
       submitLabel={mode === "edit" ? "Save changes" : "Create service"}
       submitting={submitting}
       onSubmit={() => void handleSubmit()}

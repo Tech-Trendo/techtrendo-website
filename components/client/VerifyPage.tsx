@@ -279,21 +279,21 @@ const Verify = () => {
               </h3>
               <ul className="space-y-2 text-muted-foreground">
                 <li className="flex items-start gap-2">
-                  <span className="text-primary">â€¢</span>
+                  <span className="text-primary">•</span>
                   Enter the complete certificate code starting with &quot;TTMC&quot;
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-primary">â€¢</span>
+                  <span className="text-primary">•</span>
                   The code is case-insensitive and will be automatically
                   formatted
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-primary">â€¢</span>
+                  <span className="text-primary">•</span>
                   If the certificate is valid, all details will be displayed
                   above
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-primary">â€¢</span>
+                  <span className="text-primary">•</span>
                   For any issues, contact us at info@techtrendo.com
                 </li>
               </ul>

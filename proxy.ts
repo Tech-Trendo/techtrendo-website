@@ -9,7 +9,7 @@ const REFRESH_COOKIE = "admin_refresh";
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname === "/admin/login" || pathname.startsWith("/api/admin")) {
+  if (pathname === "/dash/login" || pathname.startsWith("/api/admin")) {
     return NextResponse.next();
   }
 
@@ -20,11 +20,11 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const loginUrl = new URL("/admin/login", request.url);
+  const loginUrl = new URL("/dash/login", request.url);
   loginUrl.searchParams.set("next", pathname);
   return NextResponse.redirect(loginUrl);
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/dash/:path*"],
 };

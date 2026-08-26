@@ -64,7 +64,7 @@ export default function PageForm({ mode, item }: PageFormProps) {
         return;
       }
       toast.success(mode === "edit" ? "Page updated." : "Page created.");
-      router.push("/admin/pages");
+      router.push("/dash/pages");
     } finally {
       setSubmitting(false);
     }
@@ -73,7 +73,7 @@ export default function PageForm({ mode, item }: PageFormProps) {
   return (
     <AdminForm
       title={mode === "edit" ? "Edit Page" : "New Page"}
-      backHref="/admin/pages"
+      backHref="/dash/pages"
       submitLabel={mode === "edit" ? "Save changes" : "Create page"}
       submitting={submitting}
       onSubmit={() => void handleSubmit()}

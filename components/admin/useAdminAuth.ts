@@ -19,13 +19,13 @@ export function useAdminAuth() {
         setChecked(true);
         if (!data.authenticated) {
           const next = encodeURIComponent(pathname);
-          router.replace(`/admin/login?next=${next}`);
+          router.replace(`/dash/login?next=${next}`);
         }
       })
       .catch(() => {
         if (cancelled) return;
         setChecked(true);
-        router.replace("/admin/login");
+        router.replace("/dash/login");
       });
     return () => {
       cancelled = true;

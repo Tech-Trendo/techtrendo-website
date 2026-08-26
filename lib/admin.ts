@@ -105,15 +105,33 @@ export async function adminFetch(
   const doFetch = (token: string): Promise<Response> =>
     fetch(`${API_BASE_URL}${path}`, buildInit(token));
 
-  let res: Response;
-  if (!access) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+  const unauthorized = (): Response =>
+    new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
     });
+
+  if (!access) {
+    if (!refresh) {
+      return unauthorized();
+    }
+    const refreshed = await refreshAccessToken(refresh);
+    if (!refreshed) {
+      await clearAdminCookies();
+      return unauthorized();
+    }
+    const store = await cookies();
+    store.set(ADMIN_ACCESS_COOKIE, refreshed, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: cookieSecure(),
+      path: "/",
+      maxAge: ACCESS_TTL_SECONDS,
+    });
+    return doFetch(refreshed);
   }
 
-  res = await doFetch(access);
+  let res = await doFetch(access);
 
   if (res.status === 401 && refresh) {
     const newAccess = await refreshAccessToken(refresh);
@@ -127,6 +145,8 @@ export async function adminFetch(
         maxAge: ACCESS_TTL_SECONDS,
       });
       res = await doFetch(newAccess);
+    } else {
+      await clearAdminCookies();
     }
   }
   return res;

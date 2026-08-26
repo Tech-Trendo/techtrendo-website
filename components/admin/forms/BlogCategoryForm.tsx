@@ -37,7 +37,7 @@ export default function BlogCategoryForm({ mode, item }: BlogCategoryFormProps) 
         return;
       }
       toast.success(mode === "edit" ? "Category updated." : "Category created.");
-      router.push("/admin/blog-categories");
+      router.push("/dash/blog-categories");
     } finally {
       setSubmitting(false);
     }
@@ -46,7 +46,7 @@ export default function BlogCategoryForm({ mode, item }: BlogCategoryFormProps) 
   return (
     <AdminForm
       title={mode === "edit" ? "Edit Blog Category" : "New Blog Category"}
-      backHref="/admin/blog-categories"
+      backHref="/dash/blog-categories"
       submitLabel={mode === "edit" ? "Save changes" : "Create category"}
       submitting={submitting}
       onSubmit={() => void handleSubmit()}

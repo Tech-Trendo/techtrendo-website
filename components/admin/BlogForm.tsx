@@ -177,7 +177,7 @@ export default function BlogForm({ mode, blog, categories }: BlogFormProps) {
       }
 
       toast.success(mode === "edit" ? "Blog post updated." : "Blog post created.");
-      router.push("/admin/blogs");
+      router.push("/dash/blogs");
     } finally {
       setSubmitting(false);
     }
@@ -194,7 +194,7 @@ export default function BlogForm({ mode, blog, categories }: BlogFormProps) {
       <div className="flex items-center gap-3 mb-6">
         <button
           type="button"
-          onClick={() => router.push("/admin/blogs")}
+          onClick={() => router.push("/dash/blogs")}
           className="p-2 rounded-md border border-border text-foreground hover:bg-muted"
           aria-label="Back to blog list"
         >
@@ -467,7 +467,7 @@ export default function BlogForm({ mode, blog, categories }: BlogFormProps) {
         <div className="fixed bottom-0 left-0 right-0 border-t border-border bg-background/95 backdrop-blur px-6 py-3 flex justify-end gap-3">
           <button
             type="button"
-            onClick={() => router.push("/admin/blogs")}
+            onClick={() => router.push("/dash/blogs")}
             className="px-4 py-2 text-sm rounded-md border border-input hover:bg-muted"
           >
             Cancel

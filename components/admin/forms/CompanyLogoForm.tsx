@@ -35,7 +35,7 @@ export default function CompanyLogoForm({ mode, item }: CompanyLogoFormProps) {
         return;
       }
       toast.success(mode === "edit" ? "Logo updated." : "Logo created.");
-      router.push("/admin/company-logos");
+      router.push("/dash/company-logos");
     } finally {
       setSubmitting(false);
     }
@@ -44,7 +44,7 @@ export default function CompanyLogoForm({ mode, item }: CompanyLogoFormProps) {
   return (
     <AdminForm
       title={mode === "edit" ? "Edit Company Logo" : "New Company Logo"}
-      backHref="/admin/company-logos"
+      backHref="/dash/company-logos"
       submitLabel={mode === "edit" ? "Save changes" : "Create logo"}
       submitting={submitting}
       onSubmit={() => void handleSubmit()}

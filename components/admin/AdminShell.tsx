@@ -39,42 +39,42 @@ interface NavGroup {
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    items: [{ href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true }],
+    items: [{ href: "/dash", label: "Dashboard", icon: LayoutDashboard, exact: true }],
   },
   {
     label: "Content",
     items: [
-      { href: "/admin/blogs", label: "Posts", icon: FileText },
-      { href: "/admin/blog-categories", label: "Blog Categories", icon: Tags },
-      { href: "/admin/services", label: "Services", icon: PenSquare },
-      { href: "/admin/products", label: "Products", icon: Package },
-      { href: "/admin/portfolio", label: "Portfolio", icon: FolderOpen },
-      { href: "/admin/pages", label: "Pages", icon: FileText },
+      { href: "/dash/blogs", label: "Posts", icon: FileText },
+      { href: "/dash/blog-categories", label: "Blog Categories", icon: Tags },
+      { href: "/dash/services", label: "Services", icon: PenSquare },
+      { href: "/dash/products", label: "Products", icon: Package },
+      { href: "/dash/portfolio", label: "Portfolio", icon: FolderOpen },
+      { href: "/dash/pages", label: "Pages", icon: FileText },
     ],
   },
   {
     label: "Testimonials",
     items: [
-      { href: "/admin/testimonials", label: "Testimonials", icon: Star },
-      { href: "/admin/student-testimonials", label: "Student Testimonials", icon: Star },
-      { href: "/admin/reviews", label: "Reviews", icon: MessageSquareQuote },
+      { href: "/dash/testimonials", label: "Testimonials", icon: Star },
+      { href: "/dash/student-testimonials", label: "Student Testimonials", icon: Star },
+      { href: "/dash/reviews", label: "Reviews", icon: MessageSquareQuote },
     ],
   },
   {
     label: "Media",
     items: [
-      { href: "/admin/events", label: "Events", icon: CalendarDays },
-      { href: "/admin/gallery-items", label: "Gallery", icon: Image },
-      { href: "/admin/company-logos", label: "Company Logos", icon: Landmark },
+      { href: "/dash/events", label: "Events", icon: CalendarDays },
+      { href: "/dash/gallery-items", label: "Gallery", icon: Image },
+      { href: "/dash/company-logos", label: "Company Logos", icon: Landmark },
     ],
   },
   {
     label: "Markets",
-    items: [{ href: "/admin/markets", label: "Market Pages", icon: Globe }],
+    items: [{ href: "/dash/markets", label: "Market Pages", icon: Globe }],
   },
   {
     label: "Inbox",
-    items: [{ href: "/admin/contact-messages", label: "Contacts", icon: Mail }],
+    items: [{ href: "/dash/contact-messages", label: "Contacts", icon: Mail }],
   },
 ];
 
@@ -85,7 +85,7 @@ function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
   const handleLogout = async () => {
     await fetch("/api/admin/auth/logout", { method: "POST", cache: "no-store" });
     toast.success("Logged out.");
-    router.replace("/admin/login");
+    router.replace("/dash/login");
   };
 
   return (

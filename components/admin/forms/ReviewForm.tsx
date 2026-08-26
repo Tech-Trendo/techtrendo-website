@@ -48,7 +48,7 @@ export default function ReviewForm({ mode, item }: ReviewFormProps) {
         return;
       }
       toast.success(mode === "edit" ? "Review updated." : "Review created.");
-      router.push("/admin/reviews");
+      router.push("/dash/reviews");
     } finally {
       setSubmitting(false);
     }
@@ -57,7 +57,7 @@ export default function ReviewForm({ mode, item }: ReviewFormProps) {
   return (
     <AdminForm
       title={mode === "edit" ? "Edit Review" : "New Review"}
-      backHref="/admin/reviews"
+      backHref="/dash/reviews"
       submitLabel={mode === "edit" ? "Save changes" : "Create review"}
       submitting={submitting}
       onSubmit={() => void handleSubmit()}

@@ -56,7 +56,7 @@ export default function EventForm({ mode, item }: EventFormProps) {
         return;
       }
       toast.success(mode === "edit" ? "Event updated." : "Event created.");
-      router.push("/admin/events");
+      router.push("/dash/events");
     } finally {
       setSubmitting(false);
     }
@@ -65,7 +65,7 @@ export default function EventForm({ mode, item }: EventFormProps) {
   return (
     <AdminForm
       title={mode === "edit" ? "Edit Event" : "New Event"}
-      backHref="/admin/events"
+      backHref="/dash/events"
       submitLabel={mode === "edit" ? "Save changes" : "Create event"}
       submitting={submitting}
       onSubmit={() => void handleSubmit()}

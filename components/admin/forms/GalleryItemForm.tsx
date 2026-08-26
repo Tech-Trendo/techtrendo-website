@@ -40,7 +40,7 @@ export default function GalleryItemForm({ mode, item }: GalleryItemFormProps) {
         return;
       }
       toast.success(mode === "edit" ? "Gallery item updated." : "Gallery item created.");
-      router.push("/admin/gallery-items");
+      router.push("/dash/gallery-items");
     } finally {
       setSubmitting(false);
     }
@@ -49,7 +49,7 @@ export default function GalleryItemForm({ mode, item }: GalleryItemFormProps) {
   return (
     <AdminForm
       title={mode === "edit" ? "Edit Gallery Item" : "New Gallery Item"}
-      backHref="/admin/gallery-items"
+      backHref="/dash/gallery-items"
       submitLabel={mode === "edit" ? "Save changes" : "Create item"}
       submitting={submitting}
       onSubmit={() => void handleSubmit()}

@@ -97,7 +97,7 @@ export default function MarketPageForm({ mode, item }: MarketPageFormProps) {
         return;
       }
       toast.success(mode === "edit" ? "Market page updated." : "Market page created.");
-      router.push("/admin/markets");
+      router.push("/dash/markets");
     } finally {
       setSubmitting(false);
     }
@@ -132,7 +132,7 @@ export default function MarketPageForm({ mode, item }: MarketPageFormProps) {
   return (
     <AdminForm
       title={mode === "edit" ? "Edit Market Page" : "New Market Page"}
-      backHref="/admin/markets"
+      backHref="/dash/markets"
       submitLabel={mode === "edit" ? "Save changes" : "Create page"}
       submitting={submitting}
       onSubmit={() => void handleSubmit()}

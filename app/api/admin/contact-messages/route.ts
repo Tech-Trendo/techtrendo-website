@@ -32,7 +32,7 @@ export async function DELETE(request: NextRequest) {
   const res = await adminFetch(`/api/app/contact-messages/${id}/`, { method: "DELETE" });
 
   if (res.status === 204 || res.status === 200) {
-    revalidatePath("/admin/contact-messages");
+    revalidatePath("/dash/contact-messages");
   }
 
   return passthrough(res);

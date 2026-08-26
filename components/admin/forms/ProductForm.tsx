@@ -73,7 +73,7 @@ export default function ProductForm({ mode, item }: ProductFormProps) {
         return;
       }
       toast.success(mode === "edit" ? "Product updated." : "Product created.");
-      router.push("/admin/products");
+      router.push("/dash/products");
     } finally {
       setSubmitting(false);
     }
@@ -82,7 +82,7 @@ export default function ProductForm({ mode, item }: ProductFormProps) {
   return (
     <AdminForm
       title={mode === "edit" ? "Edit Product" : "New Product"}
-      backHref="/admin/products"
+      backHref="/dash/products"
       submitLabel={mode === "edit" ? "Save changes" : "Create product"}
       submitting={submitting}
       onSubmit={() => void handleSubmit()}
