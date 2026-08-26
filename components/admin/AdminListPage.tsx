@@ -23,6 +23,8 @@ interface AdminListPageProps<T> {
   rowKey: (row: T) => string;
   editUrl?: (row: T) => string;
   deleteUrl?: (row: T) => string;
+  /** Extra per-row action buttons (e.g. a "view" eye), rendered before edit/delete. */
+  actions?: (row: T) => React.ReactNode;
   deleteConfirmText?: (row: T) => React.ReactNode;
   emptyText?: string;
   pageSize?: number;
@@ -38,6 +40,7 @@ export default function AdminListPage<T>({
   rowKey,
   editUrl,
   deleteUrl,
+  actions,
   deleteConfirmText,
   emptyText,
   pageSize = 10,
@@ -168,7 +171,7 @@ export default function AdminListPage<T>({
                     {col.header}
                   </th>
                 ))}
-                {(editUrl || deleteUrl) && (
+                {(editUrl || deleteUrl || actions) && (
                   <th className="px-4 py-3 font-medium text-right">Actions</th>
                 )}
               </tr>
@@ -181,9 +184,10 @@ export default function AdminListPage<T>({
                       {col.render(row)}
                     </td>
                   ))}
-                  {(editUrl || deleteUrl) && (
+                  {(editUrl || deleteUrl || actions) && (
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
+                        {actions?.(row)}
                         {editUrl && (
                           <Link
                             href={editUrl(row)}

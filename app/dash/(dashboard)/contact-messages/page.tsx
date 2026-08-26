@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import {
+  Eye,
   Loader2,
   Mail,
   Phone,
@@ -14,6 +15,7 @@ import {
 import type { AdminContactMessage, ContactMessageListResponse } from "@/lib/admin-types";
 import { useAdminAuth } from "@/components/admin/useAdminAuth";
 import { Badge } from "@/components/ui/badge";
+import ViewDetailsModal from "@/components/admin/ViewDetailsModal";
 
 const PAGE_SIZE = 10;
 
@@ -50,6 +52,7 @@ export default function AdminContactMessagesPage() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<AdminContactMessage | null>(null);
+  const [viewing, setViewing] = useState<AdminContactMessage | null>(null);
   const [deleteBusy, setDeleteBusy] = useState(false);
   const [draftSearch, setDraftSearch] = useState("");
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -243,14 +246,28 @@ export default function AdminContactMessagesPage() {
                       {msg.service}
                     </Badge>
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground max-w-xs truncate" title={msg.message}>
-                    {msg.message}
+                  <td className="px-4 py-3 max-w-xs">
+                    <button
+                      onClick={() => setViewing(msg)}
+                      className="text-muted-foreground truncate block max-w-full text-left hover:text-primary"
+                      title={msg.message}
+                    >
+                      {msg.message}
+                    </button>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
                     {formatDate(msg.submitted_at)}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1">
+                      <button
+                        onClick={() => setViewing(msg)}
+                        className="p-1.5 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+                        title="View"
+                        aria-label={`View message from ${msg.first_name}`}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </button>
                       <button
                         onClick={() => setDeleting(msg)}
                         className="p-1.5 rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
@@ -319,6 +336,43 @@ export default function AdminContactMessagesPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {viewing && (
+        <ViewDetailsModal
+          title={`Message from ${viewing.first_name} ${viewing.last_name ?? ""}`.trim()}
+          subtitle={formatDate(viewing.submitted_at)}
+          onClose={() => setViewing(null)}
+        >
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Email</p>
+              <a href={`mailto:${viewing.email}`} className="text-sm text-primary hover:underline">
+                {viewing.email}
+              </a>
+            </div>
+            {viewing.phone && (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Phone</p>
+                <a href={`tel:${viewing.phone}`} className="text-sm text-primary hover:underline">
+                  {viewing.phone}
+                </a>
+              </div>
+            )}
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Service</p>
+            <Badge variant="secondary" className={SERVICE_COLORS[viewing.service] ?? "bg-gray-100 text-gray-800"}>
+              {viewing.service}
+            </Badge>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Message</p>
+            <p className="whitespace-pre-wrap text-sm border border-border rounded-md bg-muted/30 p-3">
+              {viewing.message}
+            </p>
+          </div>
+        </ViewDetailsModal>
       )}
     </div>
   );
