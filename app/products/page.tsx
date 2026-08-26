@@ -4,9 +4,10 @@ import { ExternalLink, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProductsCTA from "@/components/client/ProductsCTA";
+import JsonLd from "@/components/JsonLd";
 import { Metadata } from "next";
 import { seoData } from "@/types";
-import { seoMetadata } from "@/lib/seo";
+import { itemListLd, seoMetadata, SITE_URL } from "@/lib/seo";
 interface ProductFeature {
   title: string;
   description: string;
@@ -24,6 +25,10 @@ interface Product {
   link: string | null;
   features: ProductFeature[];
 }
+
+// Route-level ISR fallback for the products listing.
+export const revalidate = 3600;
+
 export async function generateMetadata(): Promise<Metadata> {
   let data: seoData | null = null;
   try {
@@ -41,7 +46,7 @@ export async function generateMetadata(): Promise<Metadata> {
     data,
     "/products",
     "Products | Software Solutions by Tech Trendo",
-    "Explore Tech Trendo's software products — School Management System, Business Management System, Cooperative Management System, and more.",
+    "Explore Tech Trendo's software products - School Management System, Business Management System, Cooperative Management System, and more.",
   );
 }
 async function fetchProducts(): Promise<Product[]> {
@@ -59,6 +64,15 @@ export default async function Products() {
   const products = await fetchProducts().catch(() => []);
   return (
     <div className="flex flex-col">
+      <JsonLd
+        data={itemListLd(
+          products.map((product) => ({
+            name: product.title,
+            path: `/products/${product.slug}`,
+          })),
+          `${SITE_URL}/products`,
+        )}
+      />
       {/* Hero Section */}
       <section className="section-padding bg-linear-to-br from-primary via-secondary to-accent text-white">
         <div className="container-custom text-center space-y-6">
@@ -131,20 +145,24 @@ export default async function Products() {
                 )}
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Link
-                    href={product.link ? product.link : "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 w-full"
-                  >
-                    <Button
-                      size="lg"
-                      className="w-full bg-linear-to-r from-primary to-secondary text-white"
+                  {/* Demo CTA only when a working demo URL exists — dead "#"
+                      links removed. */}
+                  {product.link && (
+                    <Link
+                      href={product.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 w-full"
                     >
-                      <ExternalLink className="mr-2" size={18} />
-                      View Demo
-                    </Button>
-                  </Link>
+                      <Button
+                        size="lg"
+                        className="w-full bg-linear-to-r from-primary to-secondary text-white"
+                      >
+                        <ExternalLink className="mr-2" size={18} />
+                        View Demo
+                      </Button>
+                    </Link>
+                  )}
                   <Link href={`/products/${product.slug}`} className="flex-1 w-full">
                     <Button
                       size="lg"

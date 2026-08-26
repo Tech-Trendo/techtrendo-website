@@ -1,4 +1,4 @@
-import { API_URL } from "@/lib/api";
+﻿import { API_URL } from "@/lib/api";
 import {
   blogPostingLd,
   breadcrumbLd,
@@ -9,11 +9,17 @@ import {
   type SeoFields,
 } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
-import BlogDetail from "@/components/client/BlogSingle";
+import BlogDetail, {
+  type BlogData as BlogDetailData,
+} from "@/components/client/BlogSingle";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 const REVALIDATE = 3600;
+
+// Route-level ISR fallback so posts regenerate even if a fetch-level cache
+// option is missed.
+export const revalidate = 3600;
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -103,7 +109,9 @@ export default async function BlogPostPage(props: Props) {
         })}
       />
       {faqs.length > 0 && <JsonLd data={faqLd(faqs)} />}
-      <BlogDetail />
+      {/* Server-fetched article rendered synchronously â€” full body copy in
+          the initial HTML instead of a client-side skeleton. */}
+      <BlogDetail initialBlog={blog as unknown as BlogDetailData} />
     </>
   );
 }

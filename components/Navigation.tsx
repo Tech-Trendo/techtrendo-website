@@ -2,10 +2,10 @@
 import { useState } from "react";
 // import { Link, useLocation } from "react-router-dom";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-// import logo from "@/assets/tech-trendo.png"
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,9 +30,14 @@ const Navigation = () => {
       <div className="container-custom">
         <div className="flex justify-between items-center h-16">
           <Link href={"/"} className="flex items-center space-x-3">
-            <img
+            {/* Above-the-fold logo: optimizer serves a small WebP instead of
+                the raw 1.26 MB PNG; priority keeps it in the preload set. */}
+            <Image
               src="/tech-trendo.png"
               alt="Tech Trendo Logo"
+              width={48}
+              height={48}
+              priority
               className="w-12 h-12 object-contain p-1"
             />
             <span className="text-2xl font-bold text-foreground">

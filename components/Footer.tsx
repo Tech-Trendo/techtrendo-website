@@ -27,6 +27,12 @@ const Footer = () => {
     { name: "Local Presence in Eastern Nepal", href: "/locations/eastern-nepal" },
   ];
 
+  const legalLinks = [
+    { name: "Privacy Policy", href: "/privacy" },
+    { name: "Terms of Service", href: "/terms" },
+    { name: "Refund Policy", href: "/refund-policy" },
+  ];
+
   const socialLinks = [
     { Icon: Facebook, href: "https://www.facebook.com/techtrendo.np", label: "Facebook" },
     { Icon: Twitter, href: "https://x.com/tech_trendo", label: "Twitter" },
@@ -182,8 +188,19 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-white/20 mt-12 pt-8 text-center">
-          <p className="text-white/60 text-sm">
+        <div className="border-t border-white/20 mt-12 pt-8">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-4">
+            {legalLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="text-white/80 hover:text-primary transition-colors text-sm"
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
+          <p className="text-white/60 text-sm text-center">
             © {new Date().getFullYear()} Tech Trendo. All rights reserved.
           </p>
         </div>

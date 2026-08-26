@@ -108,12 +108,12 @@ export default async function EasternNepalPage() {
     image: `${SITE_URL}/preview.png`,
     email: "info@techtrendo.com",
     telephone: "+977-9815602535",
-    priceRange: "$$",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Sundarharaincha, Morang (Near Itahari)",
       addressLocality: "Sundarharaincha",
       addressRegion: "Koshi Pradesh",
+      postalCode: "56601",
       addressCountry: "NP",
     },
     geo: {

@@ -20,6 +20,7 @@ import * as LucideIcons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import Image from "next/image";
 import AnimatedTechBackground from "@/components/AnimatedTechBackground";
 import ChatFAB from "@/components/ChatFAB";
 import Portfolio from "@/components/portfolio";
@@ -28,8 +29,7 @@ import BlogSection, { type BlogPost } from "@/components/BlogSection";
 import WorkMech from "@/components/client/WorkMech";
 import HeroCTA from "@/components/client/HeroCTA";
 import { Metadata } from "next";
-import { countryAlternates, organizationLd, websiteLd } from "@/lib/seo";
-import JsonLd from "@/components/JsonLd";
+import { countryAlternates } from "@/lib/seo";
 
 interface ServiceFeature {
   title?: string;
@@ -133,10 +133,12 @@ async function fetchReviews(): Promise<Review[]> {
 
 async function fetchPartnerLogos(): Promise<PartnerLogo[]> {
   try {
-    const res = await fetch(
-      `${API_URL}/company-logos/`,
-      { cache: "no-store" }
-    );
+    const res = await fetch(`${API_URL}/company-logos/`, {
+      // ISR cache — `no-store` here forced the whole homepage route dynamic
+      // (HTML served no-store, unstable TTFB). Keep consistent with the
+      // other CMS fetches so the homepage stays statically renderable.
+      next: { revalidate: 3600, tags: ["company-logo"] },
+    });
     if (!res.ok) return [];
     return (await res.json()) ?? [];
   } catch {
@@ -162,11 +164,11 @@ async function fetchGallery(): Promise<Gallery[]> {
 }
 
 export const metadata: Metadata = {
-  title: "Tech Trendo | Global Software Development & IT Services",
+  title: {
+    absolute: "Tech Trendo | Global Software Development & IT Services",
+  },
   description:
     "Global software development company delivering custom software, web apps, mobile apps, cloud solutions, and IT outsourcing for businesses worldwide.",
-  keywords:
-    "Tech Trendo, Global IT Company, Software Development Company, Custom Software Development, Web Development Services, Mobile App Development, Digital Marketing Services, IT Outsourcing, Cloud Solutions, Software Company Nepal, Technology Partner, tech trend, tech in trend",
   alternates: countryAlternates("https://techtrendo.com"),
   openGraph: {
     title: "Tech Trendo | Global Software Development & IT Services",
@@ -302,8 +304,6 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col">
-      <JsonLd data={organizationLd} />
-      <JsonLd data={websiteLd} />
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center bg-white text-gray-900 overflow-hidden py-12 sm:py-0">
         <AnimatedTechBackground />
@@ -528,10 +528,16 @@ export default async function Home() {
                   className="card-3d border-0 bg-linear-to-br from-primary/5 to-secondary/5"
                 >
                   <CardContent className="p-6 text-center space-y-4">
-                    <div className="w-20 h-20 rounded-full overflow-hidden mx-auto shadow-lg">
-                      <img
+                    {/* next/image optimizer: CMS logo uploads can be huge
+                        (multi-MB PNGs); the optimizer serves resized WebP. */}
+                    <div className="relative w-20 h-20 rounded-full overflow-hidden mx-auto shadow-lg">
+                      <Image
                         src={logo.image}
                         alt={logo.name}
+                        width={160}
+                        height={160}
+                        loading="lazy"
+                        sizes="80px"
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -552,18 +558,22 @@ export default async function Home() {
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {gallery.map((item) => (
               <Card key={item.id} className="card-3d overflow-hidden border-0">
-                <CardContent className="p-8 text-center">
-                  <div className="inline-block rounded-lg overflow-hidden shadow-lg bg-white">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-40 h-40 object-contain"
-                    />
-                  </div>
-                  <p className="mt-4 font-semibold text-foreground text-center whitespace-normal wrap-break-word">
-                    {item.title}
-                  </p>
-                </CardContent>
+                  <CardContent className="p-8 text-center">
+                    <div className="inline-block rounded-lg overflow-hidden shadow-lg bg-white">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        width={160}
+                        height={160}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-40 h-40 object-contain"
+                      />
+                    </div>
+                    <p className="mt-4 font-semibold text-foreground text-center whitespace-normal wrap-break-word">
+                      {item.title}
+                    </p>
+                  </CardContent>
               </Card>
             ))}
           </div>
@@ -599,6 +609,10 @@ export default async function Home() {
                           <img
                             src={testimonial.reviewerImage}
                             alt={testimonial.reviewerName}
+                            width={48}
+                            height={48}
+                            loading="lazy"
+                            decoding="async"
                             className="w-full h-full object-cover"
                           />
                         </div>

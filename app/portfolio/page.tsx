@@ -28,7 +28,7 @@ async function fetchPortfolio(): Promise<Project[]> {
 }
 
 export const metadata: Metadata = {
-  title: "Portfolio | Tech Trendo",
+  title: { absolute: "Portfolio | Tech Trendo" },
   description:
     "Explore our diverse portfolio of mobile apps, software, and web development projects delivered for businesses worldwide.",
   alternates: {

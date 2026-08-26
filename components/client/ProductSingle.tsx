@@ -24,7 +24,7 @@ interface ProductFeature {
   description: string;
 }
 
-interface ProductData {
+export interface ProductData {
   id: number;
   meta_title: string | null;
   meta_description: string | null;
@@ -69,7 +69,16 @@ const dummyUseCases = [
 
 const API_BASE_URL = `${API_URL}/products`;
 
-const ProductDetail: React.FC = () => {
+type ProductDetailProps = {
+  /**
+   * Server-fetched product data. When provided, the page renders the full
+   * content synchronously (SSR/prerender friendly — no loading skeleton in
+   * the initial HTML).
+   */
+  initialProduct?: ProductData | null;
+};
+
+const ProductDetail: React.FC<ProductDetailProps> = ({ initialProduct }) => {
   const router = useRouter();
   const params = useParams();
   const slug = params.slug;
@@ -77,15 +86,17 @@ const ProductDetail: React.FC = () => {
     router.push(path);
   };
 
-  const [product, setProduct] = useState<ProductData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState<ProductData | null>(
+    initialProduct ?? null,
+  );
+  const [loading, setLoading] = useState(!initialProduct);
   const [error, setError] = useState<string | null>(null);
 
   // Modal state
   const [quoteOpen, setQuoteOpen] = useState(false);
 
   useEffect(() => {
-    if (!slug) return;
+    if (!slug || initialProduct) return;
 
     const fetchProduct = async () => {
       setLoading(true);
@@ -108,7 +119,7 @@ const ProductDetail: React.FC = () => {
     };
 
     fetchProduct();
-  }, [slug]);
+  }, [slug, initialProduct]);
 
   // const IconComponent = product?.icon ? iconMap[product.icon] || Box : Box;
 

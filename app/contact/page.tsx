@@ -1,8 +1,14 @@
 import { API_URL } from "@/lib/api";
 import Contact from "@/components/client/ContactPage";
+import JsonLd from "@/components/JsonLd";
+import { contactPageLd } from "@/lib/seo";
 import { seoData } from "@/types";
 import { Metadata } from "next";
 import { seoMetadata } from "@/lib/seo";
+
+// Route-level ISR fallback for the contact page.
+export const revalidate = 3600;
+
 export async function generateMetadata(): Promise<Metadata> {
   let data: seoData | null = null;
   try {
@@ -24,5 +30,15 @@ export async function generateMetadata(): Promise<Metadata> {
   );
 }
 export default function page() {
-  return <Contact />;
+  return (
+    <>
+      <JsonLd
+        data={contactPageLd({
+          url: "https://techtrendo.com/contact",
+          name: "Contact Tech Trendo",
+        })}
+      />
+      <Contact />
+    </>
+  );
 }

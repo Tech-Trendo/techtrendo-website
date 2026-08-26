@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { countryAlternates } from "@/lib/seo";
+import { countryAlternates, organizationLd, websiteLd } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
 import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
 import { Toaster } from "react-hot-toast";
@@ -17,20 +18,6 @@ export const metadata: Metadata = {
 
   description:
     "Global software development company delivering custom software, web apps, mobile apps, cloud solutions, and IT outsourcing for businesses worldwide.",
-
-  keywords: [
-    "Tech Trendo",
-    "Global IT Company",
-    "Software Development Company",
-    "Custom Software Development",
-    "Web Development Services",
-    "Mobile App Development",
-    "Digital Marketing Services",
-    "IT Outsourcing",
-    "Cloud Solutions",
-    "Software Company Nepal",
-    "Technology Partner",
-  ],
 
   authors: [{ name: "Tech Trendo" }],
   creator: "Tech Trendo",
@@ -78,6 +65,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Media/API origin: most imagery loads from the CMS host. */}
+        <link rel="preconnect" href="https://app.techtrendo.com" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://app.techtrendo.com" />
         {/* Google Analytics */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
@@ -93,6 +83,10 @@ export default function RootLayout({
             });
           `}
         </Script>
+        {/* Organization + WebSite entity graph on every page so @id
+            references resolve sitewide. */}
+        <JsonLd data={organizationLd} />
+        <JsonLd data={websiteLd} />
       </head>
 
       <body className="antialiased min-h-screen flex flex-col">

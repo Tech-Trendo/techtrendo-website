@@ -1,6 +1,6 @@
 "use client";
 import { API_URL } from "@/lib/api";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ArrowRight, Calendar, Clock, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ interface Category {
   slug: string;
 }
 
-interface BlogPost {
+export interface BlogPost {
   id: number;
   title: string;
   is_featured: boolean;
@@ -30,25 +30,64 @@ interface BlogPost {
 
 type BlogListResponse = { results: BlogPost[]; count?: number } | BlogPost[];
 
-const Blog = () => {
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
-  const [totalPosts, setTotalPosts] = useState<number>(0);
+type BlogProps = {
+  /**
+   * Server-fetched first page of posts — rendered synchronously so the
+   * initial HTML contains the article grid (crawlable post links).
+   */
+  initialPosts?: BlogPost[];
+  initialTotal?: number;
+  /** Server-fetched full list used to derive categories + featured posts. */
+  allPosts?: BlogPost[];
+};
+
+function listOf(data: BlogListResponse): BlogPost[] {
+  return Array.isArray(data) ? data : data?.results ?? [];
+}
+
+function deriveCategories(posts: BlogPost[]): { name: string; slug: string }[] {
+  const catMap = new Map<string, string>();
+  posts.forEach((post) => {
+    if (post.category?.name && post.category?.slug) {
+      catMap.set(post.category.name, post.category.slug);
+    }
+  });
+  const categories = [{ name: "All", slug: "All" }];
+  catMap.forEach((slug, name) => categories.push({ name, slug }));
+  return categories;
+}
+
+const Blog = ({
+  initialPosts,
+  initialTotal,
+  allPosts,
+}: BlogProps) => {
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>(initialPosts ?? []);
+  const [totalPosts, setTotalPosts] = useState<number>(
+    initialTotal ?? initialPosts?.length ?? 0,
+  );
 
   // Separate loading flags so we never unmount the whole page.
   // - initialLoading: true only until the very first successful fetch (categories)
   // - postsLoading: true while (re)fetching the posts grid specifically
-  const [initialLoading, setInitialLoading] = useState<boolean>(true);
-  const [postsLoading, setPostsLoading] = useState<boolean>(true);
+  const [initialLoading, setInitialLoading] = useState<boolean>(!initialPosts);
+  const [postsLoading, setPostsLoading] = useState<boolean>(!initialPosts);
 
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [categories, setCategories] = useState<{ name: string; slug: string }[]>([
-    { name: "All", slug: "All" }
-  ]);
-  const [featuredPosts, setFeaturedPosts] = useState<BlogPost[]>([]);
+  const [categories, setCategories] = useState<{ name: string; slug: string }[]>(
+    allPosts ? deriveCategories(allPosts) : [{ name: "All", slug: "All" }],
+  );
+  const [featuredPosts, setFeaturedPosts] = useState<BlogPost[]>(
+    allPosts ? allPosts.filter((post) => post.is_featured) : [],
+  );
 
   const POSTS_PER_PAGE = 20;
   const [currentPage, setCurrentPage] = useState<number>(1);
+
+  // True once we've skipped the redundant client-side fetch that would just
+  // re-request the server-rendered first page.
+  const skipInitialFetch = useRef(Boolean(initialPosts));
 
   // Newsletter subscriptioner subscription
   const [email, setEmail] = useState<string>("");
@@ -65,30 +104,18 @@ const Blog = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Fetch unique categories on mount
+  // Fetch unique categories on mount (skipped when derived server-side)
   useEffect(() => {
+    if (allPosts) return;
+
     const fetchCategories = async () => {
       try {
         const res = await axios.get<BlogListResponse>(
           `${API_URL}/blogs/?page_size=100`
         );
-        const data = res.data;
-        const postsArray = Array.isArray(data)
-          ? data
-          : (data && Array.isArray(data.results) ? data.results : []);
+        const postsArray = listOf(res.data);
 
-        const catMap = new Map<string, string>();
-        postsArray.forEach((post) => {
-          if (post.category?.name && post.category?.slug) {
-            catMap.set(post.category.name, post.category.slug);
-          }
-        });
-
-        const extractedCategories = [{ name: "All", slug: "All" }];
-        catMap.forEach((slug, name) => {
-          extractedCategories.push({ name, slug });
-        });
-        setCategories(extractedCategories);
+        setCategories(deriveCategories(postsArray));
 
         // Save featured posts from full list
         const featured = postsArray.filter((post) => post.is_featured);
@@ -98,10 +125,17 @@ const Blog = () => {
       }
     };
     fetchCategories();
-  }, []);
+  }, [allPosts]);
 
   // Fetch blog posts based on page and category
   useEffect(() => {
+    if (skipInitialFetch.current) {
+      skipInitialFetch.current = false;
+      setPostsLoading(false);
+      setInitialLoading(false);
+      return;
+    }
+
     let cancelled = false;
 
     const fetchBlogs = async () => {
@@ -118,14 +152,11 @@ const Blog = () => {
         const res = await axios.get<BlogListResponse>(url);
         if (cancelled) return;
 
-        const data = res.data;
-        const postsArray = Array.isArray(data)
-          ? data
-          : (data.results ?? []);
+        const postsArray = listOf(res.data);
 
         const count =
-          !Array.isArray(data) && typeof data.count === "number"
-            ? data.count
+          !Array.isArray(res.data) && typeof res.data.count === "number"
+            ? res.data.count
             : postsArray.length;
 
         setBlogPosts(postsArray);
@@ -263,7 +294,8 @@ const Blog = () => {
       src={cardImage(post)!}
       alt={post.title}
       fill
-      priority
+      // Below the fold — lazy, no preload (preloads starve the LCP resource)
+      loading="lazy"
       sizes="(max-width: 768px) 100vw, 33vw"
       className="object-contain"
     />

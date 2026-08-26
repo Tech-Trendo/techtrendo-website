@@ -1,9 +1,9 @@
-import VerifyPage from "@/components/client/VerifyPage";
+﻿import VerifyPage from "@/components/client/VerifyPage";
 import { Metadata } from "next";
 import { countryAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Verify Certificate | Tech Trendo",
+  title: { absolute: "Verify Certificate | Tech Trendo" },
   description:
     "Verify a Tech Trendo certificate instantly. Check the authenticity of course, internship, and employment certificates issued by Tech Trendo, Nepal.",
   alternates: countryAlternates("https://techtrendo.com/verify"),

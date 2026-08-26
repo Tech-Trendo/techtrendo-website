@@ -8,6 +8,64 @@ export const FALLBACK_OG_IMAGE = `${SITE_URL}/preview.png`;
 export const FALLBACK_OG_WIDTH = 1200;
 export const FALLBACK_OG_HEIGHT = 630;
 
+/**
+ * Repair UTF-8 text that was double-decoded through Windows-1252 somewhere in
+ * the CMS pipeline (e.g. "Tech Trendoâ€™s" instead of "Tech Trendo’s").
+ * Applied defensively to CMS-provided strings at render time.
+ */
+const MOJIBAKE_REPLACEMENTS: [RegExp, string][] = [
+  [/â€™/g, "\u2019"],
+  [/â€˜/g, "\u2018"],
+  [/â€œ/g, "\u201C"],
+  [/â€\u009D/g, "\u201D"],
+  [/â€\u201D/g, "\u2014"],
+  [/â€\u201C/g, "\u2013"],
+  [/â€¦/g, "\u2026"],
+  [/â‚¬/g, "\u20AC"],
+  [/\u00C2\u00A0/g, "\u00A0"],
+];
+
+export function fixMojibake(value: string | null | undefined): string {
+  if (!value) return "";
+  let out = value;
+  if (/â€|Â/.test(out)) {
+    for (const [pattern, replacement] of MOJIBAKE_REPLACEMENTS) {
+      out = out.replace(pattern, replacement);
+    }
+  }
+  return out;
+}
+
+/**
+ * Strip duplicated "| Tech Trendo" brand suffixes from a raw title so the
+ * layout template (or buildSeoTitle below) adds exactly one.
+ */
+function stripBrandSuffix(title: string): string {
+  let t = title.trim();
+  while (/\s*\|\s*Tech Trendo\s*$/i.test(t)) {
+    t = t.replace(/\s*\|\s*Tech Trendo\s*$/i, "").trim();
+  }
+  return t;
+}
+
+function truncateWords(text: string, max: number): string {
+  if (text.length <= max) return text;
+  return `${text.slice(0, max - 1).replace(/\s+\S*$/, "").trimEnd()}…`;
+}
+
+/**
+ * Compose the final <title>: exactly one brand suffix, capped at 60 chars.
+ * Returned as an absolute title so the layout template cannot append another
+ * brand occurrence.
+ */
+export function buildSeoTitle(rawTitle: string): string {
+  const base = stripBrandSuffix(fixMojibake(rawTitle));
+  const withBrand = `${base} | ${SITE_NAME}`;
+  if (withBrand.length <= 60) return withBrand;
+  if (base.length <= 60) return base;
+  return truncateWords(base, 60);
+}
+
 export type SeoFields = {
   title?: string | null;
   slug?: string | null;
@@ -55,12 +113,11 @@ export function canonicalUrl(
   return derived;
 }
 
-export const COUNTRY_REGIONS = ["en-US", "en-GB", "en-IN"] as const;
-
+// Single-language, single-region site: emit only a canonical — no hreflang
+// cluster (the previous en-US/en-GB/en-IN/x-default set all pointed at the
+// same URL and was pure noise).
 export function countryAlternates(url: string) {
-  const languages: Record<string, string> = { "x-default": url };
-  for (const locale of COUNTRY_REGIONS) languages[locale] = url;
-  return { canonical: url, languages };
+  return { canonical: url };
 }
 
 export function absoluteImageUrl(
@@ -80,16 +137,26 @@ export function seoMetadata(
 ): Metadata {
   const canonical = canonicalUrl(data?.canonical_url, path);
   const ogImage = absoluteImageUrl(data?.og_image) ?? FALLBACK_OG_IMAGE;
-  const ogTitle =
-    data?.og_title || data?.meta_title || fallbackTitle;
+  const rawTitle =
+    fixMojibake(data?.meta_title) || stripBrandSuffix(fallbackTitle);
+  // Absolute title: exactly one brand suffix, <=60 chars, immune to the
+  // layout template appending another "| Tech Trendo".
+  const title = buildSeoTitle(rawTitle);
+  const ogTitle = stripBrandSuffix(
+    fixMojibake(data?.og_title || data?.meta_title || fallbackTitle),
+  );
   const ogDescription =
-    data?.og_description || data?.meta_description || fallbackDescription;
+    fixMojibake(data?.og_description || data?.meta_description) ||
+    fallbackDescription;
   const twitterImage = absoluteImageUrl(data?.twitter_image) ?? ogImage;
 
   return {
-    title: data?.meta_title || fallbackTitle,
-    description: data?.meta_description || fallbackDescription,
-    keywords: data?.meta_keywords || undefined,
+    title: { absolute: title },
+    description:
+      fixMojibake(data?.meta_description) ||
+      fixMojibake(fallbackDescription),
+    // Legacy <meta name="keywords"> intentionally not emitted (ignored by
+    // Google and polluted topical signals).
     alternates: countryAlternates(canonical),
     openGraph: {
       title: ogTitle,
@@ -109,8 +176,9 @@ export function seoMetadata(
     },
     twitter: {
       card: "summary_large_image",
-      title: data?.twitter_title || ogTitle,
-      description: data?.twitter_description || ogDescription,
+      title: stripBrandSuffix(fixMojibake(data?.twitter_title)) || ogTitle,
+      description:
+        fixMojibake(data?.twitter_description) || ogDescription,
       images: [twitterImage],
     },
   };
@@ -135,6 +203,7 @@ export const organizationLd = {
     streetAddress: "Sundarharaincha, Morang (Near Itahari)",
     addressLocality: "Sundarharaincha",
     addressRegion: "Koshi Pradesh",
+    postalCode: "56601",
     addressCountry: "NP",
   },
   // Markets served. Each one must have a real published /markets page with
@@ -243,6 +312,7 @@ export function faqLd(faqs: FaqItem[]) {
 
 export function serviceLd(data: {
   name: string;
+  serviceType?: string;
   description: string;
   url: string;
   image?: string | null;
@@ -266,6 +336,7 @@ export function serviceLd(data: {
     "@context": "https://schema.org",
     "@type": "Service",
     name: data.name,
+    serviceType: data.serviceType || data.name,
     description: data.description,
     url: data.url,
     image: data.image ? absoluteImageUrl(data.image) : undefined,
@@ -278,28 +349,22 @@ export function serviceLd(data: {
   };
 }
 
+/**
+ * Product markup WITHOUT any Offer/price object — pricing is not displayed
+ * anywhere on the site, so no price-bearing schema is emitted (a placeholder
+ * price previously risked rendering products as $0.00 in rich results).
+ */
 export function productLd(data: {
   name: string;
   description?: string;
   url: string;
   image?: string | null;
-  offersPrice?: number | null;
-  priceCurrency?: string;
 }) {
-  const offers = data.offersPrice
-    ? {
-        "@type": "Offer",
-        price: String(data.offersPrice),
-        priceCurrency: data.priceCurrency || "USD",
-        availability: "https://schema.org/InStock",
-      }
-    : { "@type": "Offer", price: "0", priceCurrency: "USD", priceValidUntil: "2030-12-31", availability: "https://schema.org/ContactForPrice" };
-
   return {
     "@context": "https://schema.org",
     "@type": "Product",
     name: data.name,
-    description: data.description || "",
+    description: fixMojibake(data.description) || "",
     url: data.url,
     image: data.image ? absoluteImageUrl(data.image) : FALLBACK_OG_IMAGE,
     brand: {
@@ -307,7 +372,46 @@ export function productLd(data: {
       name: SITE_NAME,
     },
     manufacturer: { "@id": `${SITE_URL}/#organization` },
-    offers,
+  };
+}
+
+export function contactPageLd(data: { url: string; name: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "@id": `${data.url}#contactpage`,
+    url: data.url,
+    name: data.name,
+    about: { "@id": `${SITE_URL}/#organization` },
+    mainEntity: {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      email: "info@techtrendo.com",
+      telephone: "+977-9815602535",
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer support",
+        telephone: "+977-9815602535",
+        email: "info@techtrendo.com",
+        availableLanguage: ["English", "Nepali"],
+      },
+    },
+  };
+}
+
+export function itemListLd(items: { name: string; path: string }[], listUrl: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    url: listUrl,
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      url: `${SITE_URL}${item.path}`,
+    })),
   };
 }
 

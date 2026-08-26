@@ -31,7 +31,7 @@ interface BlogCategory {
   twitter_image?: string | null;
 }
 
-interface BlogData {
+export interface BlogData {
   id: number;
   title: string;
   content: string;
@@ -75,7 +75,16 @@ const readTime = (blog: BlogData) =>
     Math.ceil(blog.content.replace(/<[^>]+>/g, " ").split(/\s+/).length / 200),
   );
 
-const BlogDetail: React.FC = () => {
+type BlogDetailProps = {
+  /**
+   * Server-fetched blog data. When provided, the article renders
+   * synchronously (SSR/prerender friendly — no loading skeleton in the
+   * initial HTML).
+   */
+  initialBlog?: BlogData | null;
+};
+
+const BlogDetail: React.FC<BlogDetailProps> = ({ initialBlog }) => {
   const router = useRouter();
   const params = useParams();
   const slug = params.slug;
@@ -83,13 +92,17 @@ const BlogDetail: React.FC = () => {
     router.push(path);
   };
 
-  const [blog, setBlog] = useState<BlogData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [blog, setBlog] = useState<BlogData | null>(initialBlog ?? null);
+  const [loading, setLoading] = useState(!initialBlog);
   const [error, setError] = useState<string | null>(null);
-  const [relatedPosts, setRelatedPosts] = useState<RelatedPost[]>([]);
+  const [relatedPosts, setRelatedPosts] = useState<RelatedPost[]>(
+    Array.isArray(initialBlog?.related_posts)
+      ? initialBlog!.related_posts!
+      : [],
+  );
 
   useEffect(() => {
-    if (!slug) return;
+    if (!slug || initialBlog) return;
 
     const fetchBlogDetail = async () => {
       setLoading(true);
@@ -123,7 +136,7 @@ const BlogDetail: React.FC = () => {
     };
 
     fetchBlogDetail();
-  }, [slug]);
+  }, [slug, initialBlog]);
 
   if (loading && slug) {
     return (

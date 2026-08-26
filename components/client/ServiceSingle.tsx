@@ -30,7 +30,7 @@ interface ServiceFeature {
   description?: string;
 }
 
-interface ServiceData {
+export interface ServiceData {
   id: number;
   meta_title: string | null;
   meta_description: string | null;
@@ -120,7 +120,37 @@ const fallbackBenefits = [
   "Guarantees operational efficiency and speed",
 ];
 
-const ServiceDetail: React.FC = () => {
+function processServiceData(data: ServiceData): DisplayServiceData {
+  return {
+    ...data,
+    tagline:
+      data.tagline ||
+      data.short_description ||
+      `Detail-oriented ${data.title} for maximum impact.`,
+    benefits:
+      data.keybenefits && data.keybenefits.length > 0
+        ? data.keybenefits.map((kb) =>
+            typeof kb === "string" ? kb : kb.title || kb.description || ""
+          )
+        : fallbackBenefits,
+    process: detailedFallbackProcess.map((p) => ({
+      step: p.step,
+      title: p.title,
+      description: p.description || "",
+    })),
+  };
+}
+
+type ServiceDetailProps = {
+  /**
+   * Server-fetched service data. When provided, the component renders the
+   * full content synchronously (SSR/prerender friendly — no loading
+   * skeleton in the initial HTML). Omitted only for legacy client-only use.
+   */
+  initialService?: ServiceData | null;
+};
+
+const ServiceDetail: React.FC<ServiceDetailProps> = ({ initialService }) => {
   const router = useRouter();
   const params = useParams();
   const slug = params.slug;
@@ -128,17 +158,19 @@ const ServiceDetail: React.FC = () => {
     router.push(path);
   };
 
-  const [service, setService] = useState<DisplayServiceData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [service, setService] = useState<DisplayServiceData | null>(
+    initialService ? processServiceData(initialService) : null,
+  );
+  const [loading, setLoading] = useState(!initialService);
   const [error, setError] = useState<string | null>(null);
 
   // Modal state
   const [quoteOpen, setQuoteOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<number | null>(null); // numeric ID
 
-  // Fetch service detail
+  // Fetch service detail (client-side only when no server data was passed)
   useEffect(() => {
-    if (!slug) return;
+    if (!slug || initialService) return;
 
     const fetchServiceDetail = async () => {
       setLoading(true);
@@ -148,28 +180,7 @@ const ServiceDetail: React.FC = () => {
         const response = await axios.get<ServiceData>(
           `${API_BASE_URL}/${slug}/`
         );
-        const data = response.data;
-
-        const processedData: DisplayServiceData = {
-          ...data,
-          tagline:
-            data.tagline ||
-            data.short_description ||
-            `Detail-oriented ${data.title} for maximum impact.`,
-          benefits:
-            data.keybenefits && data.keybenefits.length > 0
-              ? data.keybenefits.map((kb) =>
-                  typeof kb === "string" ? kb : kb.title || kb.description || ""
-                )
-              : fallbackBenefits,
-          process: detailedFallbackProcess.map((p) => ({
-            step: p.step,
-            title: p.title,
-            description: p.description || "",
-          })),
-        };
-
-        setService(processedData);
+        setService(processServiceData(response.data));
       } catch (err) {
         if (axios.isAxiosError(err) && err.response?.status === 404) {
           setError("The requested service was not found (404).");
@@ -183,7 +194,7 @@ const ServiceDetail: React.FC = () => {
     };
 
     fetchServiceDetail();
-  }, [slug]);
+  }, [slug, initialService]);
 
   // const IconComponent = useMemo(
   //   () => (service?.icon ? iconMap[service.icon] || Code : Code),

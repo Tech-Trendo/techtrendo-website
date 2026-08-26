@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { API_URL, RECAPTCHA_SITE_KEY as SITE_KEY } from "@/lib/api";
 
 import { useEffect, useState } from "react";
@@ -136,7 +136,7 @@ export default function OutsourcePage({ initialServices }: OutsourcePageProps) {
     {
       icon: TrendingUp,
       title: "Cost Effective",
-      description: "Reduce operational costs by up to 60% while maintaining high-quality deliverables."
+      description: "Competitive rates compared to in-house hiring while maintaining high-quality deliverables."
     },
     {
       icon: Zap,
@@ -378,25 +378,26 @@ export default function OutsourcePage({ initialServices }: OutsourcePageProps) {
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Stats Section â€” kept consistent with sitewide figures (homepage,
+          /about): 60+ projects, 50+ clients, 5 countries, 24/7 support. */}
       <section className="section-padding bg-linear-to-br from-primary via-secondary to-accent text-white">
         <div className="container-custom">
           <div className="grid md:grid-cols-4 gap-8 text-center">
             <div className="space-y-2">
-              <div className="text-5xl font-bold">500+</div>
+              <div className="text-5xl font-bold">60+</div>
               <div className="text-white/90 text-lg font-medium">Projects Delivered</div>
             </div>
             <div className="space-y-2">
-              <div className="text-5xl font-bold">200+</div>
+              <div className="text-5xl font-bold">50+</div>
               <div className="text-white/90 text-lg font-medium">Happy Clients</div>
             </div>
             <div className="space-y-2">
-              <div className="text-5xl font-bold">20+</div>
-              <div className="text-white/90 text-lg font-medium">Expert Developers</div>
+              <div className="text-5xl font-bold">5</div>
+              <div className="text-white/90 text-lg font-medium">Countries Served</div>
             </div>
             <div className="space-y-2">
-              <div className="text-5xl font-bold">99%</div>
-              <div className="text-white/90 text-lg font-medium">Client Satisfaction</div>
+              <div className="text-5xl font-bold">24/7</div>
+              <div className="text-white/90 text-lg font-medium">Support Available</div>
             </div>
           </div>
         </div>

@@ -54,6 +54,9 @@ const GLOBAL_AREAS = [
   "New Zealand",
 ];
 
+// Route-level ISR fallback for the services hub.
+export const revalidate = 3600;
+
 const GLOBAL_META_TITLE =
   "Custom Software Development & IT Services | Tech Trendo";
 const GLOBAL_META_DESCRIPTION =

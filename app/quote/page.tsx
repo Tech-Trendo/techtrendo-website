@@ -1,10 +1,10 @@
-import ServiceQuote from "@/components/ServiceQuote";
+﻿import ServiceQuote from "@/components/ServiceQuote";
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { countryAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Get a Free Quote | Tech Trendo",
+  title: { absolute: "Get a Free Quote | Tech Trendo" },
   description:
     "Request a free, no-obligation quote for web development, mobile apps, software solutions, and digital marketing from Tech Trendo, a global software development company.",
   alternates: countryAlternates("https://techtrendo.com/quote"),

@@ -27,17 +27,18 @@ export default async function About() {
   const localBusinessLd = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
+    "@id": `${SITE_URL}/#professionalservice`,
     name: "Tech Trendo",
     url: SITE_URL,
     image: `${SITE_URL}/preview.png`,
     email: "info@techtrendo.com",
     telephone: "+977-9815602535",
-    priceRange: "$$",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Sundarharaincha, Morang (Near Itahari)",
       addressLocality: "Sundarharaincha",
       addressRegion: "Koshi Pradesh",
+      postalCode: "56601",
       addressCountry: "NP",
     },
     geo: {

@@ -1,4 +1,4 @@
-import { API_URL } from "@/lib/api";
+﻿import { API_URL } from "@/lib/api";
 import {
   breadcrumbLd,
   canonicalUrl,
@@ -7,11 +7,16 @@ import {
   type SeoFields,
 } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
-import ProductDetail from "@/components/client/ProductSingle";
+import ProductDetail, {
+  type ProductData as ProductDetailData,
+} from "@/components/client/ProductSingle";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 const REVALIDATE = 3600;
+
+// Route-level ISR fallback for product detail pages.
+export const revalidate = 3600;
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -94,7 +99,11 @@ export default async function ProductPage(props: Props) {
           image: product.image,
         })}
       />
-      <ProductDetail />
+      {/* Server-fetched product rendered synchronously â€” full body copy in
+          the initial HTML instead of a client-side skeleton. */}
+      <ProductDetail
+        initialProduct={product as unknown as ProductDetailData}
+      />
     </>
   );
 }

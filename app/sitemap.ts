@@ -8,8 +8,8 @@ import { SITE_URL } from "@/lib/seo";
 // return a MetadataRoute.SitemapIndex from this file pointing at sitemap-N.xml.
 const REVALIDATE = 3600;
 
-// Latest sitewide update; statics without a CMS page (/, /quote, /verify) use it.
-const STATIC_LAST_MOD = "2026-08-10";
+// Statics without CMS-tracked update dates omit lastmod entirely instead of
+// stamping a fake sitewide date (Google ignores unreliable lastmod values).
 
 type EntryCfg = {
   changeFrequency:
@@ -93,7 +93,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries = new Map<string, MetadataRoute.Sitemap[number]>();
 
   for (const { path, cfg } of STATIC_URLS) {
-    entries.set(`${SITE_URL}${path}`, toUrl(path, cfg, STATIC_LAST_MOD));
+    entries.set(`${SITE_URL}${path}`, toUrl(path, cfg));
   }
 
   const [blogsData, services, products, pages, markets] = await Promise.all([

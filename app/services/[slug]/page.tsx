@@ -1,4 +1,4 @@
-import { API_URL } from "@/lib/api";
+﻿import { API_URL } from "@/lib/api";
 import {
   breadcrumbLd,
   canonicalUrl,
@@ -7,11 +7,17 @@ import {
   type SeoFields,
 } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
-import ServiceDetail from "@/components/client/ServiceSingle";
+import ServiceDetail, {
+  type ServiceData as ServiceDetailData,
+} from "@/components/client/ServiceSingle";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 const REVALIDATE = 3600;
+
+// Route-level ISR fallback: pages regenerate hourly even if an individual
+// fetch's cache options are missed.
+export const revalidate = 3600;
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -93,7 +99,9 @@ export default async function ServicePage(props: Props) {
           url: canonical,
         })}
       />
-      <ServiceDetail />
+      {/* Server-fetched data rendered synchronously â€” the initial HTML
+          contains the full H1/body copy instead of a client-side skeleton. */}
+      <ServiceDetail initialService={service as unknown as ServiceDetailData} />
     </>
   );
 }
