@@ -38,11 +38,6 @@ export const ADMIN_RESOURCES: Record<string, AdminResourceConfig> = {
     revalidateTags: ["page"],
     revalidatePaths: [],
   },
-  "student-testimonials": {
-    backend: "/api/app/student-testimonials",
-    revalidateTags: ["page"],
-    revalidatePaths: [],
-  },
   reviews: {
     backend: "/api/app/reviews",
     revalidateTags: ["review"],

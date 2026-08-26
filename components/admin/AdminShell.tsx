@@ -64,7 +64,6 @@ const NAV_GROUPS: NavGroup[] = [
     label: "Testimonials",
     items: [
       { href: "/dash/testimonials", label: "Testimonials", icon: Star },
-      { href: "/dash/student-testimonials", label: "Student Testimonials", icon: Star },
       { href: "/dash/reviews", label: "Reviews", icon: MessageSquareQuote },
     ],
   },

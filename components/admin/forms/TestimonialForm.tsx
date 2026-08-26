@@ -11,9 +11,9 @@ import ImageField, { resolveImageUrl } from "@/components/admin/ImageField";
 interface TestimonialFormProps {
   mode: "create" | "edit";
   item?: AdminTestimonial | null;
-  /** Resource name for the API, e.g. "testimonials" or "student-testimonials". */
+  /** Resource name for the API, e.g. "testimonials". */
   resource: string;
-  /** Public label, e.g. "Testimonial" or "Student Testimonial". */
+  /** Public label, e.g. "Testimonial". */
   label: string;
   /** Back link target. */
   backHref: string;
