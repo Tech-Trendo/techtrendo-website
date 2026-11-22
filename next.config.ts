@@ -1,15 +1,19 @@
 import type { NextConfig } from "next";
 
 // Security headers applied to every route. CSP is deliberately permissive
-// (inline GA snippet, Google Fonts-free system stack, reCAPTCHA, Maps embed);
-// tighten script/style sources once verified against production traffic.
+// (inline GA snippet, Google Fonts-free system stack, reCAPTCHA, Maps embed,
+// Cloudflare Web Analytics beacon injected at the edge); tighten script/style
+// sources once verified against production traffic.
 const SECURITY_HEADERS = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   {
     key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+    // `interest-cohort` was removed from Chrome (FLoC is gone) and triggers an
+    // "Unrecognized feature" console warning. `browsing-topics` is its Topics
+    // API successor; unrecognized tokens are ignored by older browsers.
+    value: "camera=(), microphone=(), geolocation=(), browsing-topics=()",
   },
   {
     key:
@@ -17,11 +21,13 @@ const SECURITY_HEADERS = [
     value: [
       "default-src 'self'",
       // 'unsafe-inline' required by the inline GA4 gtag config snippet.
-      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net",
+      // Cloudflare's edge injects its Web Analytics beacon when enabled in the
+      // dashboard, so both the script host and its RUM endpoint must be allowed.
+      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://static.cloudflareinsights.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
-      "connect-src 'self' https://app.techtrendo.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com",
+      "connect-src 'self' https://app.techtrendo.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://cloudflareinsights.com",
       "frame-src 'self' https://www.google.com https://maps.google.com https://www.recaptcha.net",
       "object-src 'none'",
       "base-uri 'self'",
