@@ -6,7 +6,12 @@ import { SITE_URL } from "@/lib/seo";
 // is fine. If blog/product/service counts grow substantially, split each content
 // type into its own route (e.g. app/sitemap-blog.ts, app/sitemap-service.ts) and
 // return a MetadataRoute.SitemapIndex from this file pointing at sitemap-N.xml.
-const REVALIDATE = 3600;
+
+// Next.js caches metadata routes at build time by default. The hosted copy was
+// serving a stale snapshot (missing posts/products published after the build),
+// so force request-time rendering and bypass the fetch Data Cache. Sitemaps are
+// low-traffic; five small API reads per crawl request are acceptable.
+export const dynamic = "force-dynamic";
 
 // Statics without CMS-tracked update dates omit lastmod entirely instead of
 // stamping a fake sitewide date (Google ignores unreliable lastmod values).
@@ -33,6 +38,10 @@ const STATIC_URLS: { path: string; cfg: EntryCfg }[] = [
   { path: "/verify", cfg: { changeFrequency: "monthly", priority: 0.5 } },
   { path: "/markets", cfg: { changeFrequency: "monthly", priority: 0.5 } },
   { path: "/locations/eastern-nepal", cfg: { changeFrequency: "monthly", priority: 0.6 } },
+  { path: "/portfolio", cfg: { changeFrequency: "monthly", priority: 0.7 } },
+  { path: "/privacy", cfg: { changeFrequency: "yearly", priority: 0.3 } },
+  { path: "/terms", cfg: { changeFrequency: "yearly", priority: 0.3 } },
+  { path: "/refund-policy", cfg: { changeFrequency: "yearly", priority: 0.3 } },
 ];
 
 // CMS Page slug -> frontend route (slug may differ from the route, e.g.
@@ -52,9 +61,7 @@ const PAGE_ROUTES: Record<string, EntryCfg & { path: string }> = {
 
 async function fetchJson<T>(path: string): Promise<T | null> {
   try {
-    const res = await fetch(`${API_URL}${path}`, {
-      next: { revalidate: REVALIDATE, tags: ["page", "blog", "service", "product", "portfolio", "market"] },
-    });
+    const res = await fetch(`${API_URL}${path}`, { cache: "no-store" });
     if (!res.ok) return null;
     return await res.json();
   } catch {
@@ -101,7 +108,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     fetchJson<unknown>("/services/"),
     fetchJson<unknown>("/products/"),
     fetchJson<unknown>("/pages/"),
-    fetchJson<unknown>("/markets/"),
+    fetchJson<unknown>("/markets/?page_size=100"),
   ]);
 
   const pageItems = listOf(pages).map((item) => ({

@@ -502,6 +502,37 @@ const Blog = ({
         </div>
       </section>
 
+      {/* Article archive: the grid paginates on the client, so posts on
+          page 2+ would otherwise have no crawlable internal links. This
+          keeps every published post one hop from the blog index. */}
+      {allPosts && allPosts.length > 0 && (
+        <section
+          className="pb-16 bg-background"
+          aria-labelledby="article-archive-heading"
+        >
+          <div className="container-custom">
+            <h2
+              id="article-archive-heading"
+              className="text-2xl font-bold text-foreground mb-6"
+            >
+              Article Archive
+            </h2>
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3">
+              {allPosts.map((post) => (
+                <li key={`archive-${post.id}`}>
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {post.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
       {/* Newsletter Signup */}
       <section className="section-padding bg-muted">
         <div className="container-custom">
