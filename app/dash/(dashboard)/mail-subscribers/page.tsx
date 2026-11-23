@@ -9,6 +9,17 @@ import { apiErrorText } from "@/lib/admin-submit";
 
 const PAGE_SIZE = 20;
 
+async function loadSubscribers(): Promise<AdminMailSubscriber[]> {
+  const res = await fetch(`/api/admin/mail-subscribers?page_size=${PAGE_SIZE}`, {
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error("failed");
+  const data = (await res.json()) as
+    | { results?: AdminMailSubscriber[] }
+    | AdminMailSubscriber[];
+  return Array.isArray(data) ? data : data.results ?? [];
+}
+
 export default function AdminMailSubscribersPage() {
   const auth = useAdminAuth();
 
@@ -22,10 +33,7 @@ export default function AdminMailSubscribersPage() {
 
   const fetchList = useCallback(async () => {
     try {
-      const res = await fetch(`/api/admin/mail-subscribers?page_size=${PAGE_SIZE}`, { cache: "no-store" });
-      if (!res.ok) throw new Error("failed");
-      const data = (await res.json()) as { results?: AdminMailSubscriber[] } | AdminMailSubscriber[];
-      setRows(Array.isArray(data) ? data : data.results ?? []);
+      setRows(await loadSubscribers());
     } catch {
       setLoadError("Could not load subscribers.");
     } finally {
@@ -35,8 +43,21 @@ export default function AdminMailSubscribersPage() {
 
   useEffect(() => {
     if (!auth.checked) return;
-    void fetchList();
-  }, [fetchList, auth.checked]);
+    let cancelled = false;
+    loadSubscribers()
+      .then((nextRows) => {
+        if (!cancelled) setRows(nextRows);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadError("Could not load subscribers.");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [auth.checked]);
 
   const addSubscriber = async () => {
     const email = draftEmail.trim().toLowerCase();

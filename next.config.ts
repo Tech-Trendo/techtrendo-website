@@ -38,13 +38,19 @@ const SECURITY_HEADERS = [
   },
 ];
 
+// Dev-only images are served from the local Django (localhost:8000). Next
+// blocks private-IP upstreams by default (SSRF guard), so only relax that
+// guard outside production and only when the API really points at localhost.
+const API_ORIGIN = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const ALLOW_LOCAL_IMAGES =
+  process.env.NODE_ENV !== "production" &&
+  /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/.test(API_ORIGIN);
+
 const nextConfig: NextConfig = {
   // Release the TS improvements gradually:
   // ignoreBuildErrors is removed so type errors fail the build.
   images: {
-    // Dev-only images are served from the local Django (localhost:8000).
-    // Next blocks private-IP upstreams by default (SSRF guard); allow them.
-    dangerouslyAllowLocalIP: true,
+    dangerouslyAllowLocalIP: ALLOW_LOCAL_IMAGES,
     formats: ["image/avif", "image/webp"],
     // Keep optimized images cacheable at the CDN edge (previously re-hit the
     // optimizer on every request).
@@ -55,12 +61,16 @@ const nextConfig: NextConfig = {
         hostname: "app.techtrendo.com",
         pathname: "/media/**",
       },
-      {
-        protocol: "http",
-        hostname: "localhost",
-        port: "8000",
-        pathname: "/media/**",
-      },
+      ...(ALLOW_LOCAL_IMAGES
+        ? [
+            {
+              protocol: "http" as const,
+              hostname: "localhost",
+              port: "8000",
+              pathname: "/media/**",
+            },
+          ]
+        : []),
     ],
   },
   async headers() {
