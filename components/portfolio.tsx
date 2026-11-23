@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
 import Image from "next/image";
+import Reveal from "@/components/Reveal";
 
 interface Project {
   id: number;
@@ -16,6 +16,8 @@ interface Project {
   points?: string;
   link?: string;
 }
+
+const TAB_FILTERS = ["Mobile App", "Software", "Website"] as const;
 
 const Portfolio = ({ projects }: { projects: Project[] }) => {
   const router = useRouter();
@@ -30,12 +32,11 @@ const Portfolio = ({ projects }: { projects: Project[] }) => {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {projects.map((project, index) => (
-          <motion.div
+          <Reveal
             key={project.id}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: index * 0.15 }}
+            delay={index * 0.15}
+            className="h-full"
+            y={40}
           >
             <Card className="card-3d bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden">
               {/* Square image container */}
@@ -67,7 +68,7 @@ const Portfolio = ({ projects }: { projects: Project[] }) => {
                 )}
               </CardContent>
             </Card>
-          </motion.div>
+          </Reveal>
         ))}
       </div>
     );
@@ -94,7 +95,7 @@ const Portfolio = ({ projects }: { projects: Project[] }) => {
           <h2 className="text-4xl md:text-5xl font-bold text-foreground">
             Our <span className="gradient-text">Portfolio</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Explore our diverse projects across mobile apps, software, and web
             development.
           </p>
@@ -103,7 +104,7 @@ const Portfolio = ({ projects }: { projects: Project[] }) => {
         {/* Tabs */}
         <div className="container-custom">
           <div className="flex justify-center gap-4 mb-12 flex-wrap">
-            {["Mobile App", "Software", "Website"].map((tab) => (
+            {TAB_FILTERS.map((tab) => (
               <button
                 key={tab}
                 onClick={() =>
@@ -127,66 +128,36 @@ const Portfolio = ({ projects }: { projects: Project[] }) => {
 
       {/* CTA Section */}
       <section className="section-padding bg-muted section-3d relative overflow-hidden">
-        <motion.div
-          className="absolute inset-0 opacity-20 blur-3xl"
-          animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.3, 0.2] }}
-          transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-        />
+        <div className="absolute inset-0 opacity-20 blur-3xl bg-linear-to-r from-blue-500 via-indigo-500 to-purple-600 pointer-events-none" />
 
         <div className="container-custom text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <motion.div
-              whileHover={{ scale: 1.02, y: -5 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            >
-              <Card className="card-3d border-0 max-w-4xl mx-auto bg-linear-to-r from-blue-500 via-indigo-500 to-purple-600 text-white transition-all duration-300 hover:shadow-[0_20px_50px_rgba(99,102,241,0.4)]">
-                <CardContent className="p-12 space-y-6">
-                  <motion.h2
-                    initial={{ y: 30, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2, duration: 0.6 }}
-                    className="text-3xl md:text-4xl font-bold"
+          <Reveal>
+            <Card className="card-3d relative z-10 border-0 max-w-4xl mx-auto bg-linear-to-r from-blue-500 via-indigo-500 to-purple-600 text-white transition-all duration-300 hover:shadow-[0_20px_50px_rgba(99,102,241,0.4)]">
+              <CardContent className="p-12 space-y-6">
+                <h2 className="text-3xl md:text-4xl font-bold">
+                  Want to Start Your Project?
+                </h2>
+                <p className="text-xl max-w-2xl mx-auto opacity-90">
+                  Let&apos;s bring your ideas to life. Connect with us and let&apos;s
+                  build something amazing together.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                  <Button
+                    className="group bg-white text-blue-600 shadow-lg flex items-center justify-center transition-all duration-300 hover:bg-blue-600 hover:shadow-xl"
+                    onClick={() => router.push("/contact")}
                   >
-                    Want to Start Your Project?
-                  </motion.h2>
-                  <motion.p
-                    initial={{ y: 30, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.4, duration: 0.6 }}
-                    className="text-xl max-w-2xl mx-auto opacity-90"
-                  >
-                    Let&apos;s bring your ideas to life. Connect with us and let&apos;s
-                    build something amazing together.
-                  </motion.p>
-                  <motion.div
-                    initial={{ y: 40, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.6, duration: 0.6 }}
-                    className="flex flex-col sm:flex-row gap-4 justify-center pt-4"
-                  >
-                    <Button
-                      // size="lg"
-                      className="group bg-white text-blue-600 shadow-lg flex items-center justify-center transition-all duration-300 hover:bg-blue-600 hover:shadow-xl"
-                      onClick={() => router.push("/contact")}
-                    >
-                      <span className="font-semibold transition-colors duration-300 group-hover:text-white">
-                        Contact Us
-                      </span>
-                      <ArrowRight
-                        size={20}
-                        className="ml-2 transition-colors duration-300 group-hover:text-white"
-                      />
-                    </Button>
-                  </motion.div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </motion.div>
+                    <span className="font-semibold transition-colors duration-300 group-hover:text-white">
+                      Contact Us
+                    </span>
+                    <ArrowRight
+                      size={20}
+                      className="ml-2 transition-colors duration-300 group-hover:text-white"
+                    />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </Reveal>
         </div>
       </section>
     </div>

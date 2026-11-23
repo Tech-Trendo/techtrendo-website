@@ -16,7 +16,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
-import ServiceQuote from "@/components/ServiceQuote"; // ServiceQuote modal
+import { dynamicServiceQuote as ServiceQuote } from "@/components/dynamicServiceQuote"; // ServiceQuote modal
 
 // --- Type Definitions ---
 interface ProductFeature {

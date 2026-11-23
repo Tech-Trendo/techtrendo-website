@@ -24,7 +24,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import ServiceQuote from "@/components/ServiceQuote";
+import { dynamicServiceQuote as ServiceQuote } from "@/components/dynamicServiceQuote";
 
 interface ServiceFeature {
   title?: string;

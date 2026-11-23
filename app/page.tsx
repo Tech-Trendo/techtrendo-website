@@ -15,8 +15,10 @@ import {
   MonitorCog,
   Megaphone,
   FileCode2,
+  Code,
+  TrendingUp,
+  Monitor,
 } from "lucide-react";
-import * as LucideIcons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -45,6 +47,31 @@ interface Service {
   long_description?: string;
   features: string[] | ServiceFeature[];
 }
+
+// Only the handful of icons this site actually renders are registered here.
+// Rendering the full lucide-react namespace pulled ~1,400 icon components into
+// the server render; we map the known names and fall back to one icon.
+const SERVICE_ICONS: Record<string, LucideIcon> = {
+  "Palette": Palette,
+  "Globe": Globe,
+  "Smartphone": Smartphone,
+  "Code": Code,
+  "TrendingUp": TrendingUp,
+  "Monitor": Monitor,
+  "MonitorCog": MonitorCog,
+  "Megaphone": Megaphone,
+  "FileCode2": FileCode2,
+  "ShieldCheck": ShieldCheck,
+  "Cpu": Cpu,
+  "Workflow": Workflow,
+  "Sparkles": Sparkles,
+  "BadgeDollarSign": BadgeDollarSign,
+  "Building2": Building2,
+  "BriefcaseBusiness": BriefcaseBusiness,
+};
+
+const getServiceIcon = (iconName?: string): LucideIcon =>
+  (iconName && SERVICE_ICONS[iconName]) || FileCode2;
 
 async function fetchServices(): Promise<Service[]> {
   try {
@@ -102,7 +129,27 @@ async function fetchFeaturedBlogs(): Promise<BlogPost[]> {
       : data && Array.isArray(data.results)
         ? data.results
         : [];
-    return posts.filter((post: BlogPost) => post.is_featured);
+    // Only keep the fields the blog cards render, so the RSC payload stays
+    // small (the full CMS article bodies are never serialized for the homepage).
+    return posts
+      .filter((post: BlogPost) => post.is_featured)
+      .map((post: BlogPost) => ({
+        id: post.id,
+        title: post.title,
+        slug: post.slug,
+        image: post.image,
+        pub_date: post.pub_date,
+        is_featured: post.is_featured,
+        meta_description: post.meta_description,
+        og_description: post.og_description,
+        excerpt: (
+          (post.meta_description || post.og_description || "") as string
+        )
+          .replace(/<[^>]*>/g, " ")
+          .replace(/\s+/g, " ")
+          .trim()
+          .slice(0, 160),
+      }));
   } catch {
     return [];
   }
@@ -455,10 +502,7 @@ export default async function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {displayServices.map((service, index) => {
-              const IconComponent =
-                (LucideIcons as unknown as Record<string, LucideIcon>)[
-                  service.icon
-                ] || LucideIcons.Code;
+              const IconComponent = getServiceIcon(service.icon);
               return (
                 <Card
                   key={service.id || index}

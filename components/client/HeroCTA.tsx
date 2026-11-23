@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import ServiceQuote from "@/components/ServiceQuote";
+import { dynamicServiceQuote as ServiceQuoteModal } from "@/components/dynamicServiceQuote";
 
 export default function HeroCTA() {
   const [quoteOpen, setQuoteOpen] = useState(false);
@@ -29,9 +29,7 @@ export default function HeroCTA() {
           </Button>
         </Link>
       </div>
-      {quoteOpen && (
-        <ServiceQuote onClose={() => setQuoteOpen(false)} />
-      )}
+      {quoteOpen && <ServiceQuoteModal onClose={() => setQuoteOpen(false)} />}
     </>
   );
 }

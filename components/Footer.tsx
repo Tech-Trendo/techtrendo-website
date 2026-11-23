@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 import TikTokIcon from "./ui/tiktokicon";
-import axios from "axios";
 import Image from "next/image";
 
 
@@ -49,22 +48,25 @@ const Footer = () => {
     }
 
     try {
-      const res = await axios.post(`${API_URL}/mail-subscribers/`, { email });
-      if (res.status === 201) {
+      const res = await fetch(`${API_URL}/mail-subscribers/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json().catch(() => null);
+      if (res.ok) {
         setSubscriptionStatus("success");
-        setSubscriptionMessage("Thank you! You have successfully subscribed to our newsletter.");
+        setSubscriptionMessage("Thank you! You have successfully subscribed to your newsletter.");
         setEmail("");
-      }
-    } catch (err) {
-      if (
-        axios.isAxiosError(err) &&
-        err.response?.data?.email &&
-        err.response.data.email.length > 0
-      ) {
-        setSubscriptionMessage(err.response.data.email[0]);
+      } else if (data?.email && Array.isArray(data.email) && data.email.length > 0) {
+        setSubscriptionMessage(data.email[0]);
+        setSubscriptionStatus("error");
       } else {
         setSubscriptionMessage("Subscription failed. Please try again later.");
+        setSubscriptionStatus("error");
       }
+    } catch (err) {
+      setSubscriptionMessage("Subscription failed. Please try again later.");
       setSubscriptionStatus("error");
     }
   };

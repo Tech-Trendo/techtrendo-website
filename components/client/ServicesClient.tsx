@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
-import ServiceQuote from "../ServiceQuote";
+import { dynamicServiceQuote as ServiceQuote } from "../dynamicServiceQuote";
 export default function ServicesClient() {
   const [email, setEmail] = useState("");
   const [subscriptionStatus, setSubscriptionStatus] = useState<

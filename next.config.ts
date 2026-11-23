@@ -21,9 +21,11 @@ const SECURITY_HEADERS = [
     value: [
       "default-src 'self'",
       // 'unsafe-inline' required by the inline GA4 gtag config snippet.
+      // 'unsafe-eval' required by React's dev-mode debugging helpers when the
+      // app runs on a development/preview origin (silences the eval() CSP error).
       // Cloudflare's edge injects its Web Analytics beacon when enabled in the
       // dashboard, so both the script host and its RUM endpoint must be allowed.
-      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://static.cloudflareinsights.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://static.cloudflareinsights.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
@@ -47,8 +49,12 @@ const ALLOW_LOCAL_IMAGES =
   /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/.test(API_ORIGIN);
 
 const nextConfig: NextConfig = {
-  // Release the TS improvements gradually:
-  // ignoreBuildErrors is removed so type errors fail the build.
+  // Experimental: inline the (small, Tailwind-atomic) global CSS into the SSR
+  // HTML so the browser does not pay an extra round trip for the render-blocking
+  // stylesheet before first paint (FCP/LCP).
+  experimental: {
+    inlineCss: true,
+  },
   images: {
     dangerouslyAllowLocalIP: ALLOW_LOCAL_IMAGES,
     formats: ["image/avif", "image/webp"],

@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import ServiceQuote from "@/components/ServiceQuote";
+import { dynamicServiceQuote as ServiceQuote } from "@/components/dynamicServiceQuote";
 
 interface ServiceCardActionsProps {
   serviceId: number;
