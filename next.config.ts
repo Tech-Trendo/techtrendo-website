@@ -25,11 +25,13 @@ const SECURITY_HEADERS = [
       // app runs on a development/preview origin (silences the eval() CSP error).
       // Cloudflare's edge injects its Web Analytics beacon when enabled in the
       // dashboard, so both the script host and its RUM endpoint must be allowed.
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://static.cloudflareinsights.com",
+      // Vercel Analytics loads its script from va.vercel-scripts.com in local
+      // development (on Vercel it is served from /_vercel/insights/script.js).
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://static.cloudflareinsights.com https://va.vercel-scripts.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
-      "connect-src 'self' https://app.techtrendo.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://cloudflareinsights.com",
+      "connect-src 'self' https://app.techtrendo.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://cloudflareinsights.com https://vitals.vercel-insights.com",
       "frame-src 'self' https://www.google.com https://maps.google.com https://www.recaptcha.net",
       "object-src 'none'",
       "base-uri 'self'",

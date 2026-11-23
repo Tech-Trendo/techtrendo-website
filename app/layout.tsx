@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
 import { countryAlternates, organizationLd, websiteLd } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
@@ -92,6 +93,7 @@ export default function RootLayout({
       <body className="antialiased min-h-screen flex flex-col">
         <SiteChrome>{children}</SiteChrome>
         <Toaster />
+        <Analytics />
       </body>
     </html>
   );
